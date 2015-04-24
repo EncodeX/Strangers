@@ -1,9 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
+
 <com.neu.strangers.view.MyRippleLayout
 	xmlns:android="http://schemas.android.com/apk/res/android"
 	xmlns:app="http://schemas.android.com/apk/res-auto"
 	android:layout_width="match_parent"
 	android:layout_height="match_parent"
+	app:mrl_rippleOverlay="false"
 	app:mrl_rippleColor="#fff"
 	app:mrl_rippleDelayClick="false"
 	app:mrl_rippleDuration="250"
@@ -12,19 +14,7 @@
 		android:id="@+id/psts_tab_title"
 		android:textColor="#fff"
 		android:layout_gravity="center"
-		android:layout_width="wrap_content"
-		android:layout_height="wrap_content"/>
+		android:layout_width="match_parent"
+		android:layout_height="match_parent"
+		android:background="@drawable/ripple_background_selector"/>
 </com.neu.strangers.view.MyRippleLayout>
-<!--<RelativeLayout-->
-	<!--xmlns:android="http://schemas.android.com/apk/res/android"-->
-	<!--xmlns:app="http://schemas.android.com/apk/res-auto"-->
-	<!--android:layout_width="match_parent"-->
-	<!--android:layout_height="match_parent">-->
-	<!--<TextView-->
-		<!--android:id="@+id/psts_tab_title"-->
-		<!--android:textColor="#fff"-->
-		<!--android:layout_centerHorizontal="true"-->
-		<!--android:layout_centerVertical="true"-->
-		<!--android:layout_width="wrap_content"-->
-		<!--android:layout_height="wrap_content"/>-->
-<!--</RelativeLayout>-->

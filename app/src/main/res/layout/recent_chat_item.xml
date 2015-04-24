@@ -7,13 +7,15 @@
 	<com.neu.strangers.view.MyRippleLayout
 		android:layout_width="match_parent"
 		android:layout_height="match_parent"
+		app:mrl_rippleOverlay="false"
 		app:mrl_rippleColor="#666"
 		app:mrl_rippleDelayClick="false"
 		app:mrl_rippleDuration="250"
 		app:mrl_rippleHover="true">
 		<FrameLayout
 			android:layout_width="match_parent"
-			android:layout_height="match_parent"/>
+			android:layout_height="match_parent"
+			android:background="@drawable/ripple_background_selector"/>
 	</com.neu.strangers.view.MyRippleLayout>
 	<de.hdodenhof.circleimageview.CircleImageView
 		android:id="@+id/recent_chat_item_avatar"
