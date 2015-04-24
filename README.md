@@ -1,2 +1,2 @@
-# Strangers-1
+# Strangers
 ：）
