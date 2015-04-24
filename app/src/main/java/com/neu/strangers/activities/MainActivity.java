@@ -36,7 +36,6 @@ public class MainActivity extends AppCompatActivity{
 				startActivity(new Intent(MainActivity.this,NearbyStrangers.class));
 			}
 
-
 		}
 
 		@Override
@@ -49,6 +48,8 @@ public class MainActivity extends AppCompatActivity{
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
+
+		//GitHub修改测试
 
 //		ButterKnife.inject(this);
 
