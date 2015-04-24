@@ -1,0 +1,57 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:wheel="http://schemas.android.com/apk/res-auto"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
+    >
+
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/tool_bar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="#9C27B0"
+        app:theme="@style/AppTheme.Toolbar"
+        app:popupTheme="@style/AppTheme.Toolbar.Popup"
+        app:title="Nearby"/>
+
+
+
+    <com.baidu.mapapi.map.MapView
+        android:layout_below="@id/tool_bar"
+        android:visibility="gone"
+        android:id="@+id/bmapView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:clickable="true"/>
+
+    <RelativeLayout
+        android:id="@+id/progress_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <com.neu.strangers.view.ProgressWheel
+            android:id="@+id/progress"
+            android:layout_width="90dp"
+            android:layout_height="90dp"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:layout_marginTop="120dp"
+            wheel:matProg_barColor="@color/app_color_primary"
+            wheel:matProg_progressIndeterminate="true"
+            />
+
+        <TextView
+            android:layout_centerHorizontal="true"
+            android:layout_below="@id/progress"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="loding...."/>
+
+
+        </RelativeLayout>
+
+
+
+</RelativeLayout>

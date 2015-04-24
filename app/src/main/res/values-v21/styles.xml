@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+	<style name="AppTheme" parent="AppTheme.Base">
+		<!--<item name="android:windowContentTransitions">true</item>-->
+		<!--<item name="android:windowAllowEnterTransitionOverlap">true</item>-->
+		<!--<item name="android:windowAllowReturnTransitionOverlap">true</item>-->
+		<item name="android:windowSharedElementEnterTransition">@android:transition/move</item>
+		<item name="android:windowSharedElementExitTransition">@android:transition/move</item>
+
+		<!--<item name="android:windowDrawsSystemBarBackgrounds">true</item>-->
+		<!--<item name="android:statusBarColor">#7B1FA2</item>-->
+		<!--<item name="android:windowTranslucentStatus">true</item>-->
+	</style>
+
+	<style name="NotificationText" parent="android:TextAppearance.Material.Notification"/>
+
+	<style name="NotificationTitle" parent="android:TextAppearance.Material.Notification.Title"/>
+
+	<style name="NotificationTitleBold" parent="android:TextAppearance.Material.Notification.Title">
+		<item name="android:textStyle">bold</item>
+	</style>
+</resources>

@@ -1,0 +1,57 @@
+<resources>
+
+	<!-- Base application theme. -->
+	<style name="AppTheme.Base" parent="Theme.AppCompat.Light.NoActionBar">
+		<!-- Customize your theme here. -->
+		<item name="android:textColorPrimary">@color/abc_primary_text_material_light</item>
+		<item name="android:textColorSecondary">@color/abc_secondary_text_material_light</item>
+
+		<!-- colorPrimary is used, for instance, for the default ActionBar
+	   (but not Toolbar) background.
+		We specify the same color for the toolbar background in
+		toolbar.xml.. -->
+		<item name="colorPrimary">@color/app_color_primary</item>
+		<!-- colorPrimaryDark is used for the status bar (with the
+			   battery, clock, etc). -->
+		<item name="colorPrimaryDark">@color/app_color_primary_dark</item>
+		<!-- colorAccent is used as the default value for
+				colorControlActivated which is used to tint widgets. -->
+		<item name="colorAccent">@color/app_color_accent</item>
+	</style>
+
+
+	<style name="AppTheme" parent="AppTheme.Base">
+		<!--<item name="colorPrimary">@color/primary_material_dark</item>-->
+		<!--<item name="colorPrimaryDark">@color/primary_dark_material_dark</item>-->
+		<!--<item name="android:windowNoTitle">true</item>-->
+		<!--<item name="windowActionBar">false</item>-->
+	</style>
+
+	<style name="AppTheme.Toolbar" parent="Base.ThemeOverlay.AppCompat.ActionBar">
+		<item name="android:textColorPrimary">#fff</item>
+		<!--<item name="android:background">#9C27B0</item>-->
+	</style>
+
+	<style name="AppTheme.Toolbar.Popup" parent="Base.ThemeOverlay.AppCompat.ActionBar">
+		<item name="android:textColorPrimary">#000</item>
+		<!--<item name="android:background">@color/background_material_light</item>-->
+	</style>
+
+	<style name="AppTheme.Toolbar.TabBar" parent="Base.Widget.AppCompat.Light.ActionBar.TabBar">
+		<item name="android:textColorPrimary">#fff</item>
+		<item name="android:background">#9C27B0</item>
+	</style>
+
+	<style name="NotificationText">
+		<item name="android:textColor">?android:attr/textColorSecondary</item>
+	</style>
+
+	<style name="NotificationTitle">
+		<item name="android:textColor">?android:attr/textColorPrimary</item>
+	</style>
+
+	<style name="NotificationTitleBold">
+		<item name="android:textColor">?android:attr/textColorPrimary</item>
+		<item name="android:textStyle">bold</item>
+	</style>
+</resources>

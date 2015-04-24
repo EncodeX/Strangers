@@ -1,0 +1,9 @@
+<resources>
+	<string name="app_name">Strangers</string>
+
+	<string name="hello_world">Hello world!</string>
+	<string name="action_settings">Settings</string>
+
+	<string name="main_tab_recent_chat">Recent Chat</string>
+	<string name="main_tab_contacts">Contacts</string>
+</resources>

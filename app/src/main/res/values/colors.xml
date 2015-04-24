@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="background_window">#FFE5E5E5</color>
+    <color name="green">#689F38</color>
+    <color name="greenDark">#3E5F22</color>
+    <color name="banana">#FFCC00</color>
+
+	<color name="app_color_primary_dark">#7B1FA2</color>
+	<color name="app_color_primary">#9C27B0</color>
+	<color name="app_color_accent">#00BCD4</color>
+</resources>
