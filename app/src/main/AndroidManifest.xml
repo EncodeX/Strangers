@@ -52,6 +52,10 @@
             </intent-filter>
         </service>
 
+	    <!--Yanheng API Key-->
+	    <!--<meta-data android:value="tkQMcKuBCvi2foP2wtcngKqd" android:name="com.baidu.lbsapi.API_KEY"/>-->
+
+	    <!--Jianyou API Key-->
         <meta-data android:value="acy0Ph3PLnZ7sxq48dWlICpg" android:name="com.baidu.lbsapi.API_KEY"/>
 
     </application>
