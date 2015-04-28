@@ -11,17 +11,28 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 import com.astuetz.PagerSlidingTabStrip;
 import com.neu.strangers.R;
 import com.neu.strangers.view.MainViewPager;
 import com.readystatesoftware.systembartint.SystemBarTintManager;
 
+import butterknife.ButterKnife;
+import butterknife.InjectView;
+
 
 public class MainActivity extends AppCompatActivity{
 	private SystemBarTintManager mSystemBarTintManager;
 	private SensorManager mSensorManager;
 	private Sensor mSensor;
+
+	@InjectView(R.id.tool_bar)
+	Toolbar toolbar;
+	@InjectView(R.id.main_view_pager)
+	MainViewPager mainViewPager;
+	@InjectView(R.id.main_pager_tabs)
+	PagerSlidingTabStrip mainPagerTabs;
 
 	private SensorEventListener mListener = new SensorEventListener() {
 		@Override
@@ -51,10 +62,9 @@ public class MainActivity extends AppCompatActivity{
 
 		//GitHub修改测试
 
-//		ButterKnife.inject(this);
+		ButterKnife.inject(this);
 
 		// Initialize tool bar.
-		Toolbar toolbar = (Toolbar)findViewById(R.id.tool_bar);
 		setSupportActionBar(toolbar);
 
 		// Change StatusBar Color for Kitkat
@@ -63,11 +73,7 @@ public class MainActivity extends AppCompatActivity{
 		mSystemBarTintManager.setTintColor(getResources().getColor(R.color.app_color_primary_dark));
 
 		// Initialize ViewPager.
-		MainViewPager mainViewPager = (MainViewPager)findViewById(R.id.main_view_pager);
 		mainViewPager.initView(this);
-
-		PagerSlidingTabStrip mainPagerTabs =
-				(PagerSlidingTabStrip)findViewById(R.id.main_pager_tabs);
 		mainPagerTabs.setViewPager(mainViewPager);
 
 		//Initialize the Sensor
@@ -97,6 +103,8 @@ public class MainActivity extends AppCompatActivity{
 		getMenuInflater().inflate(R.menu.menu_main, menu);
 		return true;
 	}
+
+
 
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {

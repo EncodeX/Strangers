@@ -11,7 +11,7 @@
 		android:layout_width="match_parent"
 	    android:layout_height="?attr/actionBarSize"
 	    android:background="#9C27B0"
-	    app:theme="@style/AppTheme.Toolbar"
+	    android:theme="@style/AppTheme.Toolbar"
 	    app:popupTheme="@style/AppTheme.Toolbar.Popup"
 	    app:title="Strangers"/>
 

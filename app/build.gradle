@@ -6,10 +6,10 @@ android {
 
 	defaultConfig {
 		applicationId "com.neu.strangers"
-		minSdkVersion 14
+		minSdkVersion 11
 		targetSdkVersion 22
 		versionCode 1
-		versionName "1.0"
+		versionName "0.1α"
 	}
 	buildTypes {
 		release {
@@ -26,7 +26,6 @@ dependencies {
 	compile 'com.android.support:cardview-v7:21.0.+'
 
 	compile 'com.jpardogo.materialtabstrip:library:1.0.9'
-	compile 'com.balysv:material-ripple:1.0.1'
 	compile 'com.readystatesoftware.systembartint:systembartint:1.0.3'
 	compile 'com.jakewharton:butterknife:6.1.0'
 	compile 'de.hdodenhof:circleimageview:1.2.2'

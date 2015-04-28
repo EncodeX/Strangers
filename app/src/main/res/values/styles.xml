@@ -1,7 +1,7 @@
 <resources>
 
 	<!-- Base application theme. -->
-	<style name="AppTheme.Base" parent="Theme.AppCompat.Light.NoActionBar">
+	<style name="AppTheme.Base" parent="Theme.AppCompat.NoActionBar">
 		<!-- Customize your theme here. -->
 		<item name="android:textColorPrimary">@color/abc_primary_text_material_light</item>
 		<item name="android:textColorSecondary">@color/abc_secondary_text_material_light</item>
@@ -17,6 +17,7 @@
 		<!-- colorAccent is used as the default value for
 				colorControlActivated which is used to tint widgets. -->
 		<item name="colorAccent">@color/app_color_accent</item>
+		<item name="android:colorBackground">@color/background_material_light</item>
 	</style>
 
 
@@ -32,9 +33,10 @@
 		<!--<item name="android:background">#9C27B0</item>-->
 	</style>
 
-	<style name="AppTheme.Toolbar.Popup" parent="Base.ThemeOverlay.AppCompat.ActionBar">
+	<style name="AppTheme.Toolbar.Popup" parent="Theme.AppCompat.Light">
 		<item name="android:textColorPrimary">#000</item>
 		<!--<item name="android:background">@color/background_material_light</item>-->
+		<!--<item name="android:colorBackground">#000</item>-->
 	</style>
 
 	<style name="AppTheme.Toolbar.TabBar" parent="Base.Widget.AppCompat.Light.ActionBar.TabBar">

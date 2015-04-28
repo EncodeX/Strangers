@@ -7,23 +7,12 @@
     android:fitsSystemWindows="true"
     >
 
-    <android.support.v7.widget.Toolbar
-        android:id="@+id/tool_bar"
-        android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
-        android:background="#9C27B0"
-        app:theme="@style/AppTheme.Toolbar"
-        app:popupTheme="@style/AppTheme.Toolbar.Popup"
-        app:title="Nearby"/>
-
-
-
     <com.baidu.mapapi.map.MapView
-        android:layout_below="@id/tool_bar"
         android:visibility="gone"
         android:id="@+id/bmapView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_marginTop="?attr/actionBarSize"
         android:clickable="true"/>
 
     <RelativeLayout
@@ -47,11 +36,24 @@
             android:layout_below="@id/progress"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="loding...."/>
-
+            android:text="Loading...."/>
 
         </RelativeLayout>
 
+	<FrameLayout
+		android:layout_width="match_parent"
+		android:layout_height="5dp"
+		android:layout_marginTop="?attr/actionBarSize"
+		android:background="@drawable/simple_shadow"
+		android:alpha="0.5"/>
 
+	<android.support.v7.widget.Toolbar
+		android:id="@+id/tool_bar"
+		android:layout_width="match_parent"
+		android:layout_height="?attr/actionBarSize"
+		android:background="#9C27B0"
+		android:theme="@style/AppTheme.Toolbar"
+		app:popupTheme="@style/AppTheme.Toolbar.Popup"
+		app:title="Nearby"/>
 
 </RelativeLayout>

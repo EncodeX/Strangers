@@ -15,7 +15,7 @@
 		<FrameLayout
 			android:layout_width="match_parent"
 			android:layout_height="match_parent"
-			android:background="@drawable/ripple_background_selector"/>
+			android:background="@drawable/ripple_background_selector_light"/>
 	</com.neu.strangers.view.MyRippleLayout>
 	<de.hdodenhof.circleimageview.CircleImageView
 		android:id="@+id/recent_chat_item_avatar"
