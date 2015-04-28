@@ -36,7 +36,7 @@ public class NearbyStrangers extends Activity{
     private class MyLocationListenner implements BDLocationListener {
 
         @Override
-        public void onReceiveLocation(BDLocation location) {//
+        public void onReceiveLocation(BDLocation location) {////
 
 
             if (location == null || mMapView == null)
