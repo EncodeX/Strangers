@@ -41,6 +41,7 @@
 
         </activity>
 
+
         <service
             android:name="com.baidu.location.f"
             android:enabled="true"

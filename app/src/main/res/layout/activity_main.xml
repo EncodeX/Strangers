@@ -4,7 +4,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:fitsSystemWindows="true"
-                tools:context=".MainActivity">
+                tools:context=".MainActivity"
+				android:background="@color/background_material_light">
 
 	<android.support.v7.widget.Toolbar
 		android:id="@+id/tool_bar"
@@ -48,5 +49,6 @@
 		app:pstsIndicatorColor="#fff"
 		app:pstsIndicatorHeight="3dp"
 		app:pstsShouldExpand="true"
+		app:pstsTabPaddingLeftRight="0dp"
 		app:pstsTextColorSelected="#fff"/>
 </RelativeLayout>
