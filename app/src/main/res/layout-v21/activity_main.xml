@@ -43,5 +43,6 @@
 		app:pstsIndicatorColor="#fff"
 		app:pstsIndicatorHeight="3dp"
 		app:pstsShouldExpand="true"
+		app:pstsTabPaddingLeftRight="0dp"
 		app:pstsTextColorSelected="#fff"/>
 </RelativeLayout>
