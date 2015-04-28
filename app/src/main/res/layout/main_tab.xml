@@ -10,11 +10,15 @@
 	app:mrl_rippleDelayClick="false"
 	app:mrl_rippleDuration="250"
 	app:mrl_rippleHover="true">
-	<TextView
-		android:id="@+id/psts_tab_title"
-		android:textColor="#fff"
-		android:layout_gravity="center"
+	<FrameLayout
 		android:layout_width="match_parent"
 		android:layout_height="match_parent"
-		android:background="@drawable/ripple_background_selector_light"/>
+		android:background="@drawable/ripple_background_selector">
+		<TextView
+			android:id="@+id/psts_tab_title"
+			android:textColor="#fff"
+			android:layout_gravity="center"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"/>
+	</FrameLayout>
 </com.neu.strangers.view.MyRippleLayout>
