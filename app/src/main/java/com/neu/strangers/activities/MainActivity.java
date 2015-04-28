@@ -60,8 +60,6 @@ public class MainActivity extends AppCompatActivity{
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 
-		//GitHub修改测试
-
 		ButterKnife.inject(this);
 
 		// Initialize tool bar.
