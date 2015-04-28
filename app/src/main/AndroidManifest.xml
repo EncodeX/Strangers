@@ -3,6 +3,7 @@
     package="com.neu.strangers" >
 
 
+    <uses-permission android:name="android.permission.BAIDU_LOCATION_SERVICE"/>
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
@@ -52,7 +53,7 @@
             </intent-filter>
         </service>
 
-        <meta-data android:value="acy0Ph3PLnZ7sxq48dWlICpg" android:name="com.baidu.lbsapi.API_KEY"/>
+        <meta-data android:value="tkQMcKuBCvi2foP2wtcngKqd" android:name="com.baidu.lbsapi.API_KEY"/>
 
     </application>
 
