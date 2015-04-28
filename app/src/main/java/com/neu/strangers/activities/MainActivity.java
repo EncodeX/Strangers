@@ -26,7 +26,7 @@ public class MainActivity extends AppCompatActivity{
 	private SystemBarTintManager mSystemBarTintManager;
 	private SensorManager mSensorManager;
 	private Sensor mSensor;
-
+//
 	@InjectView(R.id.tool_bar)
 	Toolbar toolbar;
 	@InjectView(R.id.main_view_pager)
