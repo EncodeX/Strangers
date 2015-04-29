@@ -39,7 +39,7 @@ public class NearbyStrangers extends AppCompatActivity {
     private BaiduMap mBaiduMap;
     private LocationClient mLocClient;
     private MyLocationListenner mListener = new MyLocationListenner();
-    boolean mIsFirstLoc = true;   // if is the first time to locate
+    boolean mIsFirstLoc = true;   //if is the first time to locate
 
 
     private class MyLocationListenner implements BDLocationListener {
