@@ -39,7 +39,7 @@ public class NearbyStrangers extends AppCompatActivity {
     private BaiduMap mBaiduMap;
     private LocationClient mLocClient;
     private MyLocationListenner mListener = new MyLocationListenner();
-    boolean mIsFirstLoc = true;   // if is the first time to locate
+    boolean mIsFirstLoc = true;   //if is the first time to locate
 
 
     private class MyLocationListenner implements BDLocationListener {
@@ -57,10 +57,10 @@ public class NearbyStrangers extends AppCompatActivity {
             mBaiduMap.setMyLocationData(locData);
             if (mIsFirstLoc) {
                 mIsFirstLoc = false;
-                LatLng ll = new LatLng(location.getLatitude(),
+                LatLng mLatLng = new LatLng(location.getLatitude(),
                         location.getLongitude());
-                MapStatusUpdate u = MapStatusUpdateFactory.newLatLng(ll);
-                mBaiduMap.animateMapStatus(u);
+                MapStatusUpdate mMapStatusUpdate = MapStatusUpdateFactory.newLatLng(mLatLng);
+                mBaiduMap.animateMapStatus(mMapStatusUpdate);
             }
 
         }
@@ -123,7 +123,9 @@ public class NearbyStrangers extends AppCompatActivity {
     //    Toast.makeText(NearbyStrangers.this,"Test Test Test",Toast.LENGTH_SHORT).show();
     }
 
-
-
-
+    @Override
+    protected void onStop() {
+        mLocClient.stop();
+        super.onStop();
+    }
 }
