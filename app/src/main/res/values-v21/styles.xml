@@ -13,6 +13,19 @@
 		<!--<item name="android:windowTranslucentStatus">true</item>-->
 	</style>
 
+	<style name="AppTheme.WelcomeTheme" parent="AppTheme">
+		<item name="android:windowContentTransitions">true</item>
+		<item name="android:windowAllowEnterTransitionOverlap">true</item>
+		<item name="android:windowAllowReturnTransitionOverlap">true</item>
+		<item name="android:windowTranslucentStatus">true</item>
+		<item name="android:windowIsTranslucent">true</item>
+	</style>
+
+	<style name="AppTheme.WelcomeLoginButton" parent="Base.Widget.AppCompat.Button">
+		<item name="android:textColorPrimary">#fff</item>
+		<item name="android:colorButtonNormal">@color/greenDark</item>
+	</style>
+
 	<style name="NotificationText" parent="android:TextAppearance.Material.Notification"/>
 
 	<style name="NotificationTitle" parent="android:TextAppearance.Material.Notification.Title"/>

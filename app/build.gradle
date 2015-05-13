@@ -20,6 +20,7 @@ android {
 }
 
 dependencies {
+	compile project(':MaterialWidget')
 	compile fileTree(dir: 'libs', include: ['*.jar'])
 	compile 'com.android.support:appcompat-v7:22.1.0'
 	compile 'com.android.support:recyclerview-v7:21.0.+'
@@ -29,4 +30,5 @@ dependencies {
 	compile 'com.readystatesoftware.systembartint:systembartint:1.0.3'
 	compile 'com.jakewharton:butterknife:6.1.0'
 	compile 'de.hdodenhof:circleimageview:1.2.2'
+	compile 'com.github.navasmdc:MaterialDesign:1.+@aar'
 }
