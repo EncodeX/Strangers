@@ -43,7 +43,7 @@ public class MainActivity extends AppCompatActivity{
 			// float zValue = Math.abs(sensorEvent.values[2]);
 			if(xValue > 18.5 )
 			{
-
+                mSensorManager.unregisterListener(mListener);
 				startActivity(new Intent(MainActivity.this,NearbyStrangers.class));
 			}
 
