@@ -44,6 +44,17 @@
 		<item name="android:background">#9C27B0</item>
 	</style>
 
+	<style name="AppTheme.WelcomeTheme" parent="AppTheme">
+		<item name="android:windowIsTranslucent">true</item>
+	</style>
+
+	<style name="AppTheme.WelcomeRegisterButton" parent="Base.Theme.AppCompat.Light">
+	</style>
+
+	<style name="AppTheme.WelcomeLoginButton" parent="Base.Widget.AppCompat.Button">
+		<item name="android:textColorPrimary">#fff</item>
+	</style>
+
 	<style name="NotificationText">
 		<item name="android:textColor">?android:attr/textColorSecondary</item>
 	</style>

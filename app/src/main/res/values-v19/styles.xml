@@ -4,4 +4,8 @@
         <item name="android:windowTranslucentStatus">true</item>
     </style>
 
+	<style name="AppTheme.WelcomeTheme" parent="AppTheme">
+		<item name="android:windowTranslucentStatus">true</item>
+		<item name="android:windowIsTranslucent">true</item>
+	</style>
 </resources>

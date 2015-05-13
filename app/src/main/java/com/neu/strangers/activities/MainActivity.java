@@ -26,7 +26,6 @@ public class MainActivity extends AppCompatActivity{
 	private SystemBarTintManager mSystemBarTintManager;
 	private SensorManager mSensorManager;
 	private Sensor mSensor;
-
 //
 	@InjectView(R.id.tool_bar)
 	Toolbar toolbar;
@@ -42,15 +41,11 @@ public class MainActivity extends AppCompatActivity{
 			float xValue = Math.abs(sensorEvent.values[0]);
 			//  float yValue = Math.abs(sensorEvent.values[1]);
 			// float zValue = Math.abs(sensorEvent.values[2]);
-			if(xValue > 18.5)
+			if(xValue > 18.5 )
 			{
-                startActivity(new Intent(MainActivity.this, NearbyStrangers.class));
-                if(mSensorManager != null)
-                {
-                    mSensorManager.unregisterListener(this);
-                }
-			}
 
+				startActivity(new Intent(MainActivity.this,NearbyStrangers.class));
+			}
 
 		}
 
@@ -87,19 +82,15 @@ public class MainActivity extends AppCompatActivity{
 
     @Override
     protected void onStop() {
-      //  if(mSensorManager != null)
-        //    mSensorManager.unregisterListener(mListener);
+        if(mSensorManager != null)
+            mSensorManager.unregisterListener(mListener);
         super.onStop();
     }
 
     @Override
-    protected void onResume() {
-        mSensorManager.registerListener(mListener,mSensor,SensorManager.SENSOR_DELAY_NORMAL);
-        super.onResume();
-    }
-
-    @Override
     protected void onRestart() {
+        //
+        mSensorManager.registerListener(mListener,mSensor,SensorManager.SENSOR_DELAY_NORMAL);
         super.onRestart();
     }
 
