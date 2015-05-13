@@ -139,7 +139,7 @@ public class WelcomeActivity extends AppCompatActivity {
 		);
 		slideAnimation.setInterpolator(new DecelerateInterpolator(2.0f));
 
-		slideAnimation.setDuration(3500);
+		slideAnimation.setDuration(2000);
 		return slideAnimation;
 	}
 

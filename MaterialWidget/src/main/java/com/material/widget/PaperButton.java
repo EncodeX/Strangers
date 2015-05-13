@@ -211,7 +211,6 @@ public class PaperButton extends View {
                     mState = StateTouchUp;
                     mStartTime = System.currentTimeMillis();
                     invalidate();
-                    performClick();
                 }
                 break;
             case MotionEvent.ACTION_CANCEL:
@@ -269,6 +268,9 @@ public class PaperButton extends View {
 	                mCurrentRadius = mRippleDiameter;
                     ripplePaint.setAlpha(0);
                     shadowColor = changeColorAlpha(mShadowColor, MIN_SHADOW_COLOR_ALPHA);
+	                if(!mMoveOutside){
+		                performClick();
+	                }
                 }
                 postInvalidate();
                 break;
