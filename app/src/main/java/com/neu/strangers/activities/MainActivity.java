@@ -10,12 +10,14 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
 
 import com.astuetz.PagerSlidingTabStrip;
 import com.neu.strangers.R;
+import com.neu.strangers.tools.ApplicationManager;
 import com.neu.strangers.view.MainViewPager;
 import com.readystatesoftware.systembartint.SystemBarTintManager;
 
@@ -60,6 +62,7 @@ public class MainActivity extends AppCompatActivity{
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
+		ApplicationManager.getInstance().addActivity(this);
 
 		ButterKnife.inject(this);
 
@@ -81,7 +84,7 @@ public class MainActivity extends AppCompatActivity{
 		mSensorManager.registerListener(mListener, mSensor, SensorManager.SENSOR_DELAY_NORMAL);
 	}
 
-    @Override
+	@Override
     protected void onStop() {
         if(mSensorManager != null)
             mSensorManager.unregisterListener(mListener);

@@ -30,5 +30,5 @@ dependencies {
 	compile 'com.readystatesoftware.systembartint:systembartint:1.0.3'
 	compile 'com.jakewharton:butterknife:6.1.0'
 	compile 'de.hdodenhof:circleimageview:1.2.2'
-	compile 'com.github.navasmdc:MaterialDesign:1.+@aar'
+//	compile 'com.github.navasmdc:MaterialDesign:1.+@aar'
 }
