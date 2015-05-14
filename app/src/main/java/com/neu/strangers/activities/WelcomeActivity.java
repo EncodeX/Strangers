@@ -1,9 +1,7 @@
 package com.neu.strangers.activities;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.content.res.Resources;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -13,13 +11,13 @@ import android.util.TypedValue;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.animation.AnimationUtils;
 import android.view.animation.DecelerateInterpolator;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
 import com.material.widget.PaperButton;
 import com.neu.strangers.R;
+import com.neu.strangers.tools.ApplicationManager;
 import com.nineoldandroids.animation.AnimatorSet;
 import com.nineoldandroids.animation.ObjectAnimator;
 import com.nineoldandroids.view.ViewHelper;
@@ -36,6 +34,7 @@ public class WelcomeActivity extends AppCompatActivity {
 	PaperButton mButtonLogin;
 
 	private boolean mIsLoggedIn;
+	private boolean mIsOnCreate;
 
 	private Handler mHandler = new Handler(){
 		@Override
@@ -43,7 +42,7 @@ public class WelcomeActivity extends AppCompatActivity {
 			Intent intent = new Intent();
 			intent.setClass(WelcomeActivity.this, MainActivity.class);
 			startActivity(intent);
-			overridePendingTransition(R.anim.fade_anim_in,R.anim.fade_anim_out);
+			overridePendingTransition(R.anim.fade_in_in, R.anim.fade_in_out);
 			finish();
 			super.handleMessage(msg);
 		}
@@ -53,10 +52,12 @@ public class WelcomeActivity extends AppCompatActivity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_welcome);
+		ApplicationManager.getInstance().addActivity(this);
 
 		ButterKnife.inject(this);
 
 		mIsLoggedIn = false;
+		mIsOnCreate = true;
 	}
 
 	@Override
@@ -64,7 +65,9 @@ public class WelcomeActivity extends AppCompatActivity {
 		super.onResume();
 		Log.v("Test","On resume");
 
-		ViewHelper.setY(mAppLogoArea,mAppLogoArea.getY()+dpToPx(getResources(),80));
+		if(mIsOnCreate){
+			ViewHelper.setY(mAppLogoArea,mAppLogoArea.getY()+dpToPx(getResources(),80));
+		}
 
 		if(mIsLoggedIn){
 			// Todo: 检查用户是否已经登陆。 若登录，执行下面这条语句。
@@ -77,22 +80,25 @@ public class WelcomeActivity extends AppCompatActivity {
 			});
 		}else{
 			// Todo: 用户未登录，滑出登录与注册按钮
-			AnimatorSet slideOutAnimation =
-					buildSlideAnimation(mAppLogoArea, mAppLogoArea.getY()-dpToPx(getResources(),80));
-			slideOutAnimation.setStartDelay(1000);
-			slideOutAnimation.start();
+			if(mIsOnCreate){
+				AnimatorSet slideOutAnimation =
+						buildSlideAnimation(mAppLogoArea, mAppLogoArea.getY()-dpToPx(getResources(),80));
+				slideOutAnimation.setStartDelay(1000);
+				slideOutAnimation.start();
 
-			// Todo: 暂时添加按钮事件用于进入主界面
-			mButtonLogin.setOnClickListener(new View.OnClickListener() {
-				@Override
-				public void onClick(View view) {
-					Intent intent = new Intent();
-					intent.setClass(WelcomeActivity.this, MainActivity.class);
-					WelcomeActivity.this.startActivity(intent);
-					WelcomeActivity.this.overridePendingTransition(R.anim.fade_anim_in,R.anim.fade_anim_out);
-					WelcomeActivity.this.finish();
-				}
-			});
+				// Todo: 暂时添加按钮事件用于进入主界面
+				mButtonLogin.setOnClickListener(new View.OnClickListener() {
+					@Override
+					public void onClick(View view) {
+						Intent intent = new Intent();
+						intent.setClass(WelcomeActivity.this, LoginActivity.class);
+						WelcomeActivity.this.startActivity(intent);
+						WelcomeActivity.this.overridePendingTransition(R.anim.fade_in_in,R.anim.fade_in_out);
+					}
+				});
+
+				mIsOnCreate=false;
+			}
 		}
 	}
 

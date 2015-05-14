@@ -19,6 +19,7 @@ import com.baidu.mapapi.map.MapView;
 import com.baidu.mapapi.map.MyLocationData;
 import com.baidu.mapapi.model.LatLng;
 import com.neu.strangers.R;
+import com.neu.strangers.tools.ApplicationManager;
 import com.readystatesoftware.systembartint.SystemBarTintManager;
 
 import butterknife.ButterKnife;
@@ -74,6 +75,7 @@ public class NearbyStrangers extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         SDKInitializer.initialize(getApplication());
         setContentView(R.layout.activity_nearby_strangers);
+	    ApplicationManager.getInstance().addActivity(this);
 
 
         ButterKnife.inject(this);
