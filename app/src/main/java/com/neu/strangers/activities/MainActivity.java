@@ -2,6 +2,8 @@ package com.neu.strangers.activities;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
@@ -18,6 +20,7 @@ import android.widget.Toast;
 import com.astuetz.PagerSlidingTabStrip;
 import com.neu.strangers.R;
 import com.neu.strangers.tools.ApplicationManager;
+import com.neu.strangers.tools.RoundImage;
 import com.neu.strangers.view.MainViewPager;
 import com.readystatesoftware.systembartint.SystemBarTintManager;
 
@@ -110,7 +113,17 @@ public class MainActivity extends AppCompatActivity{
 		return true;
 	}
 
+	@Override
+	public boolean onPrepareOptionsMenu(Menu menu) {
+		//Test round image for user avatar
+		Bitmap bm = BitmapFactory.decodeResource(getResources(), R.drawable.test_avatar);
+		RoundImage roundImage = new RoundImage(bm);
 
+		MenuItem item = menu.findItem(R.id.action_user);
+		item.setIcon(roundImage);
+
+		return super.onPrepareOptionsMenu(menu);
+	}
 
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
@@ -120,9 +133,9 @@ public class MainActivity extends AppCompatActivity{
 		int id = item.getItemId();
 
 		//noinspection SimplifiableIfStatement
-		if (id == R.id.action_settings) {
-			return true;
-		}
+//		if (id == R.id.action_settings) {
+//			return true;
+//		}
 
 		return super.onOptionsItemSelected(item);
 	}

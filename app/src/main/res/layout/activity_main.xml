@@ -8,11 +8,11 @@
 	<android.support.v7.widget.Toolbar
 		android:id="@+id/tool_bar"
 		android:layout_width="match_parent"
-	    android:layout_height="?attr/actionBarSize"
-	    android:background="#9C27B0"
-	    android:theme="@style/AppTheme.Toolbar"
-	    app:popupTheme="@style/AppTheme.Toolbar.Popup"
-	    app:title="Strangers"/>
+		android:layout_height="?attr/actionBarSize"
+		android:background="?attr/colorPrimary"
+		app:theme="@style/AppTheme.Toolbar"
+		app:popupTheme="@style/AppTheme.Toolbar.Popup"
+		app:title="Strangers"/>
 
 	<com.neu.strangers.view.MainViewPager
 		android:id="@+id/main_view_pager"
