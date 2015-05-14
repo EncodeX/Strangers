@@ -44,7 +44,6 @@ public class MainActivity extends AppCompatActivity{
 		@Override
 		public void onSensorChanged(SensorEvent sensorEvent) {
 
-
 			float xValue = Math.abs(sensorEvent.values[0]);
 			//  float yValue = Math.abs(sensorEvent.values[1]);
 			// float zValue = Math.abs(sensorEvent.values[2]);

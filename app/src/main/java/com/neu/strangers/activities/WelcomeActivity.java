@@ -135,6 +135,6 @@ public class WelcomeActivity extends AppCompatActivity {
 	}
 
 	static float dpToPx(Resources resources, float dp) {
-        return TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp, resources.getDisplayMetrics());
-    }
+		return TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp, resources.getDisplayMetrics());
+	}
 }
