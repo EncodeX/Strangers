@@ -20,23 +20,6 @@
 		android:layout_height="match_parent"
 		android:layout_below="@id/tool_bar"
 		android:layout_marginTop="?attr/actionBarSize"/>
-
-	<!--使用CardView制造阴影-->
-	<FrameLayout
-		android:layout_width="match_parent"
-		android:layout_height="match_parent"
-		android:layout_below="@id/tool_bar">
-		<android.support.v7.widget.CardView
-			android:layout_width="match_parent"
-			android:layout_height="?attr/actionBarSize"
-			android:layout_marginTop="4dp"
-			android:scaleX="1.06"
-			android:scaleY="1.06"
-			app:cardCornerRadius="0dp"
-			app:cardElevation="4dp"
-			app:cardUseCompatPadding="true"/>
-	</FrameLayout>
-
 	<com.astuetz.PagerSlidingTabStrip
 		android:id="@+id/main_pager_tabs"
 		android:layout_width="match_parent"
@@ -49,4 +32,11 @@
 		app:pstsShouldExpand="true"
 		app:pstsTabPaddingLeftRight="0dp"
 		app:pstsTextColorSelected="#fff"/>
+
+	<FrameLayout
+		android:layout_width="match_parent"
+		android:layout_height="5dp"
+		android:layout_below="@id/main_pager_tabs"
+		android:background="@drawable/simple_shadow"
+		android:alpha="0.5"/>
 </RelativeLayout>
