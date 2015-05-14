@@ -6,6 +6,10 @@
     android:fitsSystemWindows="true"
     android:background="@color/background_material_light">
 
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
     <com.baidu.mapapi.map.MapView
         android:visibility="gone"
         android:id="@+id/bmapView"
@@ -13,6 +17,13 @@
         android:layout_height="match_parent"
         android:layout_marginTop="?attr/actionBarSize"
         android:clickable="true"/>
+
+        <include layout="@layout/strangers_info"/>
+
+
+
+
+    </FrameLayout>
 
     <RelativeLayout
         android:id="@+id/progress_layout"
