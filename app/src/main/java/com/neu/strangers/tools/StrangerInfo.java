@@ -40,7 +40,7 @@ public class StrangerInfo {
     public String getUserName() {
         return mUserName;
     }
-    
+
     public void setUserName(String mUserName) {
         this.mUserName = mUserName;
     }
