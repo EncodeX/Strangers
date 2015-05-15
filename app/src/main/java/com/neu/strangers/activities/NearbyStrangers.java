@@ -79,7 +79,6 @@ public class NearbyStrangers extends AppCompatActivity {
     private Marker marker[];
     private BitmapDescriptor bitmapDescriptor;
     private BitmapDescriptor bdGround;
-  //  private PopupWindow infoPopupWindow;
 
 
 
