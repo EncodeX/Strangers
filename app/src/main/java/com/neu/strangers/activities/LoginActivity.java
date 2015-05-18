@@ -36,7 +36,9 @@ public class LoginActivity extends ActionBarActivity {
 
 		// Add back button
 		setSupportActionBar(mToolbar);
-		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+		if(getSupportActionBar()!=null){
+			getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+		}
 		mToolbar.setNavigationOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View view) {

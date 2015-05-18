@@ -19,10 +19,6 @@
         android:clickable="true"/>
 
         <include layout="@layout/strangers_info"/>
-
-
-
-
     </FrameLayout>
 
     <RelativeLayout
@@ -30,7 +26,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <com.neu.strangers.view.ProgressWheel
+        <com.pnikosis.materialishprogress.ProgressWheel
             android:id="@+id/progress"
             android:layout_width="90dp"
             android:layout_height="90dp"

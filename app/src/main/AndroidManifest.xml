@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.neu.strangers" >
+          package="com.neu.strangers">
 
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
@@ -48,6 +48,14 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+	    <activity
+		    android:name=".activities.LoginActivity"
+		    android:label="@string/title_activity_login" >
+	    </activity>
+	    <activity
+		    android:name=".activities.RegisterActivity"
+		    android:label="@string/title_activity_register" >
+	    </activity>
 
         <service
             android:name="com.baidu.location.f"
@@ -67,11 +75,6 @@
         <meta-data
             android:name="com.baidu.lbsapi.API_KEY"
             android:value="acy0Ph3PLnZ7sxq48dWlICpg" />
-
-        <activity
-            android:name=".activities.LoginActivity"
-            android:label="@string/title_activity_login" >
-        </activity>
     </application>
 
 </manifest>

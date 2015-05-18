@@ -32,6 +32,8 @@ public class WelcomeActivity extends AppCompatActivity {
 	RelativeLayout mAppLogoArea;
 	@InjectView(R.id.button_login)
 	PaperButton mButtonLogin;
+	@InjectView(R.id.button_register)
+	PaperButton mButtonRegister;
 
 	private boolean mIsLoggedIn;
 	private boolean mIsOnCreate;
@@ -92,6 +94,16 @@ public class WelcomeActivity extends AppCompatActivity {
 					public void onClick(View view) {
 						Intent intent = new Intent();
 						intent.setClass(WelcomeActivity.this, LoginActivity.class);
+						WelcomeActivity.this.startActivity(intent);
+						WelcomeActivity.this.overridePendingTransition(R.anim.fade_in_in,R.anim.fade_in_out);
+					}
+				});
+
+				mButtonRegister.setOnClickListener(new View.OnClickListener() {
+					@Override
+					public void onClick(View view) {
+						Intent intent = new Intent();
+						intent.setClass(WelcomeActivity.this, RegisterActivity.class);
 						WelcomeActivity.this.startActivity(intent);
 						WelcomeActivity.this.overridePendingTransition(R.anim.fade_in_in,R.anim.fade_in_out);
 					}
