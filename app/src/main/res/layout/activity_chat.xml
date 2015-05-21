@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/chat_main"
+    android:fitsSystemWindows="true"
+    android:background="@color/background_material_light"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="5dp"
+        android:layout_marginTop="?attr/actionBarSize"
+        android:background="@drawable/simple_shadow"
+        android:alpha="0.5"/>
+
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/tool_bar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="#9C27B0"
+        android:theme="@style/AppTheme.Toolbar"
+        app:popupTheme="@style/AppTheme.Toolbar.Popup"
+        app:title="NickName"/>
+
+
+    <RelativeLayout
+        android:layout_marginTop="5dp"
+        android:layout_below="@id/tool_bar"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+    <com.neu.strangers.view.DropdownListView
+        android:id="@+id/message_chat_listview"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@+id/bottom"
+        android:background="@android:color/white"
+        android:cacheColorHint="@color/transparent"
+        android:divider="@null"
+        android:listSelector="@color/transparent" />
+
+      <LinearLayout
+        android:id="@+id/bottom"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:layout_alignParentBottom="true"
+        android:orientation="horizontal"
+        android:gravity="center_vertical">
+
+            <com.neu.strangers.view.ChatEditText
+                android:layout_weight="1"
+                android:layout_gravity="center_vertical"
+                android:id="@+id/input_sms"
+                android:layout_width="match_parent"
+                android:layout_height="36dp"
+                android:layout_centerVertical="true"
+                android:layout_margin="5dp"
+                android:background="@null"
+                android:padding="4dp"
+                android:textSize="16dp" />
+
+            <com.material.widget.PaperButton
+                android:layout_gravity="center_vertical"
+                android:id="@+id/send_sms"
+                android:layout_width="64dp"
+                android:layout_height="48dp"
+                android:layout_margin="5dp"
+                app:paper_color="?attr/colorPrimary"
+                app:paper_text="发送"
+                app:paper_text_color="#fff"
+                android:textSize="14dp" />
+
+      </LinearLayout>
+    </RelativeLayout>
+</RelativeLayout>

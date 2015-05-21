@@ -103,7 +103,7 @@ public class MyProfileActivity extends AppCompatActivity {
 	}
 
 	public void setToolbarAlpha(double alpha){
-		Log.v("Test",alpha+"");
+//		Log.v("Test",alpha+"");
 		mToolbar.setBackgroundColor((int)(0xFF * alpha) * 0x1000000 + 0x9C27B0);
 	}
 }
