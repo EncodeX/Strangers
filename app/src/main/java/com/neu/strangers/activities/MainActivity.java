@@ -130,17 +130,27 @@ public class MainActivity extends AppCompatActivity{
         return super.onPrepareOptionsMenu(menu);
     }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		// Handle action bar item clicks here. The action bar will
+		// automatically handle clicks on the Home/Up button, so long
+		// as you specify a parent activity in AndroidManifest.xml.
+		int id = item.getItemId();
+		Intent intent;
 
-        //noinspection SimplifiableIfStatement
-//		if (id == R.id.action_settings) {
-//			return true;
-//		}
+		//noinspection SimplifiableIfStatement
+		switch (id){
+			case R.id.action_settings:
+				intent = new Intent();
+				intent.setClass(MainActivity.this, SettingsActivity.class);
+				MainActivity.this.startActivity(intent);
+				return true;
+			case R.id.action_user:
+				intent = new Intent();
+				intent.setClass(MainActivity.this, MyProfileActivity.class);
+				MainActivity.this.startActivity(intent);
+				return true;
+		}
 
         return super.onOptionsItemSelected(item);
     }

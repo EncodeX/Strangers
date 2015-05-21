@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-          package="com.neu.strangers">
+    package="com.neu.strangers" >
 
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
@@ -48,17 +48,25 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+            android:name=".activities.LoginActivity"
+            android:label="@string/app_name" >
+        </activity>
+        <activity
+            android:name=".activities.RegisterActivity"
+            android:label="@string/app_name" >
+        </activity>
 	    <activity
-		    android:name=".activities.LoginActivity"
-		    android:label="@string/title_activity_login" >
+		    android:name=".activities.MyProfileActivity"
+		    android:label="@string/app_name" >
 	    </activity>
 	    <activity
-		    android:name=".activities.RegisterActivity"
-		    android:label="@string/title_activity_register" >
+		    android:name=".activities.SettingsActivity"
+		    android:label="@string/app_name" >
 	    </activity>
         <activity
             android:name=".activities.ChatActivity"
-            android:label="@string/title_activity_register" >
+            android:label="@string/app_name" >
         </activity>
 
         <service
