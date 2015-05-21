@@ -33,7 +33,7 @@ import com.baidu.mapapi.model.LatLng;
 import com.material.widget.PaperButton;
 import com.neu.strangers.R;
 import com.neu.strangers.tools.ApplicationManager;
-import com.neu.strangers.tools.StrangerInfo;
+import com.neu.strangers.bean.StrangerInfo;
 import com.nineoldandroids.animation.AnimatorSet;
 import com.nineoldandroids.animation.ObjectAnimator;
 import com.nineoldandroids.view.ViewHelper;
