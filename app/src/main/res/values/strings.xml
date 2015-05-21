@@ -6,7 +6,4 @@
 
 	<string name="main_tab_recent_chat">Recent Chat</string>
 	<string name="main_tab_contacts">Contacts</string>
-	<string name="title_activity_welcome">WelcomeActivity</string>
-	<string name="title_activity_login">LoginActivity</string>
-	<string name="title_activity_register">RegisterActivity</string>
 </resources>
