@@ -1,4 +1,4 @@
-package com.neu.strangers.tools;
+package com.neu.strangers.bean;
 
 import android.graphics.drawable.Drawable;
 
