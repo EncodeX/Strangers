@@ -3,7 +3,9 @@ package com.neu.strangers.view;
 import android.content.Context;
 import android.os.Handler;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.MotionEvent;
+import android.view.View;
 import android.widget.ScrollView;
 
 /**
@@ -52,7 +54,7 @@ public class AdvancedScrollView extends ScrollView {
 			//此时的距离和记录下的距离不相等，在隔5毫秒给handler发送消息
 			if(lastScrollY != scrollY){
 				lastScrollY = scrollY;
-				handler.sendMessageDelayed(handler.obtainMessage(), 5);
+				handler.sendMessageDelayed(handler.obtainMessage(), 10);
 			}
 			if(onScrollListener != null){
 				onScrollListener.onScroll(scrollY);
@@ -69,12 +71,14 @@ public class AdvancedScrollView extends ScrollView {
 
 	@Override
 	public boolean dispatchTouchEvent(MotionEvent ev) {
-		if(onScrollListener != null){
-			onScrollListener.onScroll(lastScrollY = this.getScrollY());
-		}
 		switch(ev.getAction()){
 			case MotionEvent.ACTION_UP:
-				handler.sendMessageDelayed(handler.obtainMessage(), 5);
+				handler.sendMessageDelayed(handler.obtainMessage(), 10);
+				break;
+			case MotionEvent.ACTION_MOVE:
+				if(onScrollListener != null){
+					onScrollListener.onScroll(lastScrollY = this.getScrollY());
+				}
 				break;
 		}
 		return super.dispatchTouchEvent(ev);
@@ -91,7 +95,7 @@ public class AdvancedScrollView extends ScrollView {
 		/**
 		 * 回调方法， 返回MyScrollView滑动的Y方向距离
 		 * @param scrollY
-		 *              、
+		 *
 		 */
 		public void onScroll(int scrollY);
 	}

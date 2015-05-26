@@ -7,6 +7,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -40,7 +41,7 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import me.drakeet.materialdialog.MaterialDialog;
 
-public class RegisterActivity extends ActionBarActivity {
+public class RegisterActivity extends AppCompatActivity {
 	private final static int RESPONSE_SUCCESS = 0;
 	private final static int RESPONSE_NAME_ERROR = 1;
 	private final static int RESPONSE_PHONE_ERROR = 2;
