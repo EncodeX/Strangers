@@ -15,14 +15,24 @@ import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.ArrayAdapter;
+import android.widget.SectionIndexer;
 import android.widget.Toast;
 
 import com.astuetz.PagerSlidingTabStrip;
+import com.github.stuxuhai.jpinyin.PinyinFormat;
+import com.github.stuxuhai.jpinyin.PinyinHelper;
 import com.neu.strangers.R;
 import com.neu.strangers.tools.ApplicationManager;
 import com.neu.strangers.tools.RoundImage;
 import com.neu.strangers.view.MainViewPager;
 import com.readystatesoftware.systembartint.SystemBarTintManager;
+import com.woozzu.android.util.StringMatcher;
+import com.woozzu.android.widget.IndexableListView;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -32,6 +42,8 @@ public class MainActivity extends AppCompatActivity{
     private SystemBarTintManager mSystemBarTintManager;
     private SensorManager mSensorManager;
     private Sensor mSensor;
+
+
     //
     @InjectView(R.id.tool_bar)
     Toolbar toolbar;
@@ -85,6 +97,9 @@ public class MainActivity extends AppCompatActivity{
         mSensorManager = (SensorManager)getSystemService(Context.SENSOR_SERVICE);
         mSensor = mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
         mSensorManager.registerListener(mListener, mSensor, SensorManager.SENSOR_DELAY_NORMAL);
+
+//	    String str = "你好世界";
+//	    Log.v("String Parser",PinyinHelper.convertToPinyinString(str,"", PinyinFormat.WITHOUT_TONE));
     }
 
     @Override

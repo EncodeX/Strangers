@@ -9,19 +9,17 @@ import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.astuetz.PagerSlidingTabStrip;
-import com.balysv.materialripple.MaterialRippleLayout;
 import com.neu.strangers.R;
+import com.neu.strangers.adapter.ContactAdapter;
 import com.neu.strangers.adapter.SimpleItemAdapter;
+import com.woozzu.android.widget.IndexableListView;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
-
-import butterknife.ButterKnife;
-import butterknife.InjectView;
 
 /**
  * Created with Android Studio.
@@ -33,6 +31,8 @@ import butterknife.InjectView;
 public class MainViewPager extends ViewPager {
 	private List<View> mViewList;
 	RecyclerView mRecentChatList;
+	IndexableListView mContactsList;
+	ContactAdapter mAdapter;
 
 	public MainViewPager(Context context, AttributeSet attrs) {
 		super(context, attrs);
@@ -52,6 +52,46 @@ public class MainViewPager extends ViewPager {
 
 		// Initialize contacts view.
 		View contactsView = View.inflate(context, R.layout.page_contacts, null);
+
+		// Initialize contacts list
+		mContactsList = (IndexableListView)contactsView.findViewById(R.id.contacts_list);
+		ArrayList<String> mItems= new ArrayList<String>();
+		mItems.add("aback");
+		mItems.add("abash");
+		mItems.add("abbey");
+		mItems.add("abhor");
+		mItems.add("abide");
+		mItems.add("abuse");
+		mItems.add("candidate");
+		mItems.add("capture");
+		mItems.add("careful");
+		mItems.add("catch");
+		mItems.add("cause");
+		mItems.add("celebrate");
+		mItems.add("forever");
+		mItems.add("fable");
+		mItems.add("fidelity");
+		mItems.add("fox");
+		mItems.add("funny");
+		mItems.add("fail");
+		mItems.add("jail");
+		mItems.add("jade");
+		mItems.add("jailor");
+		mItems.add("january");
+		mItems.add("jasmine");
+		mItems.add("jazz");
+		mItems.add("zero");
+		mItems.add("zoo");
+		mItems.add("zeus");
+		mItems.add("zebra");
+		mItems.add("zest");
+		mItems.add("zing");
+		Collections.sort(mItems);
+
+		mAdapter = new ContactAdapter(mItems,context);
+
+		mContactsList.setAdapter(mAdapter);
+		mContactsList.setFastScrollEnabled(true);
 
 		mViewList.add(recentChatView);
 		mViewList.add(contactsView);
