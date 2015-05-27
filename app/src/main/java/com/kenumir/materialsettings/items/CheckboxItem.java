@@ -38,7 +38,7 @@ public class CheckboxItem extends MaterialSettingsItem {
 	public void setupView(View v) {
 
 		checked = getStorageInterface() != null ? getStorageInterface().load(name, isDefaultValue()) : isDefaultValue();
-		mCheckableLinearLayout = (CheckableLinearLayout) v;
+		mCheckableLinearLayout = (CheckableLinearLayout) (v.findViewById(R.id.checkable_linear_layout));
 		titleView = (TextView) v.findViewById(R.id.material_dialog_item_title);
 		subtitleView = (TextView) v.findViewById(R.id.material_dialog_item_subtitle);
 
