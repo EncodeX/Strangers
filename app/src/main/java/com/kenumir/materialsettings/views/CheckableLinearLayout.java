@@ -11,7 +11,8 @@ import android.widget.Checkable;
 import android.widget.CompoundButton;
 import android.widget.LinearLayout;
 
-import com.kenumir.materialsettings.R;
+import com.neu.strangers.R;
+
 
 public class CheckableLinearLayout extends LinearLayout implements Checkable {
 

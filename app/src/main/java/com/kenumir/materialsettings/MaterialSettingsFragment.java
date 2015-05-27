@@ -13,6 +13,7 @@ import android.widget.LinearLayout;
 
 import com.kenumir.materialsettings.storage.SimpleStorageInterface;
 import com.kenumir.materialsettings.storage.StorageInterface;
+import com.neu.strangers.R;
 
 import java.util.HashMap;
 import java.util.Map;

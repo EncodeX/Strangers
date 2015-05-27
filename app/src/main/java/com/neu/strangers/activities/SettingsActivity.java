@@ -1,14 +1,8 @@
 package com.neu.strangers.activities;
 
-import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
-import android.view.WindowManager;
-import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.kenumir.materialsettings.MaterialSettingsActivity;
@@ -18,7 +12,6 @@ import com.kenumir.materialsettings.items.SwitcherItem;
 import com.kenumir.materialsettings.storage.PreferencesStorageInterface;
 import com.kenumir.materialsettings.storage.StorageInterface;
 import com.neu.strangers.R;
-import com.neu.strangers.tools.ApplicationManager;
 import com.readystatesoftware.systembartint.SystemBarTintManager;
 
 import butterknife.ButterKnife;

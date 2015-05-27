@@ -2,32 +2,44 @@ package com.kenumir.materialsettings.items;
 
 import android.content.Context;
 import android.view.View;
+import android.widget.TextView;
 
 import com.kenumir.materialsettings.MaterialSettingsFragment;
 import com.kenumir.materialsettings.MaterialSettingsItem;
-import com.kenumir.materialsettings.R;
+import com.neu.strangers.R;
 
 /**
  * Created by Kenumir on 2015-03-16.
  */
-public class DividerItem extends MaterialSettingsItem {
+public class HeaderItem extends MaterialSettingsItem {
 
-	public DividerItem(MaterialSettingsFragment ctx) {
+	private String title;
+
+	public HeaderItem(MaterialSettingsFragment ctx) {
 		super(ctx, null);
 	}
 
 	@Override
 	public int getViewResource() {
-		return R.layout.item_divider;
+		return R.layout.item_header;
 	}
 
 	@Override
 	public void setupView(View v) {
-
+		((TextView) v).setText(title);
 	}
 
 	@Override
 	public void save() {
 		// NOP
+	}
+
+	public String getTitle() {
+		return title;
+	}
+
+	public HeaderItem setTitle(String title) {
+		this.title = title;
+		return this;
 	}
 }

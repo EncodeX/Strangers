@@ -3,7 +3,7 @@ package com.kenumir.materialsettings.items;
 import android.content.Context;
 
 import com.kenumir.materialsettings.MaterialSettingsFragment;
-import com.kenumir.materialsettings.R;
+import com.neu.strangers.R;
 
 /**
  * Created by Kenumir on 2015-03-20.
