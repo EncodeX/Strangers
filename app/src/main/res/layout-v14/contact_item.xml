@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.neu.strangers.view.MyRippleLayout
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:app="http://schemas.android.com/apk/res-auto"
+	android:layout_width="match_parent"
+	android:layout_height="72dp"
+	app:mrl_rippleOverlay="false"
+	app:mrl_rippleColor="#666"
+	app:mrl_rippleDelayClick="true"
+	app:mrl_rippleDuration="250"
+	app:mrl_rippleHover="true">
+	<RelativeLayout
+		android:layout_width="match_parent"
+		android:layout_height="match_parent"
+		android:background="@drawable/ripple_background_selector_light">
+		<de.hdodenhof.circleimageview.CircleImageView
+			android:id="@+id/contact_avatar"
+			android:layout_width="48dp"
+			android:layout_height="48dp"
+			android:layout_marginTop="8dp"
+			android:layout_marginBottom="8dp"
+			android:layout_marginLeft="32dp"
+			android:layout_alignParentLeft="true"
+			android:src="@drawable/test_avatar"
+			app:border_color="@color/app_color_primary"/>
+
+		<RelativeLayout
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:layout_toRightOf="@id/contact_avatar"
+			android:layout_marginLeft="16dp"
+			android:layout_marginRight="32dp"
+			android:layout_centerVertical="true">
+			<TextView
+				android:id="@+id/contact_name"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:textSize="22sp"/>
+		</RelativeLayout>
+	</RelativeLayout>
+</com.neu.strangers.view.MyRippleLayout>
