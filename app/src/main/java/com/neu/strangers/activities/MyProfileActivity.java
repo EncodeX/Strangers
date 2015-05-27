@@ -1,25 +1,19 @@
 package com.neu.strangers.activities;
 
 import android.content.res.Resources;
-import android.graphics.drawable.ColorDrawable;
-import android.graphics.drawable.Drawable;
-import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.util.TypedValue;
-import android.view.Menu;
-import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewTreeObserver;
 import android.widget.FrameLayout;
-import android.widget.ScrollView;
 
 import com.neu.strangers.R;
 import com.neu.strangers.tools.ApplicationManager;
 import com.neu.strangers.view.AdvancedScrollView;
 import com.neu.strangers.view.RectImageView;
+import com.nineoldandroids.view.ViewHelper;
 import com.readystatesoftware.systembartint.SystemBarTintManager;
 
 import butterknife.ButterKnife;
@@ -29,6 +23,8 @@ public class MyProfileActivity extends AppCompatActivity {
 
 	private SystemBarTintManager mSystemBarTintManager;
 	private int mBackgroundHeight;
+	private int mAlphaToggleHeight;
+	private int mBackgroundY;
 	private boolean isInitialized = false;
 
 	@InjectView(R.id.tool_bar)
@@ -67,32 +63,39 @@ public class MyProfileActivity extends AppCompatActivity {
 		setToolbarAlpha(0.0);
 		// todo: 注意 toolbar阴影的不透明度最大值为0.5
 
-		mInfoScrollView.setOnTouchListener(new View.OnTouchListener() {
+		mInfoScrollView.getViewTreeObserver().addOnScrollChangedListener(new ViewTreeObserver.OnScrollChangedListener() {
 			@Override
-			public boolean onTouch(View view, MotionEvent motionEvent) {
-				if (!isInitialized) {
-					mBackgroundHeight = mUserInfoBackground.getHeight() - mToolbar.getHeight();
-					mInfoScrollView.setOnScrollListener(new AdvancedScrollView.OnScrollListener() {
-						@Override
-						public void onScroll(int scrollY) {
-							if (scrollY < 0)
-								return;
-							if (scrollY < mBackgroundHeight) {
-								double alpha = (double) scrollY / (double) mBackgroundHeight;
-								setToolbarAlpha(alpha);
-								mToolbarShadow.setVisibility(View.INVISIBLE);
-							} else if (scrollY >= mBackgroundHeight) {
-								setToolbarAlpha(1.0);
-								mToolbarShadow.setVisibility(View.VISIBLE);
-							} else {
-								setToolbarAlpha(0.0);
-								mToolbarShadow.setVisibility(View.INVISIBLE);
-							}
-						}
-					});
+			public void onScrollChanged() {
+				if(!isInitialized){
+					mBackgroundHeight = mUserInfoBackground.getHeight();
+					mAlphaToggleHeight = mBackgroundHeight - mToolbar.getHeight();
+					mBackgroundY = (int)mUserInfoBackground.getY();
 					isInitialized = true;
 				}
-				return false;
+				int scrollY = mInfoScrollView.getScrollY();
+
+				if (scrollY < 0)
+					return;
+
+				if (scrollY < mAlphaToggleHeight) {
+					double alpha = (double) scrollY / (double) mBackgroundHeight;
+					setToolbarAlpha(alpha);
+					mToolbarShadow.setVisibility(View.INVISIBLE);
+				} else if (scrollY >= mAlphaToggleHeight) {
+					setToolbarAlpha(1.0);
+					mToolbarShadow.setVisibility(View.VISIBLE);
+				} else {
+					setToolbarAlpha(0.0);
+					mToolbarShadow.setVisibility(View.INVISIBLE);
+				}
+
+				if (scrollY < mBackgroundHeight) {
+					ViewHelper.setY(mUserInfoBackground, mBackgroundY - scrollY/2);
+				} else if (scrollY >= mBackgroundHeight) {
+					ViewHelper.setY(mUserInfoBackground, mBackgroundY - mBackgroundHeight);
+				} else {
+					ViewHelper.setY(mUserInfoBackground, mBackgroundY);
+				}
 			}
 		});
 	}
@@ -103,7 +106,6 @@ public class MyProfileActivity extends AppCompatActivity {
 	}
 
 	public void setToolbarAlpha(double alpha){
-//		Log.v("Test",alpha+"");
 		mToolbar.setBackgroundColor((int)(0xFF * alpha) * 0x1000000 + 0x9C27B0);
 	}
 }
