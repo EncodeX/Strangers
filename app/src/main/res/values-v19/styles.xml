@@ -8,4 +8,11 @@
 		<item name="android:windowTranslucentStatus">true</item>
 		<item name="android:windowIsTranslucent">true</item>
 	</style>
+	<style name="AppTheme.SettingsTheme" parent="MaterialSettingsTheme">
+		<item name="android:textColorPrimary">#fff</item>
+		<item name="msColorPrimary">@color/app_color_primary</item>
+		<item name="msColorPrimaryDark">@color/app_color_primary_dark</item>
+		<item name="msColorAccent">@color/app_color_primary</item>
+		<item name="android:windowTranslucentStatus">true</item>
+	</style>
 </resources>

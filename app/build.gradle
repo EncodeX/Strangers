@@ -19,8 +19,15 @@ android {
 	}
 }
 
+repositories {
+	maven {
+		url "https://jitpack.io"
+	}
+}
+
 dependencies {
 	compile project(':MaterialWidget')
+	compile project(':MaterialSettings')
 	compile fileTree(dir: 'libs', include: ['*.jar'])
 	compile 'com.android.support:appcompat-v7:22.1.0'
 	compile 'com.android.support:recyclerview-v7:21.0.+'
@@ -34,4 +41,5 @@ dependencies {
 	compile 'com.melnykov:floatingactionbutton:1.3.0'
 	compile 'me.drakeet.materialdialog:library:1.2.2'
 	compile 'com.pnikosis:materialish-progress:1.5'
+	compile 'com.github.rey5137:material:1.1.1'
 }

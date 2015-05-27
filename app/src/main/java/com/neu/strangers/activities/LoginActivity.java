@@ -92,32 +92,37 @@ public class LoginActivity extends AppCompatActivity {
 		mLoginButton.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View view) {
-				mLoginDialog = new MaterialDialog(LoginActivity.this);
 
-				mUserNameInput.setEnabled(false);
-				mPasswordInput.setEnabled(false);
-				mLoginDialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
-					@Override
-					public void onDismiss(DialogInterface dialogInterface) {
-						mUserNameInput.setEnabled(true);
-						mPasswordInput.setEnabled(true);
-					}
-				});
+				/* Just for testing */
+				mHandler.sendEmptyMessageDelayed(0,1000);
 
-				if(mUserNameInput.getText().length()==0 || mPasswordInput.getText().length()==0){
-					mLoginDialog.setTitle("未输入用户名/密码")
-							.setMessage("请输入完整后再登录")
-							.setPositiveButton("OK", new View.OnClickListener() {
-								@Override
-								public void onClick(View view) {
-									mLoginDialog.dismiss();
-								}
-							});
-				}else {
-					mLoginDialog.setTitle("正在登录").setMessage("请等待...");
-					new DoLogin().execute(mUserNameInput.getText().toString(), mPasswordInput.getText().toString());
-				}
-				mLoginDialog.show();
+				/* 真正使用时取消注释 */
+//				mLoginDialog = new MaterialDialog(LoginActivity.this);
+//
+//				mUserNameInput.setEnabled(false);
+//				mPasswordInput.setEnabled(false);
+//				mLoginDialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
+//					@Override
+//					public void onDismiss(DialogInterface dialogInterface) {
+//						mUserNameInput.setEnabled(true);
+//						mPasswordInput.setEnabled(true);
+//					}
+//				});
+//
+//				if(mUserNameInput.getText().length()==0 || mPasswordInput.getText().length()==0){
+//					mLoginDialog.setTitle("未输入用户名/密码")
+//							.setMessage("请输入完整后再登录")
+//							.setPositiveButton("OK", new View.OnClickListener() {
+//								@Override
+//								public void onClick(View view) {
+//									mLoginDialog.dismiss();
+//								}
+//							});
+//				}else {
+//					mLoginDialog.setTitle("正在登录").setMessage("请等待...");
+//					new DoLogin().execute(mUserNameInput.getText().toString(), mPasswordInput.getText().toString());
+//				}
+//				mLoginDialog.show();
 			}
 		});
 	}
@@ -184,6 +189,7 @@ public class LoginActivity extends AppCompatActivity {
 					mLoginDialog.dismiss();
 					mLoginDialog = new MaterialDialog(LoginActivity.this);
 					if(jsonObject.getString("Login").equals("success")){
+						// Todo 取得用户ID并保存至本地
 						mLoginDialog.setTitle("登录成功");
 						mLoginDialog.setMessage("将进入主界面...");
 						mHandler.sendEmptyMessageDelayed(0,1000);

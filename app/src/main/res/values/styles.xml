@@ -55,6 +55,14 @@
 		<item name="android:textColorPrimary">#fff</item>
 	</style>
 
+	<style name="AppTheme.SettingsTheme" parent="MaterialSettingsTheme">
+		<item name="android:textColorPrimary">#fff</item>
+		<item name="msColorPrimary">@color/app_color_primary</item>
+		<item name="msColorPrimaryDark">@color/app_color_primary_dark</item>
+		<item name="msColorAccent">@color/app_color_primary</item>
+		<!--<item name="msItem">@color/app_color_primary</item>-->
+	</style>
+
 	<style name="NotificationText">
 		<item name="android:textColor">?android:attr/textColorSecondary</item>
 	</style>
