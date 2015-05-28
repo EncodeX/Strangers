@@ -6,7 +6,7 @@
 	android:layout_height="72dp"
 	app:mrl_rippleOverlay="false"
 	app:mrl_rippleColor="#666"
-	app:mrl_rippleDelayClick="false"
+	app:mrl_rippleDelayClick="true"
 	app:mrl_rippleDuration="250"
 	app:mrl_rippleHover="true">
 	<RelativeLayout

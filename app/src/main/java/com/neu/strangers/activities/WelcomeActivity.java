@@ -1,6 +1,8 @@
 package com.neu.strangers.activities;
 
+import android.content.ContentValues;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.os.Bundle;
 import android.os.Handler;
@@ -18,9 +20,13 @@ import android.widget.RelativeLayout;
 import com.material.widget.PaperButton;
 import com.neu.strangers.R;
 import com.neu.strangers.tools.ApplicationManager;
+import com.neu.strangers.tools.Constants;
+import com.neu.strangers.tools.DatabaseManager;
 import com.nineoldandroids.animation.AnimatorSet;
 import com.nineoldandroids.animation.ObjectAnimator;
 import com.nineoldandroids.view.ViewHelper;
+
+import net.sqlcipher.Cursor;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -35,7 +41,6 @@ public class WelcomeActivity extends AppCompatActivity {
 	@InjectView(R.id.button_register)
 	PaperButton mButtonRegister;
 
-	private boolean mIsLoggedIn;
 	private boolean mIsOnCreate;
 
 	private Handler mHandler = new Handler(){
@@ -58,8 +63,26 @@ public class WelcomeActivity extends AppCompatActivity {
 
 		ButterKnife.inject(this);
 
-		mIsLoggedIn = false;
 		mIsOnCreate = true;
+
+		// 此处初始化数据库
+		DatabaseManager.setContext(getApplicationContext());
+
+//		ContentValues values = new ContentValues();
+//		values.put("id", 1);
+//		values.put("name", "达芬奇密码");
+//		DatabaseManager.getInstance().insert("user", null, values);
+
+//		Cursor cursor = DatabaseManager.getInstance().query("user", null, null, null, null, null, null);
+//		if (cursor != null) {
+//			while (cursor.moveToNext()) {
+//				int id = cursor.getInt(cursor.getColumnIndex("id"));
+//				String name = cursor.getString(cursor.getColumnIndex("name"));
+//				Log.d("Database", "id is " + id);
+//				Log.d("Database", "name is " + name);
+//			}
+//			cursor.close();
+//		}
 	}
 
 	@Override
@@ -67,12 +90,14 @@ public class WelcomeActivity extends AppCompatActivity {
 		super.onResume();
 		Log.v("Test","On resume");
 
+		SharedPreferences sharedPreferences = getSharedPreferences(Constants.Application.PREFERENCE_NAME,0);
+
 		if(mIsOnCreate){
 			ViewHelper.setY(mAppLogoArea,mAppLogoArea.getY()+dpToPx(getResources(),80));
 		}
 
-		if(mIsLoggedIn){
-			// Todo: 检查用户是否已经登陆。 若登录，执行下面这条语句。
+		if(sharedPreferences.getBoolean(Constants.Application.IS_LOGGED_IN,false)){
+			// 检查用户是否已经登陆。 若登录，执行下面这条语句。
 			mWelcomeBackground.post(new Runnable() {
 				@Override
 				public void run() {
@@ -81,14 +106,13 @@ public class WelcomeActivity extends AppCompatActivity {
 				}
 			});
 		}else{
-			// Todo: 用户未登录，滑出登录与注册按钮
+			// 用户未登录，滑出登录与注册按钮
 			if(mIsOnCreate){
 				AnimatorSet slideOutAnimation =
 						buildSlideAnimation(mAppLogoArea, mAppLogoArea.getY()-dpToPx(getResources(),80));
 				slideOutAnimation.setStartDelay(1000);
 				slideOutAnimation.start();
 
-				// Todo: 暂时添加按钮事件用于进入主界面
 				mButtonLogin.setOnClickListener(new View.OnClickListener() {
 					@Override
 					public void onClick(View view) {

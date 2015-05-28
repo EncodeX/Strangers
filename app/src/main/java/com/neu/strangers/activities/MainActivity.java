@@ -2,6 +2,7 @@ package com.neu.strangers.activities;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.hardware.Sensor;
@@ -11,28 +12,16 @@ import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
-import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.ArrayAdapter;
-import android.widget.SectionIndexer;
-import android.widget.Toast;
 
 import com.astuetz.PagerSlidingTabStrip;
-import com.github.stuxuhai.jpinyin.PinyinFormat;
-import com.github.stuxuhai.jpinyin.PinyinHelper;
 import com.neu.strangers.R;
 import com.neu.strangers.tools.ApplicationManager;
+import com.neu.strangers.tools.Constants;
 import com.neu.strangers.tools.RoundImage;
 import com.neu.strangers.view.MainViewPager;
 import com.readystatesoftware.systembartint.SystemBarTintManager;
-import com.woozzu.android.util.StringMatcher;
-import com.woozzu.android.widget.IndexableListView;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -162,7 +151,7 @@ public class MainActivity extends AppCompatActivity{
 				return true;
 			case R.id.action_user:
 				intent = new Intent();
-				intent.setClass(MainActivity.this, MyProfileActivity.class);
+				intent.setClass(MainActivity.this, ProfileActivity.class);
 				MainActivity.this.startActivity(intent);
 				return true;
 		}

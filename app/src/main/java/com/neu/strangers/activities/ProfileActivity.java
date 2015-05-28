@@ -19,7 +19,7 @@ import com.readystatesoftware.systembartint.SystemBarTintManager;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 
-public class MyProfileActivity extends AppCompatActivity {
+public class ProfileActivity extends AppCompatActivity {
 
 	private SystemBarTintManager mSystemBarTintManager;
 	private int mBackgroundHeight;
