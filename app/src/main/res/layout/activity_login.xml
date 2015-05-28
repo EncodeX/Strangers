@@ -33,9 +33,10 @@
 			android:layout_height="56dp"
 			app:floating_edit_text_highlighted_color="?attr/colorPrimary"
 			android:cursorVisible="true"
+			android:textCursorDrawable="@null"
 			android:textColor="?attr/colorPrimary"
 			android:textSize="20sp"
-			android:hint="用户名"/>
+			android:hint="用户名/手机号/邮箱"/>
 		<com.material.widget.FloatingEditText
 			android:id="@+id/password_input"
 			android:layout_width="match_parent"
@@ -43,6 +44,7 @@
 			android:layout_below="@id/user_name_input"
 			app:floating_edit_text_highlighted_color="?attr/colorPrimary"
 			android:cursorVisible="true"
+			android:textCursorDrawable="@null"
 			android:textColor="?attr/colorPrimary"
 			android:textSize="20sp"
 			android:hint="密码"/>

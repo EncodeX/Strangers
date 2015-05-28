@@ -6,7 +6,7 @@ android {
 
 	defaultConfig {
 		applicationId "com.neu.strangers"
-		minSdkVersion 11
+		minSdkVersion 14
 		targetSdkVersion 22
 		versionCode 1
 		versionName "0.1α"
@@ -41,4 +41,5 @@ dependencies {
 	compile 'me.drakeet.materialdialog:library:1.2.2'
 	compile 'com.pnikosis:materialish-progress:1.5'
 	compile 'com.github.rey5137:material:1.1.1'
+	compile 'com.balysv:material-ripple:1.0.1'
 }

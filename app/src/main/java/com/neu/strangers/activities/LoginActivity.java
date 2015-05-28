@@ -1,7 +1,9 @@
 package com.neu.strangers.activities;
 
+import android.content.ContentValues;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Handler;
 import android.os.Message;
@@ -18,7 +20,11 @@ import com.material.widget.FloatingEditText;
 import com.material.widget.PaperButton;
 import com.neu.strangers.R;
 import com.neu.strangers.tools.ApplicationManager;
+import com.neu.strangers.tools.Constants;
+import com.neu.strangers.tools.DatabaseManager;
 import com.readystatesoftware.systembartint.SystemBarTintManager;
+
+import net.sqlcipher.Cursor;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -94,35 +100,35 @@ public class LoginActivity extends AppCompatActivity {
 			public void onClick(View view) {
 
 				/* Just for testing */
-				mHandler.sendEmptyMessageDelayed(0,1000);
+//				mHandler.sendEmptyMessageDelayed(0,1000);
 
 				/* 真正使用时取消注释 */
-//				mLoginDialog = new MaterialDialog(LoginActivity.this);
-//
-//				mUserNameInput.setEnabled(false);
-//				mPasswordInput.setEnabled(false);
-//				mLoginDialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
-//					@Override
-//					public void onDismiss(DialogInterface dialogInterface) {
-//						mUserNameInput.setEnabled(true);
-//						mPasswordInput.setEnabled(true);
-//					}
-//				});
-//
-//				if(mUserNameInput.getText().length()==0 || mPasswordInput.getText().length()==0){
-//					mLoginDialog.setTitle("未输入用户名/密码")
-//							.setMessage("请输入完整后再登录")
-//							.setPositiveButton("OK", new View.OnClickListener() {
-//								@Override
-//								public void onClick(View view) {
-//									mLoginDialog.dismiss();
-//								}
-//							});
-//				}else {
-//					mLoginDialog.setTitle("正在登录").setMessage("请等待...");
-//					new DoLogin().execute(mUserNameInput.getText().toString(), mPasswordInput.getText().toString());
-//				}
-//				mLoginDialog.show();
+				mLoginDialog = new MaterialDialog(LoginActivity.this);
+
+				mUserNameInput.setEnabled(false);
+				mPasswordInput.setEnabled(false);
+				mLoginDialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
+					@Override
+					public void onDismiss(DialogInterface dialogInterface) {
+						mUserNameInput.setEnabled(true);
+						mPasswordInput.setEnabled(true);
+					}
+				});
+
+				if(mUserNameInput.getText().length()==0 || mPasswordInput.getText().length()==0){
+					mLoginDialog.setTitle("未输入用户名/密码")
+							.setMessage("请输入完整后再登录")
+							.setPositiveButton("OK", new View.OnClickListener() {
+								@Override
+								public void onClick(View view) {
+									mLoginDialog.dismiss();
+								}
+							});
+				}else {
+					mLoginDialog.setTitle("正在登录").setMessage("请等待...");
+					new DoLogin().execute(mUserNameInput.getText().toString(), mPasswordInput.getText().toString());
+				}
+				mLoginDialog.show();
 			}
 		});
 	}
@@ -136,13 +142,6 @@ public class LoginActivity extends AppCompatActivity {
 				return true;
 		}
 		return super.dispatchKeyEvent(event);
-	}
-
-	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
-		// Inflate the menu; this adds items to the action bar if it is present.
-//		getMenuInflater().inflate(R.menu.menu_login, menu);
-		return true;
 	}
 
 	private class DoLogin extends AsyncTask<String,Integer,JSONObject> {
@@ -189,10 +188,10 @@ public class LoginActivity extends AppCompatActivity {
 					mLoginDialog.dismiss();
 					mLoginDialog = new MaterialDialog(LoginActivity.this);
 					if(jsonObject.getString("Login").equals("success")){
-						// Todo 取得用户ID并保存至本地
-						mLoginDialog.setTitle("登录成功");
-						mLoginDialog.setMessage("将进入主界面...");
-						mHandler.sendEmptyMessageDelayed(0,1000);
+						mLoginDialog.setTitle("正在登录");
+						mLoginDialog.setMessage("正在获取用户信息...");
+
+						new GetUserInfo().execute(jsonObject.getInt("id"));
 					}else if(jsonObject.getString("Login").equals("fail")){
 						mLoginDialog.setTitle("登录失败")
 								.setMessage("请检查用户名/密码是否正确")
@@ -204,6 +203,147 @@ public class LoginActivity extends AppCompatActivity {
 								});
 					}
 					mLoginDialog.show();
+				}else{
+					mLoginDialog.dismiss();
+					mLoginDialog = new MaterialDialog(LoginActivity.this)
+							.setTitle("登录失败")
+							.setMessage("未知错误")
+							.setPositiveButton("OK", new View.OnClickListener() {
+								@Override
+								public void onClick(View view) {
+									mLoginDialog.dismiss();
+								}
+							});
+					mLoginDialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
+						@Override
+						public void onDismiss(DialogInterface dialogInterface) {
+							mUserNameInput.setEnabled(true);
+							mPasswordInput.setEnabled(true);
+						}
+					});
+					mLoginDialog.show();
+				}
+			} catch (JSONException e) {
+				e.printStackTrace();
+			}
+		}
+	}
+
+	private class GetUserInfo extends AsyncTask<Integer,Integer,JSONObject>{
+		private int id;
+
+		@Override
+		protected JSONObject doInBackground(Integer... integers) {
+			id = integers[0];
+			try {
+				StringBuilder stringBuilder = new StringBuilder(
+						"http://www.shiguangtravel.com:8080/CN-Soft/servlet/SearchAction");
+				stringBuilder.append("?");
+				stringBuilder.append("id=" + URLEncoder.encode(Integer.toString(id), "UTF-8"));
+
+				URL url = new URL(stringBuilder.toString());
+				HttpURLConnection conn = (HttpURLConnection)url.openConnection();
+				conn.setRequestMethod("GET");
+
+				InputStreamReader inputStreamReader = new InputStreamReader(conn.getInputStream());
+				BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
+				StringBuilder strBuffer = new StringBuilder();
+				String line;
+
+				if(conn.getResponseCode()==200){
+					while ((line = bufferedReader.readLine()) != null) {
+						strBuffer.append(line);
+					}
+					return new JSONObject(strBuffer.toString());
+				}
+			} catch (JSONException | IOException e) {
+				e.printStackTrace();
+			}
+			return null;
+		}
+
+		@Override
+		protected void onProgressUpdate(Integer... values) {
+			super.onProgressUpdate(values);
+		}
+
+		@Override
+		protected void onPostExecute(JSONObject jsonObject) {
+			try {
+				if(jsonObject!=null){
+					mLoginDialog.dismiss();
+					mLoginDialog = new MaterialDialog(LoginActivity.this);
+
+					// Todo 取得用户ID并保存至本地
+					SharedPreferences sharedPreferences =
+							getSharedPreferences(Constants.Application.PREFERENCE_NAME,0);
+					SharedPreferences.Editor editor = sharedPreferences.edit();
+					editor.putBoolean(Constants.Application.IS_LOGGED_IN,true);
+					editor.putInt(Constants.Application.LOGGED_IN_USER_ID, id);
+					editor.apply();
+
+
+					Cursor cursor = DatabaseManager.getInstance().query("user", null, null, null, null, null, null);
+
+					if(cursor!=null){
+						DatabaseManager.getInstance().delete("user","",null);
+					}
+
+//					cursor = DatabaseManager.getInstance().query("user", null, null, null, null, null, null);
+//					if (cursor != null) {
+//						while (cursor.moveToNext()) {
+//							Log.d("Database", "database is not empty");
+//						}
+//						Log.d("Database", "is database empty?");
+//						cursor.close();
+//					}else{
+//						Log.d("Database", "database is empty");
+//					}
+
+					String username = jsonObject.getString("username");
+					String nickname = jsonObject.getString("nickname");
+					int sex = jsonObject.getString("sex").equals("woman")?0:1;
+					String picture = jsonObject.getString("picture");
+					String region = jsonObject.getString("region");
+					String sign = jsonObject.getString("explain");
+
+					ContentValues values = new ContentValues();
+					values.put("id",id);
+					values.put("username",username);
+					values.put("nickname",nickname);
+					values.put("sex",sex);
+					values.put("picture",picture);
+					values.put("region",region);
+					values.put("sign",sign);
+
+					DatabaseManager.getInstance().insert("user",null,values);
+
+//					cursor = DatabaseManager.getInstance().query("user", null, null, null, null, null, null);
+//					if (cursor != null) {
+//						while (cursor.moveToNext()) {
+//							int _id = cursor.getInt(cursor.getColumnIndex("id"));
+//							String _username = cursor.getString(cursor.getColumnIndex("username"));
+//							String _nickname = cursor.getString(cursor.getColumnIndex("nickname"));
+//							int _sex = cursor.getInt(cursor.getColumnIndex("sex"));
+//							String _picture = cursor.getString(cursor.getColumnIndex("picture"));
+//							String _region = cursor.getString(cursor.getColumnIndex("region"));
+//							String _sign = cursor.getString(cursor.getColumnIndex("sign"));
+//							Log.d("Database", "id is '" + _id + "'");
+//							Log.d("Database", "username is '" + _username + "'");
+//							Log.d("Database", "nickname is' " + _nickname + "'");
+//							Log.d("Database", "sex is '" + _sex + "'");
+//							Log.d("Database", "picture is '" + _picture + "'");
+//							Log.d("Database", "region is '" + _region + "'");
+//							Log.d("Database", "sign is '" + _sign + "'");
+//						}
+//						cursor.close();
+//					}
+
+					mLoginDialog.setTitle("登录成功");
+					mLoginDialog.setMessage("将进入主界面...");
+
+					mLoginDialog.show();
+					mHandler.sendEmptyMessageDelayed(0, 1000);
 				}else{
 					mLoginDialog.dismiss();
 					mLoginDialog = new MaterialDialog(LoginActivity.this)

@@ -9,7 +9,7 @@
 		android:layout_height="match_parent"
 		app:mrl_rippleOverlay="false"
 		app:mrl_rippleColor="#666"
-		app:mrl_rippleDelayClick="false"
+		app:mrl_rippleDelayClick="true"
 		app:mrl_rippleDuration="250"
 		app:mrl_rippleHover="true">
 		<FrameLayout

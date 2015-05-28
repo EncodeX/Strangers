@@ -1,5 +1,6 @@
 package com.neu.strangers.activities;
 
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
@@ -13,6 +14,7 @@ import com.kenumir.materialsettings.items.TextItem;
 import com.kenumir.materialsettings.storage.PreferencesStorageInterface;
 import com.kenumir.materialsettings.storage.StorageInterface;
 import com.neu.strangers.R;
+import com.neu.strangers.tools.Constants;
 import com.readystatesoftware.systembartint.SystemBarTintManager;
 
 import butterknife.ButterKnife;
@@ -66,6 +68,13 @@ public class SettingsActivity extends MaterialSettingsActivity {
 		addItem(new SwitcherItem(getFragment(), "key9").setTitle("Switcher item").setSubtitle("Subtitle text"));
 		addItem(new SwitcherItem(getFragment(), "key10").setTitle("Switcher item").setSubtitle("Subtitle text"));
 		addItem(new SwitcherItem(getFragment(), "key11").setTitle("Switcher item").setSubtitle("Subtitle text"));
+
+		/* Todo 暂时利用Settings Activity 取消登录状态 */
+		SharedPreferences sharedPreferences =
+				getSharedPreferences(Constants.Application.PREFERENCE_NAME,0);
+		SharedPreferences.Editor editor = sharedPreferences.edit();
+		editor.putBoolean(Constants.Application.IS_LOGGED_IN,false);
+		editor.apply();
 	}
 
 	@Override
