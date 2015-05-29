@@ -13,27 +13,32 @@ public class StrangerInfo {
     private String mUserInfo;    //用户的其他信息，先预留着。
     private LatLng mLocation;
     private Drawable mUserIcon;
-    private double mDisance;
+    private String mDisance;
+    private String uid;
+
 
     public StrangerInfo() {
         mUserName = "";
         mUserInfo = "";
         mLocation = null;
         mUserIcon = null;
-        mDisance = 0f;
+        mDisance = "";
+        uid = "";
     }
-    public StrangerInfo(String mUserName, String mUserInfo, LatLng mLocation,Drawable mUserIcon,double mDisance){
+    public StrangerInfo(String mUserName, String mUserInfo, LatLng mLocation,Drawable mUserIcon,String mDisance,String uid){
         this.mUserName = mUserName;
         this.mUserInfo = mUserInfo;
         this.mLocation = mLocation;
         this.mUserIcon = mUserIcon;
         this.mDisance = mDisance;
+        this.uid = uid;
     }
-    public StrangerInfo(String mUserName, String mUserInfo, double latitude, double longitude,Drawable mUserIcon,double mDisance){
+    public StrangerInfo(String mUserName, String mUserInfo, double latitude, double longitude,Drawable mUserIcon,String mDisance,String uid){
         this.mUserName = mUserName;
         this.mUserInfo = mUserInfo;
         this.mUserIcon = mUserIcon;
         this.mDisance = mDisance;
+        this.uid = uid;
         mLocation = new LatLng(latitude, longitude);
     }
 
@@ -70,12 +75,16 @@ public class StrangerInfo {
         this.mUserIcon = mIcon;
     }
 
-    public double getDisance(){
+    public String getDisance(){
         return this.mDisance;
     }
 
-    public void setDisance(double disance) {
+    public void setDisance(String disance) {
         this.mDisance = disance;
+    }
+
+    public String getUid(){
+        return uid;
     }
 
 
