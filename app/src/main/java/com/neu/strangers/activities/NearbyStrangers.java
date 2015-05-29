@@ -184,6 +184,7 @@ public class NearbyStrangers extends AppCompatActivity {
             uid = cursor.getString(0);
             Log.e("id",cursor.getString(0).toString());
         }
+        cursor.close();
 
 
         MapStatusUpdate mMapStatusUpdate = MapStatusUpdateFactory.zoomTo(14);
