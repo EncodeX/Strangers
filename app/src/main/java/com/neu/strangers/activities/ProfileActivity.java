@@ -44,6 +44,21 @@ public class ProfileActivity extends AppCompatActivity {
 
 		ButterKnife.inject(this);
 
+
+		initView();
+
+	}
+
+	@Override
+	protected void onResume() {
+		super.onResume();
+	}
+
+	public void setToolbarAlpha(double alpha){
+		mToolbar.setBackgroundColor((int)(0xFF * alpha) * 0x1000000 + 0x9C27B0);
+	}
+
+	public void initView(){
 		// Add back button
 		setSupportActionBar(mToolbar);
 		if(getSupportActionBar()!=null){
@@ -98,14 +113,5 @@ public class ProfileActivity extends AppCompatActivity {
 				}
 			}
 		});
-	}
-
-	@Override
-	protected void onResume() {
-		super.onResume();
-	}
-
-	public void setToolbarAlpha(double alpha){
-		mToolbar.setBackgroundColor((int)(0xFF * alpha) * 0x1000000 + 0x9C27B0);
 	}
 }

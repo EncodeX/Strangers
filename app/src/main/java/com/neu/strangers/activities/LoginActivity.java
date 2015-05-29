@@ -271,8 +271,6 @@ public class LoginActivity extends AppCompatActivity {
 		protected void onPostExecute(JSONObject jsonObject) {
 			try {
 				if(jsonObject!=null){
-					mLoginDialog.dismiss();
-					mLoginDialog = new MaterialDialog(LoginActivity.this);
 
 					// Todo 取得用户ID并保存至本地
 					SharedPreferences sharedPreferences =
@@ -338,6 +336,8 @@ public class LoginActivity extends AppCompatActivity {
 //						}
 //						cursor.close();
 //					}
+					mLoginDialog.dismiss();
+					mLoginDialog = new MaterialDialog(LoginActivity.this);
 
 					mLoginDialog.setTitle("登录成功");
 					mLoginDialog.setMessage("将进入主界面...");
