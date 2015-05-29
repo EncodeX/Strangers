@@ -134,6 +134,7 @@ public class NearbyStrangers extends AppCompatActivity {
         }
 
         public void onReceivePoi(BDLocation poiLocation) {
+
         }
     }
 
