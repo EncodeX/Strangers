@@ -305,7 +305,7 @@ public class LoginActivity extends AppCompatActivity {
 					int sex = jsonObject.getString("sex").equals("woman")?0:1;
 					String picture = jsonObject.getString("picture");
 					String region = jsonObject.getString("region");
-					String sign = jsonObject.getString("explain");
+					String sign = jsonObject.getString("sign");
 
 					ContentValues values = new ContentValues();
 					values.put("id",id);

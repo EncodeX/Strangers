@@ -36,6 +36,7 @@ import com.material.widget.PaperButton;
 import com.neu.strangers.R;
 import com.neu.strangers.tools.ApplicationManager;
 import com.neu.strangers.bean.StrangerInfo;
+import com.neu.strangers.tools.Constants;
 import com.neu.strangers.tools.DatabaseManager;
 import com.nineoldandroids.animation.AnimatorSet;
 import com.nineoldandroids.animation.ObjectAnimator;
@@ -340,7 +341,10 @@ public class NearbyStrangers extends AppCompatActivity {
                 public void onClick(View view) {
                   //  Toast.makeText(NearbyStrangers.this, "add"+mStrangers[currentInfo].getUid(), Toast.LENGTH_SHORT).show();
                     Intent intent = new Intent(NearbyStrangers.this,ProfileActivity.class);
-                    intent.putExtra("id",mStrangers[currentInfo].getUid());
+                  //  intent.putExtra("id",mStrangers[currentInfo].getUid());
+                    Bundle bundle = new Bundle();
+                    bundle.putInt(Constants.Application.PROFILE_USER_ID,Integer.valueOf(mStrangers[currentInfo].getUid()));
+                    intent.putExtras(bundle);
                     startActivity(intent);
 
                 }
