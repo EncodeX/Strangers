@@ -305,7 +305,7 @@ public class LoginActivity extends AppCompatActivity {
 					int sex = jsonObject.getString("sex").equals("woman")?0:1;
 					String picture = jsonObject.getString("picture");
 					String region = jsonObject.getString("region");
-				//	String sign = jsonObject.getString("explain");
+					String sign = jsonObject.getString("explain");
 
 					ContentValues values = new ContentValues();
 					values.put("id",id);
@@ -314,7 +314,7 @@ public class LoginActivity extends AppCompatActivity {
 					values.put("sex",sex);
 					values.put("picture",picture);
 					values.put("region",region);
-				//	values.put("sign",sign);
+					values.put("sign",sign);
 
 					DatabaseManager.getInstance().insert("user",null,values);
 

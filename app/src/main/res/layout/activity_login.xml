@@ -36,7 +36,8 @@
 			android:textCursorDrawable="@null"
 			android:textColor="?attr/colorPrimary"
 			android:textSize="20sp"
-			android:hint="用户名/手机号/邮箱"/>
+			android:singleLine="true"
+			android:hint="用户名"/>
 		<com.material.widget.FloatingEditText
 			android:id="@+id/password_input"
 			android:layout_width="match_parent"
@@ -47,6 +48,8 @@
 			android:textCursorDrawable="@null"
 			android:textColor="?attr/colorPrimary"
 			android:textSize="20sp"
+			android:singleLine="true"
+			android:imeOptions="actionDone"
 			android:hint="密码"/>
 		<com.material.widget.PaperButton
 			android:id="@+id/login_button"

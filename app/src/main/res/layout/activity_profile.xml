@@ -35,7 +35,7 @@
 					android:layout_marginTop="16dp"
 					app:mrl_rippleOverlay="false"
 					app:mrl_rippleColor="#666"
-					app:mrl_rippleDelayClick="false"
+					app:mrl_rippleDelayClick="true"
 					app:mrl_rippleDuration="250"
 					app:mrl_rippleHover="true">
 					<RelativeLayout
@@ -65,19 +65,44 @@
 					</RelativeLayout>
 				</com.neu.strangers.view.MyRippleLayout>
 				<com.neu.strangers.view.MyRippleLayout
-					android:id="@+id/user_region_ripple"
-					android:layout_width="match_parent"
+					android:id="@+id/user_sex_ripple"
+					android:layout_width="wrap_content"
 					android:layout_height="wrap_content"
 					android:layout_below="@id/user_name_ripple"
 					app:mrl_rippleOverlay="false"
 					app:mrl_rippleColor="#666"
-					app:mrl_rippleDelayClick="false"
+					app:mrl_rippleDelayClick="true"
+					app:mrl_rippleDuration="250"
+					app:mrl_rippleHover="true">
+					<RelativeLayout
+						android:id="@+id/user_sex_label"
+						android:layout_width="40dp"
+						android:layout_height="40dp"
+						android:padding="8dp"
+						android:background="@drawable/ripple_background_selector_light">
+						<ImageView
+							android:id="@+id/user_sex"
+							android:layout_width="16dp"
+							android:layout_height="16dp"
+							android:src="@drawable/ic_male"
+							android:layout_centerInParent="true"/>
+					</RelativeLayout>
+				</com.neu.strangers.view.MyRippleLayout>
+				<com.neu.strangers.view.MyRippleLayout
+					android:id="@+id/user_region_ripple"
+					android:layout_width="match_parent"
+					android:layout_height="wrap_content"
+					android:layout_below="@id/user_name_ripple"
+					android:layout_toRightOf="@id/user_sex_ripple"
+					app:mrl_rippleOverlay="false"
+					app:mrl_rippleColor="#666"
+					app:mrl_rippleDelayClick="true"
 					app:mrl_rippleDuration="250"
 					app:mrl_rippleHover="true">
 					<RelativeLayout
 						android:id="@+id/user_region_label"
 						android:layout_width="match_parent"
-						android:layout_height="wrap_content"
+						android:layout_height="40dp"
 						android:padding="8dp"
 						android:background="@drawable/ripple_background_selector_light">
 						<TextView
@@ -103,6 +128,18 @@
 					app:paper_text_color="@android:color/white"
 					app:paper_text="添加为好友"
 					app:paper_is_light_ripple="true"/>
+				<com.material.widget.PaperButton
+					android:id="@+id/start_chatting_button"
+					android:layout_width="160dp"
+					android:layout_height="64dp"
+					android:layout_below="@id/user_region_ripple"
+					android:layout_marginTop="8dp"
+					android:layout_marginBottom="8dp"
+					android:visibility="visible"
+					app:paper_color="#4CAF50"
+					app:paper_text_color="@android:color/white"
+					app:paper_text="聊天"
+					app:paper_is_light_ripple="true"/>
 
 				<com.neu.strangers.view.MyRippleLayout
 					android:id="@+id/user_explain_ripple"
@@ -111,17 +148,17 @@
 					android:layout_below="@id/add_as_friend_button"
 					app:mrl_rippleOverlay="false"
 					app:mrl_rippleColor="#666"
-					app:mrl_rippleDelayClick="false"
+					app:mrl_rippleDelayClick="true"
 					app:mrl_rippleDuration="250"
 					app:mrl_rippleHover="true">
 					<RelativeLayout
-						android:id="@+id/user_explain_label"
+						android:id="@+id/user_sign_label"
 						android:layout_width="match_parent"
 						android:layout_height="wrap_content"
 						android:padding="8dp"
 						android:background="@drawable/ripple_background_selector_light">
 						<TextView
-							android:id="@+id/user_explain_title"
+							android:id="@+id/user_sign_title"
 							android:layout_width="wrap_content"
 							android:layout_height="wrap_content"
 							android:text="个人简介"
@@ -129,10 +166,10 @@
 							android:textSize="16sp"
 							android:textStyle="bold"/>
 						<TextView
-							android:id="@+id/user_explain"
+							android:id="@+id/user_sign"
 							android:layout_width="wrap_content"
 							android:layout_height="wrap_content"
-							android:layout_below="@id/user_explain_title"
+							android:layout_below="@id/user_sign_title"
 							android:layout_marginTop="4dp"
 							android:text="上边那个按钮在看自己的资料的时候是看不到的。"
 							android:textColor="#666666"
@@ -147,7 +184,7 @@
 					android:layout_below="@id/user_explain_ripple"
 					app:mrl_rippleOverlay="false"
 					app:mrl_rippleColor="#666"
-					app:mrl_rippleDelayClick="false"
+					app:mrl_rippleDelayClick="true"
 					app:mrl_rippleDuration="250"
 					app:mrl_rippleHover="true">
 					<RelativeLayout
@@ -182,7 +219,7 @@
 					android:layout_below="@id/user_email_ripple"
 					app:mrl_rippleOverlay="false"
 					app:mrl_rippleColor="#666"
-					app:mrl_rippleDelayClick="false"
+					app:mrl_rippleDelayClick="true"
 					app:mrl_rippleDuration="250"
 					app:mrl_rippleHover="true">
 					<RelativeLayout

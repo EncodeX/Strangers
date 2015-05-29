@@ -13,5 +13,7 @@ public interface Constants {
 
 		public final static String IS_LOGGED_IN = "is_logged_in";
 		public final static String LOGGED_IN_USER_ID = "logged_in_user_id";
+
+		public final static String PROFILE_USER_ID = "profile_user_id";
 	}
 }

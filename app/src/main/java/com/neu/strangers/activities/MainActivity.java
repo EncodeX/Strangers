@@ -32,8 +32,6 @@ public class MainActivity extends AppCompatActivity{
     private SensorManager mSensorManager;
     private Sensor mSensor;
 
-
-    //
     @InjectView(R.id.tool_bar)
     Toolbar toolbar;
     @InjectView(R.id.main_view_pager)
@@ -100,7 +98,6 @@ public class MainActivity extends AppCompatActivity{
 
     @Override
     protected void onRestart() {
-        //
         mSensorManager.registerListener(mListener,mSensor,SensorManager.SENSOR_DELAY_NORMAL);
         super.onRestart();
     }
@@ -152,6 +149,10 @@ public class MainActivity extends AppCompatActivity{
 			case R.id.action_user:
 				intent = new Intent();
 				intent.setClass(MainActivity.this, ProfileActivity.class);
+				intent.putExtra(
+						Constants.Application.PROFILE_USER_ID,
+						getSharedPreferences(Constants.Application.PREFERENCE_NAME,0)
+								.getInt(Constants.Application.LOGGED_IN_USER_ID,-1));
 				MainActivity.this.startActivity(intent);
 				return true;
 		}
