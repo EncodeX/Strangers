@@ -22,6 +22,7 @@ import com.neu.strangers.R;
 import com.neu.strangers.tools.ApplicationManager;
 import com.neu.strangers.tools.Constants;
 import com.neu.strangers.tools.DatabaseManager;
+import com.neu.strangers.tools.XmppTool;
 import com.nineoldandroids.animation.AnimatorSet;
 import com.nineoldandroids.animation.ObjectAnimator;
 import com.nineoldandroids.view.ViewHelper;

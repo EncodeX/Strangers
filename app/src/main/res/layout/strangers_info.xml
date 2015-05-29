@@ -72,7 +72,7 @@
 	        android:id="@+id/add_friends"
 	        android:layout_width="100dp"
 	        android:layout_height="50dp"
-	        app:paper_text="加为好友"
+	        app:paper_text="详细信息"
 	        app:paper_color="#9C27B0"
 	        app:paper_text_color="#fff"
 	        app:paper_is_light_ripple="true"
