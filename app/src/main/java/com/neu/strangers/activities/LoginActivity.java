@@ -272,15 +272,6 @@ public class LoginActivity extends AppCompatActivity {
 			try {
 				if(jsonObject!=null){
 
-					// Todo 取得用户ID并保存至本地
-					SharedPreferences sharedPreferences =
-							getSharedPreferences(Constants.Application.PREFERENCE_NAME,0);
-					SharedPreferences.Editor editor = sharedPreferences.edit();
-					editor.putBoolean(Constants.Application.IS_LOGGED_IN,true);
-					editor.putInt(Constants.Application.LOGGED_IN_USER_ID, id);
-					editor.apply();
-
-
 					Cursor cursor = DatabaseManager.getInstance().query("user", null, null, null, null, null, null);
 
 					if(cursor!=null){
@@ -300,10 +291,10 @@ public class LoginActivity extends AppCompatActivity {
 
 					String username = jsonObject.getString("username");
 					String nickname = jsonObject.getString("nickname");
-					int sex = jsonObject.getString("sex").equals("woman")?0:1;
+					int sex = jsonObject.getString("sex").equals("woman")?1:0;
 					String picture = jsonObject.getString("picture");
 					String region = jsonObject.getString("region");
-					String sign = jsonObject.getString("explain");
+					String sign = jsonObject.getString("sign");
 
 					ContentValues values = new ContentValues();
 					values.put("id",id);
@@ -336,6 +327,15 @@ public class LoginActivity extends AppCompatActivity {
 //						}
 //						cursor.close();
 //					}
+
+					// 取得用户ID并保存至本地
+					SharedPreferences sharedPreferences =
+							getSharedPreferences(Constants.Application.PREFERENCE_NAME,0);
+					SharedPreferences.Editor editor = sharedPreferences.edit();
+					editor.putBoolean(Constants.Application.IS_LOGGED_IN,true);
+					editor.putInt(Constants.Application.LOGGED_IN_USER_ID, id);
+					editor.apply();
+
 					mLoginDialog.dismiss();
 					mLoginDialog = new MaterialDialog(LoginActivity.this);
 
@@ -366,7 +366,25 @@ public class LoginActivity extends AppCompatActivity {
 					mLoginDialog.show();
 				}
 			} catch (JSONException e) {
-				e.printStackTrace();
+				mLoginDialog.dismiss();
+				mLoginDialog = new MaterialDialog(LoginActivity.this)
+						.setTitle("登录失败")
+						.setMessage("无法解析用户数据。")
+						.setPositiveButton("OK", new View.OnClickListener() {
+							@Override
+							public void onClick(View view) {
+								// ...
+								mLoginDialog.dismiss();
+							}
+						});
+				mLoginDialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
+					@Override
+					public void onDismiss(DialogInterface dialogInterface) {
+						mUserNameInput.setEnabled(true);
+						mPasswordInput.setEnabled(true);
+					}
+				});
+				mLoginDialog.show();
 			}
 		}
 	}
