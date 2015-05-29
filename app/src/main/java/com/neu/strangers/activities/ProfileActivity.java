@@ -1,6 +1,7 @@
 package com.neu.strangers.activities;
 
 import android.content.res.Resources;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -8,13 +9,25 @@ import android.util.TypedValue;
 import android.view.View;
 import android.view.ViewTreeObserver;
 import android.widget.FrameLayout;
+import android.widget.TextView;
 
+import com.material.widget.PaperButton;
 import com.neu.strangers.R;
 import com.neu.strangers.tools.ApplicationManager;
 import com.neu.strangers.view.AdvancedScrollView;
 import com.neu.strangers.view.RectImageView;
 import com.nineoldandroids.view.ViewHelper;
 import com.readystatesoftware.systembartint.SystemBarTintManager;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.net.URLEncoder;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -27,6 +40,8 @@ public class ProfileActivity extends AppCompatActivity {
 	private int mBackgroundY;
 	private boolean isInitialized = false;
 
+    private String id;
+
 	@InjectView(R.id.tool_bar)
 	Toolbar mToolbar;
 	@InjectView(R.id.info_scroll_view)
@@ -35,6 +50,11 @@ public class ProfileActivity extends AppCompatActivity {
 	RectImageView mUserInfoBackground;
 	@InjectView(R.id.tool_bar_shadow)
 	FrameLayout mToolbarShadow;
+    @InjectView(R.id.user_name)
+    TextView mUserName;
+    @InjectView(R.id.add_as_friend_button)
+    PaperButton addAsFriend;
+
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -98,6 +118,15 @@ public class ProfileActivity extends AppCompatActivity {
 				}
 			}
 		});
+
+        id = getIntent().getStringExtra("id");
+        if(id != null){
+            GetInfo info = new GetInfo();
+            info.execute();
+
+         //   addAsFriend.setOnClickListener();
+        }
+
 	}
 
 	@Override
@@ -108,4 +137,41 @@ public class ProfileActivity extends AppCompatActivity {
 	public void setToolbarAlpha(double alpha){
 		mToolbar.setBackgroundColor((int)(0xFF * alpha) * 0x1000000 + 0x9C27B0);
 	}
+
+    class GetInfo extends AsyncTask<Void,Integer,JSONObject>{
+
+
+        @Override
+        protected JSONObject doInBackground(Void... voids) {
+            try {
+                String searchUrl = "http://www.shiguangtravel.com:8080/CN-Soft/servlet/SearchAction?id="+id;
+
+                URL url = new URL(searchUrl.toString());
+                HttpURLConnection conn = (HttpURLConnection)url.openConnection();
+                conn.setRequestMethod("GET");
+
+                InputStreamReader inputStreamReader = new InputStreamReader(conn.getInputStream());
+                BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
+                StringBuilder strBuffer = new StringBuilder();
+                String line;
+
+                if(conn.getResponseCode()==200){
+                    while ((line = bufferedReader.readLine()) != null) {
+                        strBuffer.append(line);
+                    }
+                    return new JSONObject(strBuffer.toString());
+                }
+            } catch (JSONException | IOException e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(JSONObject jsonObject) {
+            super.onPostExecute(jsonObject);
+            mUserName.setText(jsonObject.optString("username"));
+
+        }
+    }
 }

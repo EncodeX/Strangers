@@ -1,22 +1,38 @@
 package com.neu.strangers.activities;
 
 import android.annotation.SuppressLint;
+import android.content.Intent;
+import android.content.SharedPreferences;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.Toast;
 
 import com.material.widget.PaperButton;
 import com.neu.strangers.R;
 import com.neu.strangers.adapter.ChatAdapter;
 import com.neu.strangers.bean.ChatInfo;
+import com.neu.strangers.tools.XmppTool;
 import com.neu.strangers.view.DropdownListView;
 import com.neu.strangers.view.ChatEditText;
 import com.readystatesoftware.systembartint.SystemBarTintManager;
+
+import org.jivesoftware.smack.Chat;
+import org.jivesoftware.smack.ChatManager;
+import org.jivesoftware.smack.ChatManagerListener;
+import org.jivesoftware.smack.MessageListener;
+import org.jivesoftware.smack.XMPPConnection;
+import org.jivesoftware.smack.XMPPException;
+import org.jivesoftware.smack.packet.IQ;
+import org.jivesoftware.smack.packet.Registration;
+import org.jivesoftware.smack.util.StringUtils;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -44,8 +60,10 @@ public class ChatActivity extends ActionBarActivity implements View.OnClickListe
     private SystemBarTintManager mSystemBarTintManager;
     private LinkedList<ChatInfo> mInfos = new LinkedList<ChatInfo>();
     private SimpleDateFormat mSimpleDateFormat;
-
+    XMPPConnection mXmppConnection;
     private String reply = "";// 模拟回复
+   // TaxiChatManagerListener chatManagerListener;
+   //  ChatManager chatmanager;
 
     @SuppressLint("SimpleDateFormat")
     private void initViews() {
@@ -87,6 +105,20 @@ public class ChatActivity extends ActionBarActivity implements View.OnClickListe
                         }
                     }, 1000);
                     mInput.setText("");
+
+                    /*
+                    Chat chat = chatmanager.createChat("user@120.24.76.184",new ChatLi());
+                    org.jivesoftware.smack.packet.Message message = new org.jivesoftware.smack.packet.Message();
+                    message.setBody("hello");
+
+                    try {
+                        chat.sendMessage(message);
+                        //chat.addMessageListener(new ChatLi());
+                    } catch (XMPPException e) {
+                        e.printStackTrace();
+                    }
+                    */
+
                 }
                 break;
 
@@ -95,8 +127,53 @@ public class ChatActivity extends ActionBarActivity implements View.OnClickListe
         }
     }
 
+    /*
+    class TaxiChatManagerListener implements ChatManagerListener {
 
-     // 发送的信息
+        public void chatCreated(Chat chat, boolean arg1) {
+            chat.addMessageListener(new MessageListener() {
+
+
+                @Override
+                public void processMessage(Chat chat, org.jivesoftware.smack.packet.Message message) {
+                    message.getFrom();
+                    //消息内容
+                    String body = message.getBody();
+                    Log.e("body",body);
+                    Log.e("body",body);
+
+
+
+                }
+            });
+        }
+
+
+    }
+
+
+
+    //MessageListener
+    class ChatLi implements MessageListener
+    {
+
+
+        @Override
+        public void processMessage(Chat chat, org.jivesoftware.smack.packet.Message message) {
+            message.getFrom();
+            //消息内容
+            String body = message.getBody();
+               Log.e("body!",body);
+            Log.e("body!",body);
+            Log.e("!",message.getFrom());
+           // message.getTo()
+        }
+    }
+    */
+
+
+
+    // 发送的信息
 
     private ChatInfo getChatInfoTo(String message) {
         ChatInfo info = new ChatInfo();
@@ -156,6 +233,14 @@ public class ChatActivity extends ActionBarActivity implements View.OnClickListe
         mSystemBarTintManager.setTintColor(getResources().getColor(R.color.app_color_primary_dark));
 
         initViews();
+       // chatmanager = XmppTool.getChatManager();
+
+      //  chatManagerListener = new TaxiChatManagerListener();
+      //  chatmanager.addChatListener(chatManagerListener);
+
+
+
+
     }
 
     @Override
