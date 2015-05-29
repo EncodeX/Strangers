@@ -282,7 +282,7 @@ public class RegisterActivity extends AppCompatActivity {
 							mEmailInput.setEnabled(true);
 						}
 					});
-					mRegisterDialog.show();
+					 mRegisterDialog.show();
 				}
 			} catch (JSONException e) {
 				e.printStackTrace();
