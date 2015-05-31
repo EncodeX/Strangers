@@ -39,7 +39,7 @@ public class ContactAdapter extends BaseAdapter implements SectionIndexer, AbsLi
 	public ContactAdapter(Context context, ListView listView) {
 		this.stringArray = new ArrayList<>();
 		this.context = context;
-		this.mImageCache = new ImageCache(listView);
+		this.mImageCache = new ImageCache(context, listView);
 		this.mFirstFlag = true;
 		listView.setOnScrollListener(this);
 	}
