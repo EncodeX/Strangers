@@ -5,12 +5,15 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AbsListView;
 import android.widget.BaseAdapter;
+import android.widget.ListView;
 import android.widget.SectionIndexer;
 import android.widget.TextView;
 
 import com.github.stuxuhai.jpinyin.PinyinHelper;
 import com.neu.strangers.R;
+import com.neu.strangers.tools.ImageCache;
 import com.woozzu.android.util.StringMatcher;
 
 import java.util.ArrayList;
@@ -24,15 +27,21 @@ import java.util.Comparator;
  * Project: Strangers
  * Package: com.neu.strangers.adapter
  */
-public class ContactAdapter extends BaseAdapter implements SectionIndexer{
+public class ContactAdapter extends BaseAdapter implements SectionIndexer, AbsListView.OnScrollListener{
 	private final static String SECTIONS = "#ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 
 	private ArrayList<ContactAdapterItem> stringArray;
 	private Context context;
+	private ImageCache mImageCache;
+	private int mStart = 0, mEnd = 0;
+	private boolean mFirstFlag;
 
-	public ContactAdapter(Context context) {
+	public ContactAdapter(Context context, ListView listView) {
 		this.stringArray = new ArrayList<>();
 		this.context = context;
+		this.mImageCache = new ImageCache(listView);
+		this.mFirstFlag = true;
+		listView.setOnScrollListener(this);
 	}
 
 	@Override
@@ -104,6 +113,25 @@ public class ContactAdapter extends BaseAdapter implements SectionIndexer{
 	@Override
 	public int getSectionForPosition(int i) {
 		return 0;
+	}
+
+	@Override
+	public void onScrollStateChanged(AbsListView absListView, int i) {
+		if (i == SCROLL_STATE_IDLE) {
+			mImageCache.loadImages(mStart, mEnd);
+		} else {
+			mImageCache.cancelAllTasks();
+		}
+	}
+
+	@Override
+	public void onScroll(AbsListView absListView, int i, int i1, int i2) {
+		mStart = i;
+		mEnd = i + i1;
+		if (mFirstFlag  && i1 > 0) {
+			mImageCache.loadImages(mStart, mEnd);
+			mFirstFlag = false;
+		}
 	}
 
 	public void refreshList(ArrayList<String> contactsList, ArrayList<Integer> idsList){

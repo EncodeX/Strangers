@@ -12,6 +12,7 @@ import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AbsListView;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.TextView;
@@ -82,7 +83,7 @@ public class MainViewPager extends ViewPager {
 		mContactsList = (IndexableListView)contactsView.findViewById(R.id.contacts_list);
 		mProgressLayout = (FrameLayout)contactsView.findViewById(R.id.progress_layout);
 
-		mAdapter = new ContactAdapter(context);
+		mAdapter = new ContactAdapter(context,mContactsList);
 		mContactsList.setAdapter(mAdapter);
 		mContactsList.setFastScrollEnabled(true);
 
