@@ -104,11 +104,7 @@ public class ProfileActivity extends AppCompatActivity {
 		ButterKnife.inject(this);
 
 		if(getIntent().getExtras()!=null){
-			mProfileId = getIntent().getExtras().getInt(
-					Constants.Application.PROFILE_USER_ID,
-					getSharedPreferences(Constants.Application.PREFERENCE_NAME,0)
-							.getInt(Constants.Application.LOGGED_IN_USER_ID,-1)
-			);
+			mProfileId = getIntent().getExtras().getInt(Constants.Application.PROFILE_USER_ID,-1);
 		}else{
 			Toast.makeText(ProfileActivity.this, "未读取用户信息 无法查看个人信息", Toast.LENGTH_SHORT).show();
 			this.finish();
