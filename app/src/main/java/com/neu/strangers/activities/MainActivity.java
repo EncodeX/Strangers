@@ -32,10 +32,11 @@ import butterknife.InjectView;
  * Encode.X's TodoList:
  *
  * Todo 进入主界面时加载最近会话列表 添加时间view
- * Todo 好友列表加载 并且中文排序 接入详细信息等
+ * Todo 好友列表加载 接入详细信息等
  * Todo 删除好友
  * Todo 退出登录
  * Todo LruCache 图片缓存
+ * Todo 游戏到底做啥？？？
  */
 
 public class MainActivity extends AppCompatActivity{
@@ -55,7 +56,7 @@ public class MainActivity extends AppCompatActivity{
         public void onSensorChanged(SensorEvent sensorEvent) {
 
             float xValue = Math.abs(sensorEvent.values[0]);
-            //  float yValue = Math.abs(sensorEvent.values[1]);
+            // float yValue = Math.abs(sensorEvent.values[1]);
             // float zValue = Math.abs(sensorEvent.values[2]);
             if(xValue > 18.5 )
             {
@@ -141,13 +142,9 @@ public class MainActivity extends AppCompatActivity{
 
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
-		// Handle action bar item clicks here. The action bar will
-		// automatically handle clicks on the Home/Up button, so long
-		// as you specify a parent activity in AndroidManifest.xml.
 		int id = item.getItemId();
 		Intent intent;
 
-		//noinspection SimplifiableIfStatement
 		switch (id){
 			case R.id.action_settings:
 				intent = new Intent();
