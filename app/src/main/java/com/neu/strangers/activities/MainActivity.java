@@ -26,6 +26,17 @@ import com.readystatesoftware.systembartint.SystemBarTintManager;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 
+/**
+ * Application Strangers
+ *
+ * Encode.X's TodoList:
+ *
+ * Todo 进入主界面时加载最近会话列表 添加时间view
+ * Todo 好友列表加载 并且中文排序 接入详细信息等
+ * Todo 删除好友
+ * Todo 退出登录
+ * Todo LruCache 图片缓存
+ */
 
 public class MainActivity extends AppCompatActivity{
     private SystemBarTintManager mSystemBarTintManager;
@@ -84,9 +95,6 @@ public class MainActivity extends AppCompatActivity{
         mSensorManager = (SensorManager)getSystemService(Context.SENSOR_SERVICE);
         mSensor = mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
         mSensorManager.registerListener(mListener, mSensor, SensorManager.SENSOR_DELAY_NORMAL);
-
-//	    String str = "你好世界";
-//	    Log.v("String Parser",PinyinHelper.convertToPinyinString(str,"", PinyinFormat.WITHOUT_TONE));
     }
 
     @Override

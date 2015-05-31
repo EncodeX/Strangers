@@ -9,10 +9,13 @@ import android.widget.BaseAdapter;
 import android.widget.SectionIndexer;
 import android.widget.TextView;
 
+import com.github.stuxuhai.jpinyin.PinyinHelper;
 import com.neu.strangers.R;
 import com.woozzu.android.util.StringMatcher;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 
 /**
  * Created with Android Studio.
@@ -24,11 +27,11 @@ import java.util.ArrayList;
 public class ContactAdapter extends BaseAdapter implements SectionIndexer{
 	private final static String SECTIONS = "#ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 
-	private ArrayList<String> stringArray;
+	private ArrayList<ContactAdapterItem> stringArray;
 	private Context context;
 
-	public ContactAdapter(ArrayList<String> stringArray, Context context) {
-		this.stringArray = stringArray;
+	public ContactAdapter(Context context) {
+		this.stringArray = new ArrayList<>();
 		this.context = context;
 	}
 
@@ -50,12 +53,19 @@ public class ContactAdapter extends BaseAdapter implements SectionIndexer{
 	@Override
 	public View getView(int i, View view, ViewGroup viewGroup) {
 		LayoutInflater inflate = ((Activity) context).getLayoutInflater();
-		String name = stringArray.get(i);
+		ContactAdapterItem item = stringArray.get(i);
 
-		view = inflate.inflate(R.layout.contact_item, null);
+		ViewHolderItem viewHolderItem;
+		if(view==null){
+			view = inflate.inflate(R.layout.contact_item, null);
+			viewHolderItem = new ViewHolderItem();
+			viewHolderItem.contactName = (TextView)view.findViewById(R.id.contact_name);
+			view.setTag(viewHolderItem);
+		}else{
+			viewHolderItem = (ViewHolderItem)view.getTag();
+		}
 
-		TextView contactName = (TextView)view.findViewById(R.id.contact_name);
-		contactName.setText(name);
+		viewHolderItem.contactName.setText(item.getUserName());
 
 		return view;
 	}
@@ -77,12 +87,12 @@ public class ContactAdapter extends BaseAdapter implements SectionIndexer{
 					// For numeric section
 					for (int k = 0; k <= 9; k++) {
 						if (StringMatcher.match(String.valueOf(
-								((String) getItem(j)).charAt(0)).toUpperCase(), String.valueOf(k)))
+								stringArray.get(j).getPinyin().charAt(0)).toUpperCase(), String.valueOf(k)))
 							return j;
 					}
 				} else {
 					if (StringMatcher.match(String.valueOf(
-							((String)getItem(j)).charAt(0)).toUpperCase(),
+									stringArray.get(j).getPinyin().charAt(0)).toUpperCase(),
 							String.valueOf(SECTIONS.charAt(i))))
 						return j;
 				}
@@ -94,5 +104,27 @@ public class ContactAdapter extends BaseAdapter implements SectionIndexer{
 	@Override
 	public int getSectionForPosition(int i) {
 		return 0;
+	}
+
+	public void refreshList(ArrayList<String> contactsList){
+		stringArray.clear();
+		for(int i = 0;i<contactsList.size();i++){
+			String item = contactsList.get(i);
+			stringArray.add(new ContactAdapterItem(item, PinyinHelper.getShortPinyin(item)));
+		}
+
+		// 在此处排序
+		Collections.sort(stringArray, new Comparator<ContactAdapterItem>() {
+			@Override
+			public int compare(ContactAdapterItem item1, ContactAdapterItem item2) {
+				return item1.getPinyin().compareTo(item2.getPinyin());
+			}
+		});
+
+		notifyDataSetChanged();
+	}
+
+	private static class ViewHolderItem {
+		TextView contactName;
 	}
 }
