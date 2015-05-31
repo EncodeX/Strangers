@@ -278,23 +278,14 @@ public class LoginActivity extends AppCompatActivity {
 						DatabaseManager.getInstance().delete("user","",null);
 					}
 
-//					cursor = DatabaseManager.getInstance().query("user", null, null, null, null, null, null);
-//					if (cursor != null) {
-//						while (cursor.moveToNext()) {
-//							Log.d("Database", "database is not empty");
-//						}
-//						Log.d("Database", "is database empty?");
-//						cursor.close();
-//					}else{
-//						Log.d("Database", "database is empty");
-//					}
-
 					String username = jsonObject.getString("username");
 					String nickname = jsonObject.getString("nickname");
 					int sex = jsonObject.getString("sex").equals("woman")?1:0;
 					String picture = jsonObject.getString("picture");
 					String region = jsonObject.getString("region");
 					String sign = jsonObject.getString("sign");
+					String email = jsonObject.getString("email");
+					String background = jsonObject.getString("mybackground");
 
 					ContentValues values = new ContentValues();
 					values.put("id",id);
@@ -304,29 +295,10 @@ public class LoginActivity extends AppCompatActivity {
 					values.put("picture",picture);
 					values.put("region",region);
 					values.put("sign",sign);
+					values.put("email",email);
+					values.put("background",background);
 
 					DatabaseManager.getInstance().insert("user",null,values);
-
-//					cursor = DatabaseManager.getInstance().query("user", null, null, null, null, null, null);
-//					if (cursor != null) {
-//						while (cursor.moveToNext()) {
-//							int _id = cursor.getInt(cursor.getColumnIndex("id"));
-//							String _username = cursor.getString(cursor.getColumnIndex("username"));
-//							String _nickname = cursor.getString(cursor.getColumnIndex("nickname"));
-//							int _sex = cursor.getInt(cursor.getColumnIndex("sex"));
-//							String _picture = cursor.getString(cursor.getColumnIndex("picture"));
-//							String _region = cursor.getString(cursor.getColumnIndex("region"));
-//							String _sign = cursor.getString(cursor.getColumnIndex("sign"));
-//							Log.d("Database", "id is '" + _id + "'");
-//							Log.d("Database", "username is '" + _username + "'");
-//							Log.d("Database", "nickname is' " + _nickname + "'");
-//							Log.d("Database", "sex is '" + _sex + "'");
-//							Log.d("Database", "picture is '" + _picture + "'");
-//							Log.d("Database", "region is '" + _region + "'");
-//							Log.d("Database", "sign is '" + _sign + "'");
-//						}
-//						cursor.close();
-//					}
 
 					// 取得用户ID并保存至本地
 					SharedPreferences sharedPreferences =

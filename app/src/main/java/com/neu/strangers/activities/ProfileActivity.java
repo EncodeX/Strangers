@@ -94,6 +94,8 @@ public class ProfileActivity extends AppCompatActivity {
     private String picture;
     private String region;
     private String sign;
+	private String email;
+	private String background;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -210,10 +212,9 @@ public class ProfileActivity extends AppCompatActivity {
 			}
 			mUserRegion.setText(cursor.getString(cursor.getColumnIndex("region")));
 			mUserSign.setText(cursor.getString(cursor.getColumnIndex("sign")));
+			mUserEmail.setText(cursor.getString(cursor.getColumnIndex("email")));
 
-			// Todo 邮件地址服务器数据库未实现
-//					mUserEmail.setText(cursor.getString(cursor.getColumnIndex("")));
-			// Todo 头像未获取（服务器未实现）
+			// Todo 头像与背景未获取
 
 			cursor.close();
 		}
@@ -240,11 +241,17 @@ public class ProfileActivity extends AppCompatActivity {
 				}
 				mUserRegion.setText(cursor.getString(cursor.getColumnIndex("region")));
 				mUserSign.setText(cursor.getString(cursor.getColumnIndex("sign")));
+				mUserEmail.setText(cursor.getString(cursor.getColumnIndex("email")));
+
+				// Todo 头像与背景未获取
+
 				cursor.close();
 
                 //INVISIBLE控件仍然占据原来的空间
 				mAddAsFriendButton.setVisibility(View.INVISIBLE);
 				mStartChattingButton.setVisibility(View.VISIBLE);
+
+				// Todo 在此处调整删除好友按钮的显隐性
 			}else{
 				// 非好友
 				new GetUserInfo().execute(mProfileId);
@@ -329,6 +336,8 @@ public class ProfileActivity extends AppCompatActivity {
                 values.put("picture",picture);
                 values.put("region",region);
                 values.put("sign",sign);
+	            values.put("email",email);
+	            values.put("background",background);
 
                 DatabaseManager.getInstance().insert("friends",null,values);
 
@@ -396,6 +405,8 @@ public class ProfileActivity extends AppCompatActivity {
 					picture = jsonObject.getString("picture");
 					region = jsonObject.getString("region");
 					sign = jsonObject.getString("sign");
+					email = jsonObject.getString("email");
+					background = jsonObject.getString("mybackground");
 
 					mToolbar.setTitle(nickname);
 					mUserNickname.setText(nickname);
@@ -407,6 +418,7 @@ public class ProfileActivity extends AppCompatActivity {
 					}
 					mUserRegion.setText(region);
 					mUserSign.setText(sign);
+					mUserEmail.setText(email);
 
 					dialog.dismiss();
 				}else{
