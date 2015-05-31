@@ -271,6 +271,17 @@ public class LoginActivity extends AppCompatActivity {
 		protected void onPostExecute(JSONObject jsonObject) {
 			try {
 				if(jsonObject!=null){
+					mLoginDialog.dismiss();
+					mLoginDialog = new MaterialDialog(LoginActivity.this);
+
+					// Todo 取得用户ID并保存至本地
+					SharedPreferences sharedPreferences =
+							getSharedPreferences(Constants.Application.PREFERENCE_NAME,0);
+					SharedPreferences.Editor editor = sharedPreferences.edit();
+					editor.putBoolean(Constants.Application.IS_LOGGED_IN,true);
+					editor.putInt(Constants.Application.LOGGED_IN_USER_ID, id);
+					editor.apply();
+
 
 					Cursor cursor = DatabaseManager.getInstance().query("user", null, null, null, null, null, null);
 
@@ -291,7 +302,7 @@ public class LoginActivity extends AppCompatActivity {
 
 					String username = jsonObject.getString("username");
 					String nickname = jsonObject.getString("nickname");
-					int sex = jsonObject.getString("sex").equals("woman")?1:0;
+					int sex = jsonObject.getString("sex").equals("woman")?0:1;
 					String picture = jsonObject.getString("picture");
 					String region = jsonObject.getString("region");
 					String sign = jsonObject.getString("sign");
@@ -328,17 +339,6 @@ public class LoginActivity extends AppCompatActivity {
 //						cursor.close();
 //					}
 
-					// 取得用户ID并保存至本地
-					SharedPreferences sharedPreferences =
-							getSharedPreferences(Constants.Application.PREFERENCE_NAME,0);
-					SharedPreferences.Editor editor = sharedPreferences.edit();
-					editor.putBoolean(Constants.Application.IS_LOGGED_IN,true);
-					editor.putInt(Constants.Application.LOGGED_IN_USER_ID, id);
-					editor.apply();
-
-					mLoginDialog.dismiss();
-					mLoginDialog = new MaterialDialog(LoginActivity.this);
-
 					mLoginDialog.setTitle("登录成功");
 					mLoginDialog.setMessage("将进入主界面...");
 
@@ -366,25 +366,7 @@ public class LoginActivity extends AppCompatActivity {
 					mLoginDialog.show();
 				}
 			} catch (JSONException e) {
-				mLoginDialog.dismiss();
-				mLoginDialog = new MaterialDialog(LoginActivity.this)
-						.setTitle("登录失败")
-						.setMessage("无法解析用户数据。")
-						.setPositiveButton("OK", new View.OnClickListener() {
-							@Override
-							public void onClick(View view) {
-								// ...
-								mLoginDialog.dismiss();
-							}
-						});
-				mLoginDialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
-					@Override
-					public void onDismiss(DialogInterface dialogInterface) {
-						mUserNameInput.setEnabled(true);
-						mPasswordInput.setEnabled(true);
-					}
-				});
-				mLoginDialog.show();
+				e.printStackTrace();
 			}
 		}
 	}

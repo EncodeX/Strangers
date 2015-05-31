@@ -7,6 +7,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewTreeObserver;
 import android.widget.FrameLayout;
@@ -85,6 +86,14 @@ public class ProfileActivity extends AppCompatActivity {
 	RelativeLayout mUserEmailLabel;
 	@InjectView(R.id.user_email)
 	TextView mUserEmail;
+
+    //用户的信息，方便写入数据库
+    private String username;
+    private String nickname;
+    private int sex;
+    private String picture;
+    private String region;
+    private String sign;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -233,17 +242,105 @@ public class ProfileActivity extends AppCompatActivity {
 				mUserSign.setText(cursor.getString(cursor.getColumnIndex("sign")));
 				cursor.close();
 
-				mAddAsFriendButton.setVisibility(View.GONE);
+                //INVISIBLE控件仍然占据原来的空间
+				mAddAsFriendButton.setVisibility(View.INVISIBLE);
 				mStartChattingButton.setVisibility(View.VISIBLE);
 			}else{
 				// 非好友
 				new GetUserInfo().execute(mProfileId);
 
 				mAddAsFriendButton.setVisibility(View.VISIBLE);
+                mAddAsFriendButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        new AddAsFrined().execute();
+
+                    }
+                });
 				mStartChattingButton.setVisibility(View.GONE);
 			}
 		}
+        cursor.close();
 	}
+
+
+    private class AddAsFrined extends AsyncTask<Void,Integer,JSONObject>{
+        private MaterialDialog dialog;
+        private String selfId;
+
+        @Override
+        protected void onPreExecute() {
+            Cursor cursor = DatabaseManager.getInstance().query("user", new String[]{"id"}, null, null, null, null, null);
+            if (cursor.moveToNext()) {
+                selfId = cursor.getString(0);
+            }
+            cursor.close();
+            Log.e("id",selfId);
+            Log.e("id",selfId);
+
+            dialog = new MaterialDialog(ProfileActivity.this);
+            dialog.setTitle("添加中");
+            dialog.setMessage("正在获取数据...");
+            dialog.show();
+        }
+
+
+        @Override
+        protected JSONObject doInBackground(Void... voids) {
+            try {
+                StringBuilder stringBuilder = new StringBuilder(
+                        "http://www.shiguangtravel.com:8080/CN-Soft/servlet/AddAction");
+                stringBuilder.append("?");
+                stringBuilder.append("id=" + URLEncoder.encode(selfId, "UTF-8") + "&");
+                stringBuilder.append("fid=" + URLEncoder.encode(String.valueOf(mProfileId),"UTF-8"));
+                URL url = new URL(stringBuilder.toString());
+                HttpURLConnection conn = (HttpURLConnection)url.openConnection();
+                conn.setRequestMethod("GET");
+
+                InputStreamReader inputStreamReader = new InputStreamReader(conn.getInputStream());
+                BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
+                StringBuilder strBuffer = new StringBuilder();
+                String line;
+
+                if(conn.getResponseCode()==200){
+                    while ((line = bufferedReader.readLine()) != null) {
+                        strBuffer.append(line);
+                    }
+                    return new JSONObject(strBuffer.toString());
+                }
+            } catch (JSONException | IOException e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(JSONObject jsonObject) {
+            if(dialog!=null){
+                dialog.dismiss();
+            }
+            String result = jsonObject.optString("AddFriend");
+            if(result.equals("success")){
+                ContentValues values = new ContentValues();
+                values.put("id",mProfileId);
+                values.put("username",username);
+                values.put("nickname",nickname);
+                values.put("sex",sex);
+                values.put("picture",picture);
+                values.put("region",region);
+                values.put("sign",sign);
+
+                DatabaseManager.getInstance().insert("friends",null,values);
+
+                Toast.makeText(ProfileActivity.this,"添加成功！",Toast.LENGTH_LONG).show();
+
+
+            }else{
+                Toast.makeText(ProfileActivity.this,"添加失败！",Toast.LENGTH_LONG).show();
+            }
+
+        }
+    }
 
 	private class GetUserInfo extends AsyncTask<Integer,Integer,JSONObject> {
 		private MaterialDialog dialog;
@@ -293,12 +390,12 @@ public class ProfileActivity extends AppCompatActivity {
 		protected void onPostExecute(JSONObject jsonObject) {
 			try {
 				if(jsonObject!=null){
-					String username = jsonObject.getString("username");
-					String nickname = jsonObject.getString("nickname");
-					int sex = jsonObject.getString("sex").equals("woman")?1:0;
-					String picture = jsonObject.getString("picture");
-					String region = jsonObject.getString("region");
-					String sign = jsonObject.getString("sign");
+					username = jsonObject.getString("username");
+					nickname = jsonObject.getString("nickname");
+					sex = jsonObject.getString("sex").equals("woman")?1:0;
+					picture = jsonObject.getString("picture");
+					region = jsonObject.getString("region");
+					sign = jsonObject.getString("sign");
 
 					mToolbar.setTitle(nickname);
 					mUserNickname.setText(nickname);
