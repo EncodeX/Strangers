@@ -82,73 +82,7 @@ public class MainViewPager extends ViewPager {
 		mContactsList = (IndexableListView)contactsView.findViewById(R.id.contacts_list);
 		mProgressLayout = (FrameLayout)contactsView.findViewById(R.id.progress_layout);
 
-		ArrayList<String> names= new ArrayList<String>();
-		names.add("陈荣森");
-		names.add("陈腾扬");
-		names.add("陈泽华");
-		names.add("孔伟杰");
-		names.add("冯铄");
-		names.add("胡少晗");
-		names.add("田喆");
-		names.add("杜鹤然");
-		names.add("邹锐");
-		names.add("郑媛心");
-		names.add("房建猷");
-		names.add("刘荣耀");
-		names.add("朱志文");
-		names.add("田安捷");
-		names.add("郭睿");
-		names.add("朱越鹏");
-		names.add("周鹤达");
-		names.add("于雪晴");
-		names.add("张文婕");
-		names.add("田胜");
-		names.add("赵卓");
-		names.add("高美妍");
-		names.add("张文昭");
-		names.add("赵露");
-		names.add("汤成铃");
-		names.add("邵彦恒");
-		names.add("杨旭恒");
-		names.add("王浩");
-		names.add("李广龙");
-		names.add("徐献博");
-
-		ArrayList<Integer> ids = new ArrayList<>();
-		ids.add(1);
-		ids.add(2);
-		ids.add(3);
-		ids.add(4);
-		ids.add(5);
-		ids.add(6);
-		ids.add(7);
-		ids.add(8);
-		ids.add(9);
-		ids.add(10);
-		ids.add(11);
-		ids.add(12);
-		ids.add(13);
-		ids.add(14);
-		ids.add(15);
-		ids.add(16);
-		ids.add(17);
-		ids.add(18);
-		ids.add(19);
-		ids.add(20);
-		ids.add(21);
-		ids.add(22);
-		ids.add(23);
-		ids.add(24);
-		ids.add(25);
-		ids.add(26);
-		ids.add(27);
-		ids.add(28);
-		ids.add(29);
-		ids.add(30);
-
 		mAdapter = new ContactAdapter(context);
-		mAdapter.refreshList(names,ids);
-
 		mContactsList.setAdapter(mAdapter);
 		mContactsList.setFastScrollEnabled(true);
 
@@ -202,6 +136,7 @@ public class MainViewPager extends ViewPager {
 	}
 
 	private class GetContacts extends AsyncTask<Integer,Integer,JSONObject> {
+		// todo 需要优化错误处理等
 
 		@Override
 		protected void onPreExecute() {
