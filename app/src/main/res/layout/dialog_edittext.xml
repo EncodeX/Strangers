@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:app="http://schemas.android.com/apk/res-auto"
+	android:layout_width="match_parent"
+	android:layout_height="match_parent">
+
+	<TextView
+		android:id="@+id/title"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:textSize="28sp"
+		android:text="123456"
+		android:textColor="#000"/>
+
+	<com.material.widget.FloatingEditText
+		android:id="@+id/edit_text"
+		android:layout_width="match_parent"
+		android:layout_height="56dp"
+		android:layout_below="@id/title"
+		android:layout_marginTop="16dp"
+		app:floating_edit_text_highlighted_color="?attr/colorPrimary"
+		android:cursorVisible="true"
+		android:textCursorDrawable="@null"
+		android:textColor="?attr/colorPrimary"
+		android:textSize="20sp"
+		android:singleLine="true"
+		android:hint="123456"/>
+	<com.material.widget.PaperButton
+		android:id="@+id/confirm_button"
+		android:layout_width="96dp"
+		android:layout_height="48dp"
+		android:layout_below="@id/edit_text"
+		android:layout_alignParentRight="true"
+		app:paper_color="#fff"
+		app:paper_text_color="#000"
+		app:paper_text="确定"
+		app:paper_is_light_ripple="false"
+		app:paper_shadow_color="#00000000"/>
+</RelativeLayout>

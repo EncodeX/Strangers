@@ -106,11 +106,12 @@ public class ContactAdapter extends BaseAdapter implements SectionIndexer{
 		return 0;
 	}
 
-	public void refreshList(ArrayList<String> contactsList){
+	public void refreshList(ArrayList<String> contactsList, ArrayList<Integer> idsList){
 		stringArray.clear();
 		for(int i = 0;i<contactsList.size();i++){
 			String item = contactsList.get(i);
-			stringArray.add(new ContactAdapterItem(item, PinyinHelper.getShortPinyin(item)));
+			stringArray.add(
+					new ContactAdapterItem(idsList.get(i),item, PinyinHelper.getShortPinyin(item)));
 		}
 
 		// 在此处排序

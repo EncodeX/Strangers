@@ -10,8 +10,10 @@ package com.neu.strangers.adapter;
 public class ContactAdapterItem {
 	private String userName;
 	private String pinyin;
+	private int id;
 
-	public ContactAdapterItem(String userName, String pinyin) {
+	public ContactAdapterItem(int id,String userName, String pinyin) {
+		this.id = id;
 		this.userName = userName;
 		this.pinyin = pinyin;
 	}
@@ -22,5 +24,9 @@ public class ContactAdapterItem {
 
 	public String getPinyin() {
 		return pinyin;
+	}
+
+	public int getId(){
+		return id;
 	}
 }

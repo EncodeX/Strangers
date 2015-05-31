@@ -1,5 +1,6 @@
 package com.neu.strangers.activities;
 
+import android.app.Activity;
 import android.content.ContentValues;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
@@ -8,6 +9,7 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewTreeObserver;
 import android.widget.FrameLayout;
@@ -43,12 +45,17 @@ import butterknife.InjectView;
 import me.drakeet.materialdialog.MaterialDialog;
 
 public class ProfileActivity extends AppCompatActivity {
+	private final static int CHANGE_NAME = 1;
+	private final static int CHANGE_REGION = 2;
+	private final static int CHANGE_SIGN = 3;
+	private final static int CHANGE_EMAIL = 4;
 
 	private SystemBarTintManager mSystemBarTintManager;
 	private int mBackgroundHeight;
 	private int mAlphaToggleHeight;
 	private int mBackgroundY;
 	private int mProfileId;
+	private MaterialDialog mDialog;
 
 	private boolean isInitialized = false;
 
@@ -94,6 +101,8 @@ public class ProfileActivity extends AppCompatActivity {
     private String picture;
     private String region;
     private String sign;
+	private String email;
+	private String background;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -118,7 +127,7 @@ public class ProfileActivity extends AppCompatActivity {
 	}
 
 	public void setToolbarAlpha(double alpha){
-		mToolbar.setBackgroundColor((int)(0xFF * alpha) * 0x1000000 + 0x9C27B0);
+		mToolbar.setBackgroundColor((int) (0xFF * alpha) * 0x1000000 + 0x9C27B0);
 	}
 
 	public void initView(){
@@ -200,27 +209,56 @@ public class ProfileActivity extends AppCompatActivity {
 		if (cursor != null) {
 			cursor.moveToNext();
 
-			mToolbar.setTitle(cursor.getString(cursor.getColumnIndex("nickname")));
-			mUserNickname.setText(cursor.getString(cursor.getColumnIndex("nickname")));
-			mUserName.setText("("+cursor.getString(cursor.getColumnIndex("username"))+")");
-			if(cursor.getInt(cursor.getColumnIndex("sex"))==0){
+			nickname = cursor.getString(cursor.getColumnIndex("nickname"));
+			username = cursor.getString(cursor.getColumnIndex("username"));
+			sex = cursor.getInt(cursor.getColumnIndex("sex"));
+			region = cursor.getString(cursor.getColumnIndex("region"));
+			sign = cursor.getString(cursor.getColumnIndex("sign"));
+			email = cursor.getString(cursor.getColumnIndex("email"));
+
+			// Todo 头像与背景未获取
+
+			cursor.close();
+
+			mToolbar.setTitle(nickname);
+			mUserNickname.setText(nickname);
+			mUserName.setText("("+username+")");
+			if(sex == 0){
 				mUserSex.setImageResource(R.drawable.ic_male);
 			}else{
 				mUserSex.setImageResource(R.drawable.ic_female);
 			}
-			mUserRegion.setText(cursor.getString(cursor.getColumnIndex("region")));
-			mUserSign.setText(cursor.getString(cursor.getColumnIndex("sign")));
-
-			// Todo 邮件地址服务器数据库未实现
-//					mUserEmail.setText(cursor.getString(cursor.getColumnIndex("")));
-			// Todo 头像未获取（服务器未实现）
-
-			cursor.close();
+			mUserRegion.setText(region);
+			mUserSign.setText(sign);
+			mUserEmail.setText(email);
 		}
 
 		mAddAsFriendButton.setVisibility(View.GONE);
 		mStartChattingButton.setVisibility(View.GONE);
+
 		// todo 下面添加资料修改等功能
+		mDialog = new MaterialDialog(this);
+
+		mUserNameLabel.setOnClickListener(new OnClickListener(CHANGE_NAME));
+
+		mUserSexLabel.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View view) {
+				if(sex == 0){
+					mUserSex.setImageResource(R.drawable.ic_female);
+					sex = 1;
+				}else if(sex == 1){
+					mUserSex.setImageResource(R.drawable.ic_male);
+					sex = 0;
+				}
+			}
+		});
+
+		mUserRegionLabel.setOnClickListener(new OnClickListener(CHANGE_REGION));
+
+		mUserSignLabel.setOnClickListener(new OnClickListener(CHANGE_SIGN));
+
+		mUserEmailLabel.setOnClickListener(new OnClickListener(CHANGE_EMAIL));
 	}
 
 	private void initOthersProfile(){
@@ -240,11 +278,17 @@ public class ProfileActivity extends AppCompatActivity {
 				}
 				mUserRegion.setText(cursor.getString(cursor.getColumnIndex("region")));
 				mUserSign.setText(cursor.getString(cursor.getColumnIndex("sign")));
+				mUserEmail.setText(cursor.getString(cursor.getColumnIndex("email")));
+
+				// Todo 头像与背景未获取
+
 				cursor.close();
 
                 //INVISIBLE控件仍然占据原来的空间
 				mAddAsFriendButton.setVisibility(View.INVISIBLE);
 				mStartChattingButton.setVisibility(View.VISIBLE);
+
+				// Todo 在此处调整删除好友按钮的显隐性
 			}else{
 				// 非好友
 				new GetUserInfo().execute(mProfileId);
@@ -329,6 +373,8 @@ public class ProfileActivity extends AppCompatActivity {
                 values.put("picture",picture);
                 values.put("region",region);
                 values.put("sign",sign);
+	            values.put("email",email);
+	            values.put("background",background);
 
                 DatabaseManager.getInstance().insert("friends",null,values);
 
@@ -396,6 +442,8 @@ public class ProfileActivity extends AppCompatActivity {
 					picture = jsonObject.getString("picture");
 					region = jsonObject.getString("region");
 					sign = jsonObject.getString("sign");
+					email = jsonObject.getString("email");
+					background = jsonObject.getString("mybackground");
 
 					mToolbar.setTitle(nickname);
 					mUserNickname.setText(nickname);
@@ -407,6 +455,7 @@ public class ProfileActivity extends AppCompatActivity {
 					}
 					mUserRegion.setText(region);
 					mUserSign.setText(sign);
+					mUserEmail.setText(email);
 
 					dialog.dismiss();
 				}else{
@@ -438,6 +487,35 @@ public class ProfileActivity extends AppCompatActivity {
 				}
 			});
 			dialog.show();
+		}
+	}
+
+	private class OnClickListener implements View.OnClickListener{
+		private int mode;
+
+		public OnClickListener(int mode) {
+			this.mode = mode;
+		}
+
+		@Override
+		public void onClick(View view) {
+			LayoutInflater inflate = ProfileActivity.this.getLayoutInflater();
+			View dialogContent = inflate.inflate(R.layout.dialog_edittext, null);
+
+			mDialog = new MaterialDialog(ProfileActivity.this);
+
+			mDialog.setContentView(dialogContent);
+			mDialog.show();
+			switch(mode){
+				case CHANGE_NAME:
+					break;
+				case CHANGE_REGION:
+					break;
+				case CHANGE_SIGN:
+					break;
+				case CHANGE_EMAIL:
+					break;
+			}
 		}
 	}
 }

@@ -21,7 +21,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 					"sex integer, " +
 					"picture text," +
 					"region text," +
-					"sign text)";
+					"sign text," +
+					"email text," +
+					"background text)";
 
 	public static final String CREATE_FRIENDS_TABLE =
 			"create table friends(" +
@@ -31,7 +33,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 					"sex integer, " +
 					"picture text," +
 					"region text," +
-					"sign text)";
+					"sign text," +
+					"email text," +
+					"background text)";
 
 	public DatabaseHelper(Context context, String name, SQLiteDatabase.CursorFactory factory, int version) {
 		super(context, name, factory, version);

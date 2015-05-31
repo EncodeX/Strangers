@@ -50,6 +50,7 @@
 			android:textSize="20sp"
 			android:singleLine="true"
 			android:imeOptions="actionDone"
+			android:inputType="textPassword"
 			android:hint="密码"/>
 		<com.material.widget.PaperButton
 			android:id="@+id/login_button"
