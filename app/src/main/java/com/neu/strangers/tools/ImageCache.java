@@ -11,10 +11,15 @@ import android.widget.ListView;
 
 import com.jakewharton.disklrucache.DiskLruCache;
 import com.neu.strangers.R;
+import com.neu.strangers.adapter.ContactAdapterItem;
+
+import net.sqlcipher.Cursor;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.File;
+import java.io.FileDescriptor;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -22,8 +27,11 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
+
+import de.hdodenhof.circleimageview.CircleImageView;
 
 /**
  * Created with Android Studio.
@@ -35,13 +43,12 @@ import java.util.Set;
 public class ImageCache {
 	private LruCache<String, Bitmap> mMemoryCache;
 	private Set<ASyncDownloadImage> mTasks;
-	private ListView mListView;
 	private DiskLruCache mDiskCache;
+	private OnBitmapPreparedListener onBitmapPreparedListener;
 
-	public ImageCache(Context context, ListView listView) {
+	public ImageCache(Context context) {
 		int maxMemory = (int) Runtime.getRuntime().maxMemory();
 		int cacheSize = maxMemory / 10;
-		this.mListView = listView;
 		this.mTasks = new HashSet<>();
 
 		mMemoryCache = new LruCache<String, Bitmap>(cacheSize) {
@@ -62,27 +69,20 @@ public class ImageCache {
 		}
 	}
 
-	public void showImage(String url, ImageView imageView) {
-		Bitmap bitmap = getBitmapFromMemoryCaches(url);
-		if (bitmap == null) {
-			imageView.setImageResource(R.mipmap.ic_launcher);
-		} else {
-			imageView.setImageBitmap(bitmap);
+	public void loadImage(String url){
+		if(onBitmapPreparedListener!=null){
+			onBitmapPreparedListener.onBitmapPrepared(null,url);
 		}
-	}
 
-	public void loadImages(int start, int end) {
-		// Todo 此处需要重写
-//		for (int i = start; i < end; i++) {
-//			String url = " ";
-//			Bitmap bitmap = getBitmapFromMemoryCaches(url);
-//			if (bitmap == null) {
-//				ASyncDownloadImage task = new ASyncDownloadImage(url);
-//				mTasks.add(task);
-//				task.execute(url);
-//			} else {
-//				ImageView imageView = (ImageView) mListView.findViewWithTag(url);
-//				imageView.setImageBitmap(bitmap);
+		// Todo 暂时测试 实际情况为下方已注释代码
+//		Bitmap bitmap = getBitmapFromMemoryCaches(url);
+//		if(bitmap == null){
+//			ASyncDownloadImage task = new ASyncDownloadImage(url);
+//			mTasks.add(task);
+//			task.execute(url);
+//		}else{
+//			if(onBitmapPreparedListener != null){
+//				onBitmapPreparedListener.onBitmapPrepared(bitmap,url);
 //			}
 //		}
 	}
@@ -99,6 +99,7 @@ public class ImageCache {
 		}
 	}
 
+	@Deprecated
 	private static Bitmap getBitmapFromUrl(String urlString) {
 		Bitmap bitmap;
 		InputStream is = null;
@@ -208,6 +209,10 @@ public class ImageCache {
 		}
 	}
 
+	public void setOnBitmapPreparedListener(OnBitmapPreparedListener onBitmapPreparedListener) {
+		this.onBitmapPreparedListener = onBitmapPreparedListener;
+	}
+
 	class ASyncDownloadImage extends AsyncTask<String, Void, Bitmap> {
 
 		private String url;
@@ -219,21 +224,66 @@ public class ImageCache {
 		@Override
 		protected Bitmap doInBackground(String... params) {
 			url = params[0];
-			Bitmap bitmap = getBitmapFromUrl(url);
-			if (bitmap != null) {
-				addBitmapToMemoryCaches(url, bitmap);
+			FileDescriptor fileDescriptor = null;
+			FileInputStream fileInputStream = null;
+			DiskLruCache.Snapshot snapShot;
+			String key = toMD5String(url);
+
+			try {
+				snapShot = mDiskCache.get(key);
+				if (snapShot == null) {
+					DiskLruCache.Editor editor = mDiskCache.edit(key);
+					if (editor != null) {
+						OutputStream outputStream = editor.newOutputStream(0);
+						if (getBitmapUrlToStream(url, outputStream)) {
+							editor.commit();
+						} else {
+							editor.abort();
+						}
+					}
+					snapShot = mDiskCache.get(key);
+				}
+				if (snapShot != null) {
+					fileInputStream = (FileInputStream) snapShot.getInputStream(0);
+					fileDescriptor = fileInputStream.getFD();
+				}
+				Bitmap bitmap = null;
+				if (fileDescriptor != null) {
+					bitmap = BitmapFactory.decodeFileDescriptor(fileDescriptor);
+				}
+				if (bitmap != null) {
+					addBitmapToMemoryCaches(params[0], bitmap);
+				}
+				return bitmap;
+			} catch (IOException e) {
+				e.printStackTrace();
+			} finally {
+				if (fileDescriptor == null && fileInputStream != null) {
+					try {
+						fileInputStream.close();
+					} catch (IOException e) {
+					}
+				}
 			}
-			return bitmap;
+			return null;
 		}
 
 		@Override
 		protected void onPostExecute(Bitmap bitmap) {
 			super.onPostExecute(bitmap);
-			ImageView imageView = (ImageView) mListView.findViewWithTag(url);
-			if (imageView != null && bitmap != null) {
-				imageView.setImageBitmap(bitmap);
+			// Todo 使用回调接口
+//			ImageView imageView = (ImageView) mListView.findViewWithTag(url);
+//			if (imageView != null && bitmap != null) {
+//				imageView.setImageBitmap(bitmap);
+//			}
+			if(onBitmapPreparedListener!=null){
+				onBitmapPreparedListener.onBitmapPrepared(bitmap,url);
 			}
 			mTasks.remove(this);
 		}
+	}
+
+	public interface OnBitmapPreparedListener{
+		void onBitmapPrepared(Bitmap bitmap, String url);
 	}
 }

@@ -2,6 +2,8 @@ package com.neu.strangers.adapter;
 
 import android.app.Activity;
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,6 +22,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 
+import de.hdodenhof.circleimageview.CircleImageView;
+
 /**
  * Created with Android Studio.
  * Author: Enex Tapper
@@ -30,28 +34,45 @@ import java.util.Comparator;
 public class ContactAdapter extends BaseAdapter implements SectionIndexer, AbsListView.OnScrollListener{
 	private final static String SECTIONS = "#ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 
-	private ArrayList<ContactAdapterItem> stringArray;
-	private Context context;
+	private ArrayList<ContactAdapterItem> mContactsList;
+	private Context mContext;
 	private ImageCache mImageCache;
+	private ListView mListView;
 	private int mStart = 0, mEnd = 0;
 	private boolean mFirstFlag;
 
 	public ContactAdapter(Context context, ListView listView) {
-		this.stringArray = new ArrayList<>();
-		this.context = context;
-		this.mImageCache = new ImageCache(context, listView);
+		this.mContactsList = new ArrayList<>();
+		this.mContext = context;
+		this.mImageCache = new ImageCache(context);
 		this.mFirstFlag = true;
-		listView.setOnScrollListener(this);
+		this.mListView = listView;
+
+		mListView.setOnScrollListener(this);
+		mImageCache.setOnBitmapPreparedListener(new ImageCache.OnBitmapPreparedListener() {
+			@Override
+			public void onBitmapPrepared(Bitmap bitmap, String url) {
+				Log.v("Scroll Image Cache","事件发生");
+				CircleImageView imageView = (CircleImageView) mListView.findViewWithTag(url);
+				if (imageView != null && bitmap != null) {
+					imageView.setImageBitmap(bitmap);
+				}else if(imageView!=null){
+					imageView.setImageResource(R.mipmap.ic_launcher);
+				}else{
+					Log.v("Scroll Image Cache","image view 空");
+				}
+			}
+		});
 	}
 
 	@Override
 	public int getCount() {
-		return stringArray.size();
+		return mContactsList.size();
 	}
 
 	@Override
 	public Object getItem(int i) {
-		return stringArray.get(i);
+		return mContactsList.get(i);
 	}
 
 	@Override
@@ -61,20 +82,22 @@ public class ContactAdapter extends BaseAdapter implements SectionIndexer, AbsLi
 
 	@Override
 	public View getView(int i, View view, ViewGroup viewGroup) {
-		LayoutInflater inflate = ((Activity) context).getLayoutInflater();
-		ContactAdapterItem item = stringArray.get(i);
+		LayoutInflater inflate = ((Activity) mContext).getLayoutInflater();
+		ContactAdapterItem item = mContactsList.get(i);
 
 		ViewHolderItem viewHolderItem;
 		if(view==null){
 			view = inflate.inflate(R.layout.contact_item, null);
 			viewHolderItem = new ViewHolderItem();
 			viewHolderItem.contactName = (TextView)view.findViewById(R.id.contact_name);
+			viewHolderItem.contactAvatar = (CircleImageView)view.findViewById(R.id.contact_avatar);
 			view.setTag(viewHolderItem);
 		}else{
 			viewHolderItem = (ViewHolderItem)view.getTag();
 		}
 
 		viewHolderItem.contactName.setText(item.getUserName());
+		viewHolderItem.contactAvatar.setTag(item.getAvatarUrl());
 
 		return view;
 	}
@@ -96,12 +119,12 @@ public class ContactAdapter extends BaseAdapter implements SectionIndexer, AbsLi
 					// For numeric section
 					for (int k = 0; k <= 9; k++) {
 						if (StringMatcher.match(String.valueOf(
-								stringArray.get(j).getPinyin().charAt(0)).toUpperCase(), String.valueOf(k)))
+								mContactsList.get(j).getPinyin().charAt(0)).toUpperCase(), String.valueOf(k)))
 							return j;
 					}
 				} else {
 					if (StringMatcher.match(String.valueOf(
-									stringArray.get(j).getPinyin().charAt(0)).toUpperCase(),
+									mContactsList.get(j).getPinyin().charAt(0)).toUpperCase(),
 							String.valueOf(SECTIONS.charAt(i))))
 						return j;
 				}
@@ -118,7 +141,11 @@ public class ContactAdapter extends BaseAdapter implements SectionIndexer, AbsLi
 	@Override
 	public void onScrollStateChanged(AbsListView absListView, int i) {
 		if (i == SCROLL_STATE_IDLE) {
-			mImageCache.loadImages(mStart, mEnd);
+			Log.v("Scroll Image Cache","Scroll state changed to idle");
+//			mImageCache.loadImages(mStart, mEnd, mContactsList);
+			for(int j = mStart ; j < mEnd; j++){
+				mImageCache.loadImage(mContactsList.get(j).getAvatarUrl());
+			}
 		} else {
 			mImageCache.cancelAllTasks();
 		}
@@ -129,21 +156,26 @@ public class ContactAdapter extends BaseAdapter implements SectionIndexer, AbsLi
 		mStart = i;
 		mEnd = i + i1;
 		if (mFirstFlag  && i1 > 0) {
-			mImageCache.loadImages(mStart, mEnd);
+			Log.v("Scroll Image Cache","符合条件");
+//			mImageCache.loadImages(mStart, mEnd, mContactsList);
+			for(int j = mStart ; j < mEnd; j++){
+				Log.v("Scroll Image Cache","加载 第"+j+"个");
+				mImageCache.loadImage(mContactsList.get(j).getAvatarUrl());
+			}
 			mFirstFlag = false;
 		}
 	}
 
 	public void refreshList(ArrayList<String> contactsList, ArrayList<Integer> idsList){
-		stringArray.clear();
+		this.mContactsList.clear();
 		for(int i = 0;i<contactsList.size();i++){
 			String item = contactsList.get(i);
-			stringArray.add(
-					new ContactAdapterItem(idsList.get(i),item, PinyinHelper.getShortPinyin(item)));
+			this.mContactsList.add(
+					new ContactAdapterItem(idsList.get(i), item, PinyinHelper.getShortPinyin(item)));
 		}
 
 		// 在此处排序
-		Collections.sort(stringArray, new Comparator<ContactAdapterItem>() {
+		Collections.sort(this.mContactsList, new Comparator<ContactAdapterItem>() {
 			@Override
 			public int compare(ContactAdapterItem item1, ContactAdapterItem item2) {
 				return item1.getPinyin().compareTo(item2.getPinyin());
@@ -155,5 +187,6 @@ public class ContactAdapter extends BaseAdapter implements SectionIndexer, AbsLi
 
 	private static class ViewHolderItem {
 		TextView contactName;
+		CircleImageView contactAvatar;
 	}
 }
