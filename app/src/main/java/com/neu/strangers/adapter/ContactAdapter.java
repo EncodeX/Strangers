@@ -2,15 +2,21 @@ package com.neu.strangers.adapter;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.RelativeLayout;
 import android.widget.SectionIndexer;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.github.stuxuhai.jpinyin.PinyinHelper;
 import com.neu.strangers.R;
+import com.neu.strangers.activities.ChatActivity;
+import com.neu.strangers.view.MyRippleLayout;
 import com.woozzu.android.util.StringMatcher;
 
 import java.util.ArrayList;
@@ -52,20 +58,33 @@ public class ContactAdapter extends BaseAdapter implements SectionIndexer{
 
 	@Override
 	public View getView(int i, View view, ViewGroup viewGroup) {
-		LayoutInflater inflate = ((Activity) context).getLayoutInflater();
-		ContactAdapterItem item = stringArray.get(i);
+		final LayoutInflater inflate = ((Activity) context).getLayoutInflater();
+		final ContactAdapterItem item = stringArray.get(i);
 
 		ViewHolderItem viewHolderItem;
 		if(view==null){
 			view = inflate.inflate(R.layout.contact_item, null);
 			viewHolderItem = new ViewHolderItem();
 			viewHolderItem.contactName = (TextView)view.findViewById(R.id.contact_name);
+            viewHolderItem.contacLayout = (RelativeLayout)view.findViewById(R.id.contact_layout);
+
 			view.setTag(viewHolderItem);
+
 		}else{
 			viewHolderItem = (ViewHolderItem)view.getTag();
 		}
 
 		viewHolderItem.contactName.setText(item.getUserName());
+
+        viewHolderItem.contactName.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(context, ChatActivity.class);
+                intent.putExtra("username",String.valueOf(item.getId()));
+
+                context.startActivity(intent);
+            }
+        });
 
 		return view;
 	}
@@ -127,5 +146,6 @@ public class ContactAdapter extends BaseAdapter implements SectionIndexer{
 
 	private static class ViewHolderItem {
 		TextView contactName;
+        RelativeLayout contacLayout;
 	}
 }

@@ -1,5 +1,6 @@
 package com.neu.strangers.activities;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -12,6 +13,7 @@ import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
@@ -19,9 +21,13 @@ import com.astuetz.PagerSlidingTabStrip;
 import com.neu.strangers.R;
 import com.neu.strangers.tools.ApplicationManager;
 import com.neu.strangers.tools.Constants;
+import com.neu.strangers.tools.DatabaseManager;
 import com.neu.strangers.tools.RoundImage;
+import com.neu.strangers.tools.XmppTool;
 import com.neu.strangers.view.MainViewPager;
 import com.readystatesoftware.systembartint.SystemBarTintManager;
+
+import net.sqlcipher.Cursor;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;

@@ -1,5 +1,6 @@
 package com.neu.strangers.activities;
 
+import android.app.Activity;
 import android.content.ContentValues;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -52,6 +53,10 @@ public class LoginActivity extends AppCompatActivity {
 	FloatingEditText mUserNameInput;
 	@InjectView(R.id.password_input)
 	FloatingEditText mPasswordInput;
+    private String username;
+    private String password;
+    private SharedPreferences preferences;
+    private SharedPreferences.Editor editor;
 
 	private MaterialDialog mLoginDialog;
 	private Handler mHandler = new Handler(){
@@ -154,6 +159,9 @@ public class LoginActivity extends AppCompatActivity {
 				stringBuilder.append("?");
 				stringBuilder.append("username=" + URLEncoder.encode(strings[0], "UTF-8") + "&");
 				stringBuilder.append("passwd=" + URLEncoder.encode(strings[1], "UTF-8"));
+                //
+                username = strings[0];
+                password = strings[1];
 
 				URL url = new URL(stringBuilder.toString());
 				HttpURLConnection conn = (HttpURLConnection)url.openConnection();
@@ -192,6 +200,12 @@ public class LoginActivity extends AppCompatActivity {
 						mLoginDialog.setMessage("正在获取用户信息...");
 
 						new GetUserInfo().execute(jsonObject.getInt("id"));
+
+                         preferences = getSharedPreferences("userinfo", Activity.MODE_PRIVATE);
+                         editor = preferences.edit();
+                         editor.putString("username",username);
+                         editor.putString("password",password);
+                         editor.commit();
 					}else if(jsonObject.getString("Login").equals("fail")){
 						mLoginDialog.setTitle("登录失败")
 								.setMessage("请检查用户名/密码是否正确")
