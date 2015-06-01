@@ -19,18 +19,24 @@ import com.material.widget.PaperButton;
 import com.neu.strangers.R;
 import com.neu.strangers.adapter.ChatAdapter;
 import com.neu.strangers.bean.ChatInfo;
+import com.neu.strangers.tools.DatabaseManager;
 import com.neu.strangers.tools.XmppTool;
 import com.neu.strangers.view.DropdownListView;
 import com.neu.strangers.view.ChatEditText;
 import com.readystatesoftware.systembartint.SystemBarTintManager;
 
+import net.sqlcipher.Cursor;
+
 import org.jivesoftware.smack.Chat;
 import org.jivesoftware.smack.ChatManager;
 import org.jivesoftware.smack.ChatManagerListener;
+import org.jivesoftware.smack.ConnectionConfiguration;
 import org.jivesoftware.smack.MessageListener;
+import org.jivesoftware.smack.Roster;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.packet.IQ;
+import org.jivesoftware.smack.packet.Presence;
 import org.jivesoftware.smack.packet.Registration;
 import org.jivesoftware.smack.util.StringUtils;
 
@@ -62,8 +68,17 @@ public class ChatActivity extends ActionBarActivity implements View.OnClickListe
     private SimpleDateFormat mSimpleDateFormat;
     XMPPConnection mXmppConnection;
     private String reply = "";// 模拟回复
-   // TaxiChatManagerListener chatManagerListener;
-   //  ChatManager chatmanager;
+    TaxiChatManagerListener chatManagerListener;
+    ChatManager chatmanager;
+    private SharedPreferences preferences;
+    private SharedPreferences.Editor editor;
+    Chat chat;
+
+    private static String HOST = "www.shiguangtravel.com";
+    String username;
+    String password;
+    String friendId;
+    String friendname;
 
     @SuppressLint("SimpleDateFormat")
     private void initViews() {
@@ -95,29 +110,28 @@ public class ChatActivity extends ActionBarActivity implements View.OnClickListe
                     mChatAdapter.setList(mInfos);
                     mChatAdapter.notifyDataSetChanged();
                     mListView.setSelection(mInfos.size() - 1);
-                    new Handler().postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            mInfos.add(getChatInfoFrom(reply));
-                            mChatAdapter.setList(mInfos);
-                            mChatAdapter.notifyDataSetChanged();
-                            mListView.setSelection(mInfos.size() - 1);
-                        }
-                    }, 1000);
+//                    new Handler().postDelayed(new Runnable() {
+//                        @Override
+//                        public void run() {
+//                            mInfos.add(getChatInfoFrom(reply));
+//                            mChatAdapter.setList(mInfos);
+//                            mChatAdapter.notifyDataSetChanged();
+//                            mListView.setSelection(mInfos.size() - 1);
+//                        }
+//                    }, 1000);
                     mInput.setText("");
 
-                    /*
-                    Chat chat = chatmanager.createChat("user@120.24.76.184",new ChatLi());
                     org.jivesoftware.smack.packet.Message message = new org.jivesoftware.smack.packet.Message();
-                    message.setBody("hello");
+                    message.setBody(reply);
 
                     try {
                         chat.sendMessage(message);
-                        //chat.addMessageListener(new ChatLi());
+                       // chat.sendMessage(reply);
+
                     } catch (XMPPException e) {
                         e.printStackTrace();
+                        Log.e("send","send_error");
                     }
-                    */
 
                 }
                 break;
@@ -127,7 +141,7 @@ public class ChatActivity extends ActionBarActivity implements View.OnClickListe
         }
     }
 
-    /*
+
     class TaxiChatManagerListener implements ChatManagerListener {
 
         public void chatCreated(Chat chat, boolean arg1) {
@@ -140,17 +154,17 @@ public class ChatActivity extends ActionBarActivity implements View.OnClickListe
                     //消息内容
                     String body = message.getBody();
                     Log.e("body",body);
-                    Log.e("body",body);
 
-
-
+                    mInfos.add(getChatInfoFrom(body));
+                    mChatAdapter.setList(mInfos);
+                    mChatAdapter.notifyDataSetChanged();
+                    mListView.setSelection(mInfos.size() - 1);
                 }
             });
         }
 
 
     }
-
 
 
     //MessageListener
@@ -163,13 +177,10 @@ public class ChatActivity extends ActionBarActivity implements View.OnClickListe
             message.getFrom();
             //消息内容
             String body = message.getBody();
-               Log.e("body!",body);
-            Log.e("body!",body);
-            Log.e("!",message.getFrom());
-           // message.getTo()
+
         }
     }
-    */
+
 
 
 
@@ -233,14 +244,25 @@ public class ChatActivity extends ActionBarActivity implements View.OnClickListe
         mSystemBarTintManager.setTintColor(getResources().getColor(R.color.app_color_primary_dark));
 
         initViews();
-       // chatmanager = XmppTool.getChatManager();
+        preferences = getSharedPreferences("userinfo",MODE_PRIVATE);
+        editor = preferences.edit();
+        username = preferences.getString("username", "");
+        password = preferences.getString("password","");
+        friendId = getIntent().getStringExtra("username");
+        Cursor cursor = DatabaseManager.getInstance().rawQuery("select username from friends where id = ?",new String[]{String.valueOf(friendId)});
+        if (cursor.moveToNext()) {
+            friendname = cursor.getString(0).toString();
+        }
+        cursor.close();
+        new connectToServer().execute();
 
-      //  chatManagerListener = new TaxiChatManagerListener();
-      //  chatmanager.addChatListener(chatManagerListener);
 
+    }
 
-
-
+    @Override
+    protected void onDestroy() {
+     //   mXmppConnection.disconnect();
+        super.onDestroy();
     }
 
     @Override
@@ -258,6 +280,46 @@ public class ChatActivity extends ActionBarActivity implements View.OnClickListe
             }
         }.start();
     }
+
+    private class connectToServer extends AsyncTask<Void,Integer,Void>
+    {
+
+
+        @Override
+        protected Void doInBackground(Void... voids) {
+            try {
+                mXmppConnection = new XMPPConnection(HOST);
+
+                mXmppConnection.connect();
+                ConnectionConfiguration configuration = new ConnectionConfiguration(HOST);
+                configuration.setSASLAuthenticationEnabled(false);
+
+                Registration reg = new Registration();
+                reg.setType(IQ.Type.SET);
+                //  reg.setTo(mXmppConnection.getInstance().getServiceName());
+                reg.setUsername(username);
+                reg.setPassword(password);
+                mXmppConnection.sendPacket(reg);
+                mXmppConnection.login(username,password);
+                Presence presence = new Presence(Presence.Type.available);
+                mXmppConnection.sendPacket(presence);
+                Roster roster = mXmppConnection.getRoster();
+
+                roster.createEntry(friendname+"@120.24.76.184",friendname,new String[]{"Friends"});
+
+                if(mXmppConnection!=null)
+                    chatmanager = mXmppConnection.getChatManager();
+                chatManagerListener = new TaxiChatManagerListener();
+                chatmanager.addChatListener(chatManagerListener);
+                chat = chatmanager.createChat(friendname.trim()+"@120.24.76.184",new ChatLi());
+            } catch (XMPPException e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
+    }
+
+
 
 
 

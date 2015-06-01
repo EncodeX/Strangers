@@ -1,5 +1,6 @@
 package com.neu.strangers.activities;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -24,7 +25,9 @@ import com.neu.strangers.tools.ApplicationManager;
 import com.neu.strangers.tools.Constants;
 import com.neu.strangers.tools.DatabaseManager;
 import com.neu.strangers.tools.ImageCache;
+import com.neu.strangers.tools.DatabaseManager;
 import com.neu.strangers.tools.RoundImage;
+import com.neu.strangers.tools.XmppTool;
 import com.neu.strangers.view.MainViewPager;
 import com.readystatesoftware.systembartint.SystemBarTintManager;
 

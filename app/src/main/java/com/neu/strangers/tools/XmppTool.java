@@ -48,6 +48,10 @@ public class XmppTool {
         new connectToServerTask().execute(2);
     }
 
+    public static void DisConnect(){
+        new connectToServerTask().execute(3);
+    }
+
 
     private static class connectToServerTask extends AsyncTask<Integer,Void,Void>
     {
@@ -92,6 +96,13 @@ public class XmppTool {
 
                     }
                     break;
+                case 3:
+                    if(mXmppConnection != null) {
+                       mXmppConnection.disconnect();
+
+
+                    }
+
             }
 
             return null;

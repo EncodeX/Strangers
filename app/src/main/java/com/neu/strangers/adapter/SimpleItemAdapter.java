@@ -46,7 +46,7 @@ public class SimpleItemAdapter extends RecyclerView.Adapter<SimpleItemAdapter.Si
         holder.mRecentChatContainer.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                mContext.startActivity(new Intent(mContext, ChatActivity.class));
+            //    mContext.startActivity(new Intent(mContext, ChatActivity.class));
             }
         });
 

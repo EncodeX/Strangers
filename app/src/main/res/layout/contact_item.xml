@@ -10,6 +10,8 @@
 	app:mrl_rippleDuration="250"
 	app:mrl_rippleHover="true">
 	<RelativeLayout
+		android:clickable="true"
+		android:id="@+id/contact_layout"
 		android:layout_width="match_parent"
 		android:layout_height="match_parent"
 		android:background="@drawable/ripple_background_selector_light">
