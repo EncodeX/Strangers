@@ -157,16 +157,17 @@ public class ProfileActivity extends AppCompatActivity {
 
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		Intent intent;
 		if(resultCode == Activity.RESULT_OK){
 			switch (requestCode){
 				case Constants.Action.TAKE_PICTURE:
 					mDialog.dismiss();
 					mDialog = new MaterialDialog(ProfileActivity.this);
 					mDialog.setTitle("请等待");
-					mDialog.setMessage("正在获取照片...");
+					mDialog.setMessage("启动裁剪程序...");
 					mDialog.show();
 
-					Intent intent = new Intent("com.android.camera.action.CROP");
+					intent = new Intent("com.android.camera.action.CROP");
 					//可以选择图片类型，如果是*表明所有类型的图片
 					intent.setDataAndType(Uri.fromFile(new File(mPhotoFullPath)), "image/*");
 					// 下面这个crop = true是设置在开启的Intent中设置显示的VIEW可裁剪
@@ -193,6 +194,44 @@ public class ProfileActivity extends AppCompatActivity {
 					startActivityForResult(intent, Constants.Action.CROP_PICTURE);
 					break;
 				case Constants.Action.SELECT_PICTURE:
+					mDialog.dismiss();
+					mDialog = new MaterialDialog(ProfileActivity.this);
+					mDialog.setTitle("请等待");
+					mDialog.setMessage("启动裁剪程序...");
+					mDialog.show();
+
+					Uri selectedImage = data.getData();
+					String[] filePathColumns={MediaStore.Images.Media.DATA};
+					android.database.Cursor c =
+							this.getContentResolver().query(selectedImage, filePathColumns, null,null, null);
+					c.moveToFirst();
+					int columnIndex = c.getColumnIndex(filePathColumns[0]);
+					String picturePath= c.getString(columnIndex);
+					c.close();
+
+					intent = new Intent("com.android.camera.action.CROP");
+					intent.setDataAndType(selectedImage, "image/*");
+					intent.putExtra("crop", "true");
+					intent.putExtra("aspectX", 1);
+					intent.putExtra("aspectY", 1);
+					intent.putExtra("outputX", 480);
+					intent.putExtra("outputY", 480);
+					intent.putExtra("scale", true);
+					intent.putExtra("outputFormat", Bitmap.CompressFormat.JPEG.toString());
+					intent.putExtra("return-data", true);
+
+					Log.v("Test",selectedImage.getPath());
+
+					String name = DateFormat.format("yyyyMMdd_hhmmss", Calendar.getInstance(Locale.CHINA))+".jpg";
+					File file = getFileDir(ProfileActivity.this, "photos");
+					mPhotoFullPath = file.getPath() + File.separator + name;
+
+					intent.putExtra(
+							MediaStore.EXTRA_OUTPUT,
+							Uri.fromFile(new File(mPhotoFullPath.replace(".jpg","_0.jpg"))));
+
+					startActivityForResult(intent, Constants.Action.CROP_PICTURE);
+
 					break;
 				case Constants.Action.CROP_PICTURE:
 					new UploadImage(mPhotoFullPath.replace(".jpg","_0.jpg")).execute();
@@ -675,6 +714,7 @@ public class ProfileActivity extends AppCompatActivity {
 				@Override
 				public void onClick(View view) {
 					Intent intent = new Intent(Intent.ACTION_PICK,android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+
 					startActivityForResult(intent, Constants.Action.SELECT_PICTURE);
 				}
 			});

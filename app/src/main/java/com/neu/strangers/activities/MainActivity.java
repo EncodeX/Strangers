@@ -90,6 +90,7 @@ public class MainActivity extends AppCompatActivity{
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ApplicationManager.getInstance().addActivity(this);
+	    ApplicationManager.getInstance().clearOtherActivities(this);
 
         ButterKnife.inject(this);
 

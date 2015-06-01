@@ -14,6 +14,7 @@ import com.kenumir.materialsettings.items.TextItem;
 import com.kenumir.materialsettings.storage.PreferencesStorageInterface;
 import com.kenumir.materialsettings.storage.StorageInterface;
 import com.neu.strangers.R;
+import com.neu.strangers.tools.ApplicationManager;
 import com.neu.strangers.tools.Constants;
 import com.readystatesoftware.systembartint.SystemBarTintManager;
 
@@ -30,6 +31,7 @@ public class SettingsActivity extends MaterialSettingsActivity {
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		ApplicationManager.getInstance().addActivity(this);
 
 		ButterKnife.inject(this);
 
@@ -58,23 +60,23 @@ public class SettingsActivity extends MaterialSettingsActivity {
 			}
 		}));
 		addItem(new SwitcherItem(getFragment(), "key2").setTitle("Switcher item").setSubtitle("Subtitle text"));
-		addItem(new SwitcherItem(getFragment(), "key3").setTitle("Switcher item").setSubtitle("Subtitle text"));
-		addItem(new TextItem(getFragment(), "key4").setTitle("Text item"));
+		addItem(new TextItem(getFragment(), "key4").setTitle("退出登录").setOnclick(new TextItem.OnClickListener() {
+			@Override
+			public void onClick(TextItem item) {
+				ApplicationManager.getInstance().clearOtherActivities(SettingsActivity.this);
+
+				SharedPreferences sharedPreferences =
+						getSharedPreferences(Constants.Application.PREFERENCE_NAME,0);
+				SharedPreferences.Editor editor = sharedPreferences.edit();
+				editor.putBoolean(Constants.Application.IS_LOGGED_IN,false);
+				editor.apply();
+
+				SettingsActivity.this.finish();
+			}
+		}));
 		addItem(new HeaderItem(getFragment()).setTitle("Sample title 2"));
 		addItem(new SwitcherItem(getFragment(), "key5").setTitle("Switcher item").setSubtitle("Subtitle text"));
 		addItem(new SwitcherItem(getFragment(), "key6").setTitle("Switcher item").setSubtitle("Subtitle text"));
-		addItem(new SwitcherItem(getFragment(), "key7").setTitle("Switcher item").setSubtitle("Subtitle text"));
-		addItem(new SwitcherItem(getFragment(), "key8").setTitle("Switcher item").setSubtitle("Subtitle text"));
-		addItem(new SwitcherItem(getFragment(), "key9").setTitle("Switcher item").setSubtitle("Subtitle text"));
-		addItem(new SwitcherItem(getFragment(), "key10").setTitle("Switcher item").setSubtitle("Subtitle text"));
-		addItem(new SwitcherItem(getFragment(), "key11").setTitle("Switcher item").setSubtitle("Subtitle text"));
-
-		/* Todo 暂时利用Settings Activity 取消登录状态 */
-		SharedPreferences sharedPreferences =
-				getSharedPreferences(Constants.Application.PREFERENCE_NAME,0);
-		SharedPreferences.Editor editor = sharedPreferences.edit();
-		editor.putBoolean(Constants.Application.IS_LOGGED_IN,false);
-		editor.apply();
 	}
 
 	@Override
