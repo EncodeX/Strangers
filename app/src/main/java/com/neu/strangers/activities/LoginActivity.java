@@ -43,6 +43,7 @@ import me.drakeet.materialdialog.MaterialDialog;
 public class LoginActivity extends AppCompatActivity {
 
 	private SystemBarTintManager mSystemBarTintManager;
+	private String mPassword;
 
 	@InjectView(R.id.tool_bar)
 	Toolbar mToolbar;
@@ -149,6 +150,7 @@ public class LoginActivity extends AppCompatActivity {
 		@Override
 		protected JSONObject doInBackground(String... strings) {
 			try {
+				mPassword = strings[1];
 				StringBuilder stringBuilder = new StringBuilder(
 						"http://www.shiguangtravel.com:8080/CN-Soft/servlet/LoginAction");
 				stringBuilder.append("?");
@@ -289,6 +291,7 @@ public class LoginActivity extends AppCompatActivity {
 
 					ContentValues values = new ContentValues();
 					values.put("id",id);
+					values.put("password",mPassword);
 					values.put("username",username);
 					values.put("nickname",nickname);
 					values.put("sex",sex);
@@ -299,6 +302,7 @@ public class LoginActivity extends AppCompatActivity {
 					values.put("background",background);
 
 					DatabaseManager.getInstance().insert("user",null,values);
+					mPassword = null;
 
 					// 取得用户ID并保存至本地
 					SharedPreferences sharedPreferences =
@@ -316,6 +320,8 @@ public class LoginActivity extends AppCompatActivity {
 
 					mLoginDialog.show();
 					mHandler.sendEmptyMessageDelayed(0, 1000);
+
+					cursor.close();
 				}else{
 					mLoginDialog.dismiss();
 					mLoginDialog = new MaterialDialog(LoginActivity.this)

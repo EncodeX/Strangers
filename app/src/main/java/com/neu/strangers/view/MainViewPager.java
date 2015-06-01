@@ -182,6 +182,7 @@ public class MainViewPager extends ViewPager {
 
 					if(cursor!=null){
 						DatabaseManager.getInstance().delete("friends","",null);
+						cursor.close();
 					}
 
 					JSONArray contactList = jsonObject.getJSONArray("ShowFriends");

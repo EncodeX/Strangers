@@ -16,6 +16,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 	public static final String CREATE_USER_TABLE =
 			"create table user(" +
 					"id integer, " +
+					"password text, " +
 					"username text, " +
 					"nickname text, " +
 					"sex integer, " +

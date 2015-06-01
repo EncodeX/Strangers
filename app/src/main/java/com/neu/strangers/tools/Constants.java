@@ -16,4 +16,10 @@ public interface Constants {
 
 		public final static String PROFILE_USER_ID = "profile_user_id";
 	}
+
+	class Action{
+		public final static int TAKE_PICTURE = 100;
+		public final static int SELECT_PICTURE = 101;
+		public final static int CROP_PICTURE = 102;
+	}
 }

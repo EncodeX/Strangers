@@ -70,21 +70,21 @@ public class ImageCache {
 	}
 
 	public void loadImage(String url, String tag){
-		if(onBitmapPreparedListener!=null){
-			onBitmapPreparedListener.onBitmapPrepared(null,tag);
-		}
+//		if(onBitmapPreparedListener!=null){
+//			onBitmapPreparedListener.onBitmapPrepared(null,tag);
+//		}
 
 		// Todo 暂时测试 实际情况为下方已注释代码
-//		Bitmap bitmap = getBitmapFromMemoryCaches(url);
-//		if(bitmap == null){
-//			ASyncDownloadImage task = new ASyncDownloadImage(url,tag);
-//			mTasks.add(task);
-//			task.execute(url);
-//		}else{
-//			if(onBitmapPreparedListener != null){
-//				onBitmapPreparedListener.onBitmapPrepared(bitmap,tag);
-//			}
-//		}
+		Bitmap bitmap = getBitmapFromMemoryCaches(url);
+		if(bitmap == null){
+			ASyncDownloadImage task = new ASyncDownloadImage(url,tag);
+			mTasks.add(task);
+			task.execute(url);
+		}else{
+			if(onBitmapPreparedListener != null){
+				onBitmapPreparedListener.onBitmapPrepared(bitmap,tag);
+			}
+		}
 	}
 
 	// 从LruCache获取中获取缓存对象
@@ -126,7 +126,11 @@ public class ImageCache {
 		String cachePath;
 		if (Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState())
 				|| !Environment.isExternalStorageRemovable()) {
-			cachePath = context.getExternalCacheDir().getPath();
+			if (context.getExternalCacheDir() != null) {
+				cachePath = context.getExternalCacheDir().getPath();
+			}else{
+				cachePath = context.getCacheDir().getPath();
+			}
 		} else {
 			cachePath = context.getCacheDir().getPath();
 		}
@@ -273,11 +277,6 @@ public class ImageCache {
 		@Override
 		protected void onPostExecute(Bitmap bitmap) {
 			super.onPostExecute(bitmap);
-			// Todo 使用回调接口
-//			ImageView imageView = (ImageView) mListView.findViewWithTag(url);
-//			if (imageView != null && bitmap != null) {
-//				imageView.setImageBitmap(bitmap);
-//			}
 			if(onBitmapPreparedListener!=null){
 				onBitmapPreparedListener.onBitmapPrepared(bitmap, tag);
 			}

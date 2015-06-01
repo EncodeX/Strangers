@@ -9,19 +9,26 @@ import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 
 import com.astuetz.PagerSlidingTabStrip;
 import com.neu.strangers.R;
 import com.neu.strangers.tools.ApplicationManager;
 import com.neu.strangers.tools.Constants;
+import com.neu.strangers.tools.DatabaseManager;
+import com.neu.strangers.tools.ImageCache;
 import com.neu.strangers.tools.RoundImage;
 import com.neu.strangers.view.MainViewPager;
 import com.readystatesoftware.systembartint.SystemBarTintManager;
+
+import net.sqlcipher.Cursor;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -43,6 +50,9 @@ public class MainActivity extends AppCompatActivity{
     private SystemBarTintManager mSystemBarTintManager;
     private SensorManager mSensorManager;
     private Sensor mSensor;
+    private MenuItem mUserItem;
+	private Menu mMenu;
+	private ImageCache mImageCache;
 
     @InjectView(R.id.tool_bar)
     Toolbar toolbar;
@@ -96,6 +106,18 @@ public class MainActivity extends AppCompatActivity{
         mSensorManager = (SensorManager)getSystemService(Context.SENSOR_SERVICE);
         mSensor = mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
         mSensorManager.registerListener(mListener, mSensor, SensorManager.SENSOR_DELAY_NORMAL);
+
+	    //Initialize cache
+	    mImageCache = new ImageCache(this);
+	    mImageCache.setOnBitmapPreparedListener(new ImageCache.OnBitmapPreparedListener() {
+		    @Override
+		    public void onBitmapPrepared(Bitmap bitmap, String tag) {
+			    RoundImage roundImage = new RoundImage(bitmap);
+			    mUserItem = mMenu.findItem(R.id.action_user);
+			    mUserItem.setIcon(roundImage);
+		    }
+	    });
+	    new UpdateUserAvatar().execute();
     }
 
     @Override
@@ -107,7 +129,7 @@ public class MainActivity extends AppCompatActivity{
 
     @Override
     protected void onRestart() {
-        mSensorManager.registerListener(mListener,mSensor,SensorManager.SENSOR_DELAY_NORMAL);
+        mSensorManager.registerListener(mListener, mSensor, SensorManager.SENSOR_DELAY_NORMAL);
         super.onRestart();
     }
 
@@ -125,6 +147,7 @@ public class MainActivity extends AppCompatActivity{
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_main, menu);
+	    mMenu = menu;
         return true;
     }
 
@@ -134,8 +157,8 @@ public class MainActivity extends AppCompatActivity{
         Bitmap bm = BitmapFactory.decodeResource(getResources(), R.drawable.test_avatar);
         RoundImage roundImage = new RoundImage(bm);
 
-        MenuItem item = menu.findItem(R.id.action_user);
-        item.setIcon(roundImage);
+        mUserItem = mMenu.findItem(R.id.action_user);
+        mUserItem.setIcon(roundImage);
 
         return super.onPrepareOptionsMenu(menu);
     }
@@ -156,12 +179,30 @@ public class MainActivity extends AppCompatActivity{
 				intent.setClass(MainActivity.this, ProfileActivity.class);
 				intent.putExtra(
 						Constants.Application.PROFILE_USER_ID,
-						getSharedPreferences(Constants.Application.PREFERENCE_NAME,0)
-								.getInt(Constants.Application.LOGGED_IN_USER_ID,-1));
-				MainActivity.this.startActivity(intent);
+						getSharedPreferences(Constants.Application.PREFERENCE_NAME, 0)
+								.getInt(Constants.Application.LOGGED_IN_USER_ID, -1));
+				startActivity(intent);
+				overridePendingTransition(R.anim.fade_in_in, R.anim.fade_in_out);
 				return true;
 		}
 
         return super.onOptionsItemSelected(item);
+    }
+
+    private class UpdateUserAvatar extends AsyncTask<String,Void,Integer>{
+        @Override
+        protected Integer doInBackground(String... strings) {
+	        // todo 今后需要优化 profile activity需要给出信号 不需要每次都刷新
+	        Cursor cursor = DatabaseManager.getInstance().query("user", null, null, null, null, null, null);
+            if (cursor != null) {
+                cursor.moveToNext();
+
+                String picture = cursor.getString(cursor.getColumnIndex("picture"));
+				mImageCache.loadImage(picture,"menu_icon");
+
+                cursor.close();
+            }
+            return null;
+        }
     }
 }

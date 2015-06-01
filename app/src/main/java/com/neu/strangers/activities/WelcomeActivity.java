@@ -68,6 +68,7 @@ public class WelcomeActivity extends AppCompatActivity {
 
 		// 此处初始化数据库
 		DatabaseManager.setContext(getApplicationContext());
+		DatabaseManager.getInstance();
 
 //		ContentValues values = new ContentValues();
 //		values.put("id", 1);

@@ -2,13 +2,21 @@ package com.neu.strangers.activities;
 
 import android.app.Activity;
 import android.content.ContentValues;
+import android.content.Context;
 import android.content.DialogInterface;
-import android.content.SharedPreferences;
+import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Environment;
+import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.format.DateFormat;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewTreeObserver;
@@ -23,6 +31,8 @@ import com.neu.strangers.R;
 import com.neu.strangers.tools.ApplicationManager;
 import com.neu.strangers.tools.Constants;
 import com.neu.strangers.tools.DatabaseManager;
+import com.neu.strangers.tools.ImageCache;
+import com.neu.strangers.tools.UploadUtils;
 import com.neu.strangers.view.AdvancedScrollView;
 import com.neu.strangers.view.RectImageView;
 import com.nineoldandroids.view.ViewHelper;
@@ -34,14 +44,19 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.util.Calendar;
+import java.util.Locale;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import de.hdodenhof.circleimageview.CircleImageView;
 import me.drakeet.materialdialog.MaterialDialog;
 
 public class ProfileActivity extends AppCompatActivity {
@@ -56,8 +71,11 @@ public class ProfileActivity extends AppCompatActivity {
 	private int mBackgroundY;
 	private int mProfileId;
 	private MaterialDialog mDialog;
+	private String mPhotoFullPath;
+	private ImageCache mImageCache;
 
 	private boolean isInitialized = false;
+	private boolean isAvatarChanged = false;
 
 	@InjectView(R.id.tool_bar)
 	Toolbar mToolbar;
@@ -93,6 +111,8 @@ public class ProfileActivity extends AppCompatActivity {
 	RelativeLayout mUserEmailLabel;
 	@InjectView(R.id.user_email)
 	TextView mUserEmail;
+	@InjectView(R.id.user_avatar)
+	CircleImageView mUserAvatar;
 
     //用户的信息，方便写入数据库
     private String username;
@@ -118,12 +138,91 @@ public class ProfileActivity extends AppCompatActivity {
 			Toast.makeText(ProfileActivity.this, "未读取用户信息 无法查看个人信息", Toast.LENGTH_SHORT).show();
 			this.finish();
 		}
+
+		mImageCache = new ImageCache(this);
+		mImageCache.setOnBitmapPreparedListener(new ImageCache.OnBitmapPreparedListener() {
+			@Override
+			public void onBitmapPrepared(Bitmap bitmap, String tag) {
+				mUserAvatar.setImageBitmap(bitmap);
+			}
+		});
+
 		initView();
 	}
 
 	@Override
 	protected void onResume() {
 		super.onResume();
+	}
+
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		if(resultCode == Activity.RESULT_OK){
+			switch (requestCode){
+				case Constants.Action.TAKE_PICTURE:
+					mDialog.dismiss();
+					mDialog = new MaterialDialog(ProfileActivity.this);
+					mDialog.setTitle("请等待");
+					mDialog.setMessage("正在获取照片...");
+					mDialog.show();
+
+					Intent intent = new Intent("com.android.camera.action.CROP");
+					//可以选择图片类型，如果是*表明所有类型的图片
+					intent.setDataAndType(Uri.fromFile(new File(mPhotoFullPath)), "image/*");
+					// 下面这个crop = true是设置在开启的Intent中设置显示的VIEW可裁剪
+					intent.putExtra("crop", "true");
+					// aspectX aspectY 是宽高的比例，这里设置的是正方形（长宽比为1:1）
+					intent.putExtra("aspectX", 1);
+					intent.putExtra("aspectY", 1);
+					// outputX outputY 是裁剪图片宽高
+					intent.putExtra("outputX", 480);
+					intent.putExtra("outputY", 480);
+					//裁剪时是否保留图片的比例，这里的比例是1:1
+					intent.putExtra("scale", true);
+					//是否是圆形裁剪区域，设置了也不一定有效
+					//intent.putExtra("circleCrop", true);
+					//设置输出的格式
+					intent.putExtra("outputFormat", Bitmap.CompressFormat.JPEG.toString());
+					//是否将数据保留在Bitmap中返回
+					intent.putExtra("return-data", true);
+
+					intent.putExtra(
+							MediaStore.EXTRA_OUTPUT,
+							Uri.fromFile(new File(mPhotoFullPath.replace(".jpg","_0.jpg"))));
+
+					startActivityForResult(intent, Constants.Action.CROP_PICTURE);
+					break;
+				case Constants.Action.SELECT_PICTURE:
+					break;
+				case Constants.Action.CROP_PICTURE:
+					new UploadImage(mPhotoFullPath.replace(".jpg","_0.jpg")).execute();
+					break;
+			}
+		}else{
+			mDialog.dismiss();
+		}
+	}
+
+	@Override
+	public boolean dispatchKeyEvent(KeyEvent event) {
+		switch (event.getKeyCode()){
+			case KeyEvent.KEYCODE_BACK:
+				if(isAvatarChanged){
+					ApplicationManager.getInstance().clearOtherActivities(ProfileActivity.this);
+					Intent intent = new Intent();
+					intent.setClass(ProfileActivity.this, MainActivity.class);
+					startActivity(intent);
+					finish();
+					overridePendingTransition(R.anim.fade_out_in, R.anim.fade_out_out);
+					return true;
+				}else{
+					finish();
+					overridePendingTransition(R.anim.fade_out_in, R.anim.fade_out_out);
+					return true;
+				}
+		}
+
+		return super.dispatchKeyEvent(event);
 	}
 
 	public void setToolbarAlpha(double alpha){
@@ -139,7 +238,17 @@ public class ProfileActivity extends AppCompatActivity {
 		mToolbar.setNavigationOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View view) {
-				onBackPressed();
+				if(isAvatarChanged){
+					ApplicationManager.getInstance().clearOtherActivities(ProfileActivity.this);
+					Intent intent = new Intent();
+					intent.setClass(ProfileActivity.this, MainActivity.class);
+					startActivity(intent);
+					finish();
+					overridePendingTransition(R.anim.fade_out_in, R.anim.fade_out_out);
+				}else{
+					finish();
+					overridePendingTransition(R.anim.fade_out_in, R.anim.fade_out_out);
+				}
 			}
 		});
 
@@ -200,6 +309,8 @@ public class ProfileActivity extends AppCompatActivity {
 				initOthersProfile();
 			}
 		}
+
+		new GetUserAvatar().execute();
 	}
 
 	private void initSelfProfile(){
@@ -244,10 +355,10 @@ public class ProfileActivity extends AppCompatActivity {
 		mUserSexLabel.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View view) {
-				if(sex == 0){
+				if (sex == 0) {
 					mUserSex.setImageResource(R.drawable.ic_female);
 					sex = 1;
-				}else if(sex == 1){
+				} else if (sex == 1) {
 					mUserSex.setImageResource(R.drawable.ic_male);
 					sex = 0;
 				}
@@ -259,6 +370,8 @@ public class ProfileActivity extends AppCompatActivity {
 		mUserSignLabel.setOnClickListener(new OnClickListener(CHANGE_SIGN));
 
 		mUserEmailLabel.setOnClickListener(new OnClickListener(CHANGE_EMAIL));
+
+		mUserAvatar.setOnClickListener(new ShowChangeMethod());
 	}
 
 	private void initOthersProfile(){
@@ -304,9 +417,22 @@ public class ProfileActivity extends AppCompatActivity {
 				mStartChattingButton.setVisibility(View.GONE);
 			}
 		}
-        cursor.close();
 	}
 
+	private File getFileDir(Context context, String dirName) {
+		String cachePath;
+		if (Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState())
+				|| !Environment.isExternalStorageRemovable()) {
+			if(context.getExternalCacheDir() != null){
+				cachePath = context.getExternalCacheDir().getPath();
+			}else{
+				cachePath = context.getCacheDir().getPath();
+			}
+		} else {
+			cachePath = context.getCacheDir().getPath();
+		}
+		return new File(cachePath + File.separator + dirName);
+	}
 
     private class AddAsFrined extends AsyncTask<Void,Integer,JSONObject>{
         private MaterialDialog dialog;
@@ -462,7 +588,7 @@ public class ProfileActivity extends AppCompatActivity {
 					showErrorDialog("数据获取失败","未知错误。");
 				}
 			} catch (JSONException e) {
-				showErrorDialog("数据获取失败","无法解析用户数据。");
+				showErrorDialog("数据获取失败", "无法解析用户数据。");
 			}
 		}
 
@@ -516,6 +642,120 @@ public class ProfileActivity extends AppCompatActivity {
 				case CHANGE_EMAIL:
 					break;
 			}
+		}
+	}
+
+	private class ShowChangeMethod implements View.OnClickListener{
+
+		@Override
+		public void onClick(View view) {
+			LayoutInflater inflate = ProfileActivity.this.getLayoutInflater();
+			View dialogContent = inflate.inflate(R.layout.dialog_change_image, null);
+
+			TextView takePhoto = (TextView)dialogContent.findViewById(R.id.take_photo);
+			TextView selectFromLibrary = (TextView)dialogContent.findViewById(R.id.select_from_library);
+
+			takePhoto.setOnClickListener(new View.OnClickListener() {
+				@Override
+				public void onClick(View view) {
+					Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+
+					String name = DateFormat.format("yyyyMMdd_hhmmss", Calendar.getInstance(Locale.CHINA))+".jpg";
+					File file = getFileDir(ProfileActivity.this, "photos");
+					file.mkdirs();
+					mPhotoFullPath = file.getPath() + File.separator + name;
+					Uri imageUri = Uri.fromFile(new File(file.getPath(), name));
+					intent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri);
+
+					startActivityForResult(intent, Constants.Action.TAKE_PICTURE);
+				}
+			});
+
+			selectFromLibrary.setOnClickListener(new View.OnClickListener() {
+				@Override
+				public void onClick(View view) {
+					Intent intent = new Intent(Intent.ACTION_PICK,android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+					startActivityForResult(intent, Constants.Action.SELECT_PICTURE);
+				}
+			});
+
+			mDialog = new MaterialDialog(ProfileActivity.this);
+
+			mDialog.setContentView(dialogContent);
+			mDialog.show();
+		}
+	}
+
+	private class UploadImage extends AsyncTask<String,Void,JSONObject>{
+		private String imagePath;
+
+		public UploadImage(String imagePath) {
+			this.imagePath = imagePath;
+		}
+
+		@Override
+		protected JSONObject doInBackground(String... strings) {
+			try {
+				StringBuilder stringBuilder = new StringBuilder(
+						"http://www.shiguangtravel.com:8080/CN-Soft/servlet/UploadFile");
+				stringBuilder.append("?");
+				stringBuilder.append("up=1&");
+				stringBuilder.append("id=" + URLEncoder.encode(Integer.toString(mProfileId), "UTF-8"));
+
+				File file = new File(imagePath);
+
+				String result = UploadUtils.uploadFile(file, stringBuilder.toString());
+
+				return new JSONObject(result);
+			} catch (UnsupportedEncodingException | JSONException e) {
+				e.printStackTrace();
+			}
+			return null;
+		}
+
+		@Override
+		protected void onPostExecute(JSONObject jsonObject) {
+			try {
+				if(jsonObject!=null){
+					String imageUrl = jsonObject.getString("upload");
+					DatabaseManager.getInstance().execSQL(
+							"UPDATE user SET picture='"+imageUrl+"' WHERE Id="+mProfileId+";");
+
+					mUserAvatar.setImageDrawable(BitmapDrawable.createFromPath(imagePath));
+
+//					String[] args = {Integer.toString(mProfileId)};
+//					Cursor cursor = DatabaseManager.getInstance().query(
+//							"user", null, "id = ?", args, null, null, null);
+//					if (cursor != null) {
+//						cursor.moveToNext();
+//
+//						Log.v("Upload",cursor.getString(cursor.getColumnIndex("picture")));
+//
+//						cursor.close();
+//					}
+					mDialog.dismiss();
+					isAvatarChanged = true;
+				}
+			} catch (JSONException e) {
+				e.printStackTrace();
+			}
+		}
+	}
+
+	private class GetUserAvatar extends AsyncTask<String,Void,Integer>{
+		@Override
+		protected Integer doInBackground(String... strings) {
+			// todo 今后需要优化 profile activity需要给出信号 不需要每次都刷新
+			Cursor cursor = DatabaseManager.getInstance().query("user", null, null, null, null, null, null);
+			if (cursor != null) {
+				cursor.moveToNext();
+
+				String picture = cursor.getString(cursor.getColumnIndex("picture"));
+				mImageCache.loadImage(picture,"menu_icon");
+
+				cursor.close();
+			}
+			return null;
 		}
 	}
 }
