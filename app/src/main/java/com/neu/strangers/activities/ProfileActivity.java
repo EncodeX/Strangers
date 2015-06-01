@@ -348,8 +348,6 @@ public class ProfileActivity extends AppCompatActivity {
 				initOthersProfile();
 			}
 		}
-
-		new GetUserAvatar().execute();
 	}
 
 	private void initSelfProfile(){
@@ -411,6 +409,8 @@ public class ProfileActivity extends AppCompatActivity {
 		mUserEmailLabel.setOnClickListener(new OnClickListener(CHANGE_EMAIL));
 
 		mUserAvatar.setOnClickListener(new ShowChangeMethod());
+
+		new GetSelfAvatar().execute();
 	}
 
 	private void initOthersProfile(){
@@ -456,6 +456,8 @@ public class ProfileActivity extends AppCompatActivity {
 				mStartChattingButton.setVisibility(View.GONE);
 			}
 		}
+
+		new GetOtherAvatar().execute();
 	}
 
 	private File getFileDir(Context context, String dirName) {
@@ -782,7 +784,7 @@ public class ProfileActivity extends AppCompatActivity {
 		}
 	}
 
-	private class GetUserAvatar extends AsyncTask<String,Void,Integer>{
+	private class GetSelfAvatar extends AsyncTask<String,Void,Integer>{
 		@Override
 		protected Integer doInBackground(String... strings) {
 			// todo 今后需要优化 profile activity需要给出信号 不需要每次都刷新
@@ -792,6 +794,24 @@ public class ProfileActivity extends AppCompatActivity {
 
 				String picture = cursor.getString(cursor.getColumnIndex("picture"));
 				mImageCache.loadImage(picture,"menu_icon");
+
+				cursor.close();
+			}
+			return null;
+		}
+	}
+
+	private class GetOtherAvatar extends AsyncTask<String,Void,Integer>{
+		@Override
+		protected Integer doInBackground(String... strings) {
+			String[] args = {Integer.toString(mProfileId)};
+			Cursor cursor = DatabaseManager.getInstance().query(
+					"friends", null, "id = ?", args, null, null, null);
+			if (cursor != null) {
+				cursor.moveToNext();
+
+				String picture = cursor.getString(cursor.getColumnIndex("picture"));
+				mImageCache.loadImage(picture,picture);
 
 				cursor.close();
 			}
