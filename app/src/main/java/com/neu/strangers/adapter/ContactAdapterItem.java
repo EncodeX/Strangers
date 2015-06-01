@@ -1,6 +1,9 @@
 package com.neu.strangers.adapter;
 
+import android.util.Log;
+
 import com.neu.strangers.tools.DatabaseManager;
+import com.neu.strangers.tools.ImageCache;
 
 import net.sqlcipher.Cursor;
 
@@ -16,6 +19,7 @@ public class ContactAdapterItem {
 	private String pinyin;
 	private int id;
 	private String avatarUrl;
+	private String tag;
 
 	public ContactAdapterItem(int id,String userName, String pinyin) {
 		this.id = id;
@@ -31,9 +35,12 @@ public class ContactAdapterItem {
 			}else{
 				this.avatarUrl =null;
 			}
+			cursor.close();
 		}else{
 			this.avatarUrl =null;
 		}
+		this.tag = ImageCache.toMD5String(Integer.toString(this.id)+this.pinyin+avatarUrl);
+		Log.v("Scroll Image Cache","id = "+this.id+" tag = "+this.tag);
 	}
 
 	public String getUserName() {
@@ -50,5 +57,9 @@ public class ContactAdapterItem {
 
 	public String getAvatarUrl() {
 		return avatarUrl;
+	}
+
+	public String getTag() {
+		return tag;
 	}
 }

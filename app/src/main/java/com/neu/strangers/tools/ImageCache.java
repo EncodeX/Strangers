@@ -69,20 +69,20 @@ public class ImageCache {
 		}
 	}
 
-	public void loadImage(String url){
+	public void loadImage(String url, String tag){
 		if(onBitmapPreparedListener!=null){
-			onBitmapPreparedListener.onBitmapPrepared(null,url);
+			onBitmapPreparedListener.onBitmapPrepared(null,tag);
 		}
 
 		// Todo 暂时测试 实际情况为下方已注释代码
 //		Bitmap bitmap = getBitmapFromMemoryCaches(url);
 //		if(bitmap == null){
-//			ASyncDownloadImage task = new ASyncDownloadImage(url);
+//			ASyncDownloadImage task = new ASyncDownloadImage(url,tag);
 //			mTasks.add(task);
 //			task.execute(url);
 //		}else{
 //			if(onBitmapPreparedListener != null){
-//				onBitmapPreparedListener.onBitmapPrepared(bitmap,url);
+//				onBitmapPreparedListener.onBitmapPrepared(bitmap,tag);
 //			}
 //		}
 	}
@@ -167,7 +167,7 @@ public class ImageCache {
 		return false;
 	}
 
-	public String toMD5String(String key) {
+	public static String toMD5String(String key) {
 		String cacheKey;
 		try {
 			final MessageDigest digest = MessageDigest.getInstance("MD5");
@@ -179,7 +179,7 @@ public class ImageCache {
 		return cacheKey;
 	}
 
-	private String bytesToHexString(byte[] bytes) {
+	private static String bytesToHexString(byte[] bytes) {
 		StringBuilder sb = new StringBuilder();
 		for (int i = 0; i < bytes.length; i++) {
 			String hex = Integer.toHexString(0xFF & bytes[i]);
@@ -216,9 +216,11 @@ public class ImageCache {
 	class ASyncDownloadImage extends AsyncTask<String, Void, Bitmap> {
 
 		private String url;
+		private String tag;
 
-		public ASyncDownloadImage(String url) {
+		public ASyncDownloadImage(String url, String tag) {
 			this.url = url;
+			this.tag = tag;
 		}
 
 		@Override
@@ -277,13 +279,13 @@ public class ImageCache {
 //				imageView.setImageBitmap(bitmap);
 //			}
 			if(onBitmapPreparedListener!=null){
-				onBitmapPreparedListener.onBitmapPrepared(bitmap,url);
+				onBitmapPreparedListener.onBitmapPrepared(bitmap, tag);
 			}
 			mTasks.remove(this);
 		}
 	}
 
 	public interface OnBitmapPreparedListener{
-		void onBitmapPrepared(Bitmap bitmap, String url);
+		void onBitmapPrepared(Bitmap bitmap, String tag);
 	}
 }

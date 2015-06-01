@@ -51,9 +51,9 @@ public class ContactAdapter extends BaseAdapter implements SectionIndexer, AbsLi
 		mListView.setOnScrollListener(this);
 		mImageCache.setOnBitmapPreparedListener(new ImageCache.OnBitmapPreparedListener() {
 			@Override
-			public void onBitmapPrepared(Bitmap bitmap, String url) {
+			public void onBitmapPrepared(Bitmap bitmap, String tag) {
 				Log.v("Scroll Image Cache","事件发生");
-				CircleImageView imageView = (CircleImageView) mListView.findViewWithTag(url);
+				CircleImageView imageView = (CircleImageView) mListView.findViewWithTag(tag);
 				if (imageView != null && bitmap != null) {
 					imageView.setImageBitmap(bitmap);
 				}else if(imageView!=null){
@@ -97,7 +97,7 @@ public class ContactAdapter extends BaseAdapter implements SectionIndexer, AbsLi
 		}
 
 		viewHolderItem.contactName.setText(item.getUserName());
-		viewHolderItem.contactAvatar.setTag(item.getAvatarUrl());
+		viewHolderItem.contactAvatar.setTag(item.getTag());
 
 		return view;
 	}
@@ -144,7 +144,9 @@ public class ContactAdapter extends BaseAdapter implements SectionIndexer, AbsLi
 			Log.v("Scroll Image Cache","Scroll state changed to idle");
 //			mImageCache.loadImages(mStart, mEnd, mContactsList);
 			for(int j = mStart ; j < mEnd; j++){
-				mImageCache.loadImage(mContactsList.get(j).getAvatarUrl());
+				mImageCache.loadImage(
+						mContactsList.get(j).getAvatarUrl(),
+						mContactsList.get(j).getTag());
 			}
 		} else {
 			mImageCache.cancelAllTasks();
@@ -160,7 +162,9 @@ public class ContactAdapter extends BaseAdapter implements SectionIndexer, AbsLi
 //			mImageCache.loadImages(mStart, mEnd, mContactsList);
 			for(int j = mStart ; j < mEnd; j++){
 				Log.v("Scroll Image Cache","加载 第"+j+"个");
-				mImageCache.loadImage(mContactsList.get(j).getAvatarUrl());
+				mImageCache.loadImage(
+						mContactsList.get(j).getAvatarUrl(),
+						mContactsList.get(j).getTag());
 			}
 			mFirstFlag = false;
 		}
