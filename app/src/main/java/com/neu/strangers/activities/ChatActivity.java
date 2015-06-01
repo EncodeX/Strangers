@@ -120,6 +120,7 @@ public class ChatActivity extends ActionBarActivity implements View.OnClickListe
 //                        }
 //                    }, 1000);
                     mInput.setText("");
+
                     org.jivesoftware.smack.packet.Message message = new org.jivesoftware.smack.packet.Message();
                     message.setBody(reply);
 
@@ -260,7 +261,7 @@ public class ChatActivity extends ActionBarActivity implements View.OnClickListe
 
     @Override
     protected void onDestroy() {
-        mXmppConnection.disconnect();
+     //   mXmppConnection.disconnect();
         super.onDestroy();
     }
 
