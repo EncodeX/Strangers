@@ -1,5 +1,7 @@
 package com.neu.strangers.activities;
 
+import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.os.AsyncTask;
@@ -9,6 +11,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.util.TypedValue;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.animation.DecelerateInterpolator;
 import android.widget.FrameLayout;
@@ -55,13 +58,13 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import de.hdodenhof.circleimageview.CircleImageView;
+import me.drakeet.materialdialog.MaterialDialog;
 
 /**
  * Created by Administrator on 2015/4/23 0023.
@@ -103,12 +106,227 @@ public class NearbyStrangers extends AppCompatActivity {
     private String uid;
     private int currentInfo;
 
+    /**
+     *
+     * 游戏部分
+     * 今后会分离出Activity
+     *
+     */
+
+    private MaterialDialog mGameDialog;
+	private PaperButton[] mCards = new PaperButton[3];
+	private Timer mTimer;
+	private TimerTask mTimerTask;
+	private Handler mHandler;
+	private AnimatorSet animation;
+
+	private int[] cardPosition = {0,1,2};
+	private int[] cardNumber = {0,1,1};
+	private int[] cardXPos = {0,0,0};
+	private boolean[] cardOpened = {false,false,false};
+	private int counter;
+	private boolean isGamePlaying;
+	private boolean isFirstInit = true;
+	private int cardSpace;
+	private int targetId;
+
+	private Runnable swapCard = new Runnable() {
+		@Override
+		public void run() {
+			double rd = Math.random();
+			int temp;
+			PaperButton tempCard;
+
+			Log.v("random",""+rd);
+			if(rd > 0.6666666666666667){
+				Log.v("random","交换 0,1");
+				// 交换 0,1
+
+				animation = buildAnimation(mCards[0], getSwapDistance(0,cardPosition[1]));
+				animation.playTogether(buildAnimation(mCards[1], getSwapDistance(1,cardPosition[0])));
+				temp = cardPosition[0];
+				cardPosition[0]=  cardPosition[1];
+				cardPosition[1] = temp;
+				animation.start();
+			}else if(rd > 0.333333333333333){
+				Log.v("random","交换 0,2");
+				// 交换 0,2
+				animation = buildAnimation(mCards[0], getSwapDistance(0,cardPosition[2]));
+				animation.playTogether(buildAnimation(mCards[2], getSwapDistance(2,cardPosition[0])));
+				temp = cardPosition[0];
+				cardPosition[0]=  cardPosition[2];
+				cardPosition[2] = temp;
+				animation.start();
+			}else{
+				Log.v("random","交换 1,2");
+				// 交换 1,2
+				animation = buildAnimation(mCards[1], getSwapDistance(1,cardPosition[2]));
+				animation.playTogether(buildAnimation(mCards[2], getSwapDistance(2,cardPosition[1])));
+				temp = cardPosition[1];
+				cardPosition[1]=  cardPosition[2];
+				cardPosition[2] = temp;
+				animation.start();
+			}
+
+			counter++;
+			if(counter>10){
+				// 加监听
+				Toast.makeText(NearbyStrangers.this, "请选择正面为1的2张卡片来查看用户资料", Toast.LENGTH_LONG).show();
+				for(int i=0;i<3;i++){
+					final int finalI = i;
+					mCards[i].setOnClickListener(new View.OnClickListener() {
+						@Override
+						public void onClick(View view) {
+							mCards[finalI].setText(Integer.toString(cardNumber[finalI]));
+							cardOpened[finalI]=true;
+							if(cardNumber[finalI]==0){
+								// 结束游戏
+								Toast.makeText(NearbyStrangers.this, "选错了", Toast.LENGTH_SHORT).show();
+								isGamePlaying = false;
+								mGameDialog.dismiss();
+							}
+							boolean isAllOpened = true;
+							for(int j=1;j<3;j++){
+								if(!cardOpened[j]){
+									isAllOpened=false;
+								}
+							}
+							if(isAllOpened){
+								Toast.makeText(NearbyStrangers.this, "查看资料", Toast.LENGTH_SHORT).show();
+								Intent intent = new Intent(NearbyStrangers.this,ProfileActivity.class);
+			                    Bundle bundle = new Bundle();
+			                    bundle.putInt(Constants.Application.PROFILE_USER_ID,targetId);
+			                    intent.putExtras(bundle);
+			                    startActivity(intent);
+								isGamePlaying = false;
+								mGameDialog.dismiss();
+							}
+						}
+					});
+				}
+			}else{
+				Log.v("Counter", "" + counter);
+			}
+		}
+	};
+
+	private void gameStart(Context context,int id){
+		mHandler = new Handler();
+		LayoutInflater inflate = ((Activity)context).getLayoutInflater();
+		View dialogContent = inflate.inflate(R.layout.dialog_game, null);
+
+		mCards[0] = (PaperButton)dialogContent.findViewById(R.id.card_1);
+		mCards[1] = (PaperButton)dialogContent.findViewById(R.id.card_2);
+		mCards[2] = (PaperButton)dialogContent.findViewById(R.id.card_3);
+
+		for(int i = 0;i<3;i++){
+			mCards[i].setText(Integer.toString(cardNumber[i]));
+		}
+
+		mGameDialog = new MaterialDialog(context);
+		mGameDialog.setContentView(dialogContent);
+		mGameDialog.show();
+		targetId = id;
+	}
+
+	private int getSwapDistance(int cardIndex, int targetPosition){
+		int result = 0;
+		switch (cardIndex){
+			case 0:
+				switch (targetPosition){
+					case 0:
+						result = 0;
+						break;
+					case 1:
+						result = cardSpace;
+						break;
+					case 2:
+						result = cardSpace*2;
+						break;
+				}
+				break;
+			case 1:
+				switch (targetPosition){
+					case 0:
+						result = -cardSpace;
+						break;
+					case 1:
+						result = 0;
+						break;
+					case 2:
+						result = cardSpace;
+						break;
+				}
+				break;
+			case 2:
+				switch (targetPosition){
+					case 0:
+						result = -cardSpace*2;
+						break;
+					case 1:
+						result = -cardSpace;
+						break;
+					case 2:
+						result = 0;
+						break;
+				}
+				break;
+		}
+
+		return result;
+	}
+
+	@Override
+	public void onWindowFocusChanged(boolean hasFocus) {
+		super.onWindowFocusChanged(hasFocus);
+		if(!hasFocus){
+			if(isFirstInit){
+				cardXPos[0] = mCards[0].getLeft();
+				cardXPos[1] = mCards[1].getLeft();
+				cardXPos[2] = mCards[2].getLeft();
+				cardSpace = cardXPos[1];
+			}
+
+			counter = 1;
+			isGamePlaying = true;
+			cardOpened[0] = false;
+			cardOpened[1] = false;
+			cardOpened[2] = false;
+
+			mHandler.postDelayed(new Runnable() {
+				@Override
+				public void run() {
+					for(int i=0;i<3;i++){
+						mCards[i].setText(" ");
+					}
+					for(int i = 1;i<11;i++){
+						mHandler.postDelayed(swapCard,700*i);
+					}
+				}
+			},700);
+		}
+	}
+
+	private AnimatorSet buildAnimation(View target, float targetPosX) {
+
+		AnimatorSet animation = new AnimatorSet();
+		animation.playTogether(
+				ObjectAnimator.ofFloat(target, "translationX", targetPosX)
+		);
+		animation.setInterpolator(new DecelerateInterpolator(2.0f));
+
+		animation.setDuration(500);
+		return animation;
+	}
+
+	/**
+     * 游戏部分结束
+     */
 
     private class MyLocationListenner implements BDLocationListener {
 
         @Override
         public void onReceiveLocation(BDLocation location) {
-
 
             if (location == null || mMapView == null)
                 return;
@@ -191,8 +409,6 @@ public class NearbyStrangers extends AppCompatActivity {
         MapStatusUpdate mMapStatusUpdate = MapStatusUpdateFactory.zoomTo(14);
         mBaiduMap.animateMapStatus(mMapStatusUpdate);
         mLocClient.start();
-
-
     }
 
     // 将marker显示在地图上
@@ -339,13 +555,15 @@ public class NearbyStrangers extends AppCompatActivity {
             mAddFriend.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                  //  Toast.makeText(NearbyStrangers.this, "add"+mStrangers[currentInfo].getUid(), Toast.LENGTH_SHORT).show();
-                    Intent intent = new Intent(NearbyStrangers.this,ProfileActivity.class);
-                  //  intent.putExtra("id",mStrangers[currentInfo].getUid());
-                    Bundle bundle = new Bundle();
-                    bundle.putInt(Constants.Application.PROFILE_USER_ID,Integer.valueOf(mStrangers[currentInfo].getUid()));
-                    intent.putExtras(bundle);
-                    startActivity(intent);
+	                gameStart(NearbyStrangers.this,Integer.valueOf(mStrangers[currentInfo].getUid()));
+
+//                  //  Toast.makeText(NearbyStrangers.this, "add"+mStrangers[currentInfo].getUid(), Toast.LENGTH_SHORT).show();
+//                    Intent intent = new Intent(NearbyStrangers.this,ProfileActivity.class);
+//                  //  intent.putExtra("id",mStrangers[currentInfo].getUid());
+//                    Bundle bundle = new Bundle();
+//                    bundle.putInt(Constants.Application.PROFILE_USER_ID,Integer.valueOf(mStrangers[currentInfo].getUid()));
+//                    intent.putExtras(bundle);
+//                    startActivity(intent);
 
                 }
             });

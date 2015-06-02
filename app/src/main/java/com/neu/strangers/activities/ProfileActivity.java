@@ -364,7 +364,7 @@ public class ProfileActivity extends AppCompatActivity {
 			sign = cursor.getString(cursor.getColumnIndex("sign"));
 			email = cursor.getString(cursor.getColumnIndex("email"));
 
-			// Todo 头像与背景未获取
+			// Todo 背景未获取
 
 			cursor.close();
 
@@ -432,7 +432,7 @@ public class ProfileActivity extends AppCompatActivity {
 				mUserSign.setText(cursor.getString(cursor.getColumnIndex("sign")));
 				mUserEmail.setText(cursor.getString(cursor.getColumnIndex("email")));
 
-				// Todo 头像与背景未获取
+				// Todo 背景未获取
 
 				cursor.close();
 
