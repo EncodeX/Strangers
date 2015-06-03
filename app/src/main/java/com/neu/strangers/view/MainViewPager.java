@@ -19,6 +19,7 @@ import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.astuetz.PagerSlidingTabStrip;
 import com.balysv.materialripple.MaterialRippleLayout;
@@ -201,50 +202,56 @@ public class MainViewPager extends ViewPager {
 		protected void onPostExecute(JSONObject jsonObject) {
 			try {
 				if(jsonObject!=null){
-					Cursor cursor = DatabaseManager.getInstance().query("friends", null, null, null, null, null, null);
+					if(jsonObject.getString("ShowFriends").equals("none")){
+						mProgressLayout.setVisibility(GONE);
+						Toast.makeText(getContext(), "还没有好友 摇一摇手机？", Toast.LENGTH_SHORT).show();
+					}else {
 
-					if(cursor!=null){
-						DatabaseManager.getInstance().delete("friends","",null);
-						cursor.close();
+						Cursor cursor = DatabaseManager.getInstance().query("friends", null, null, null, null, null, null);
+
+						if (cursor != null) {
+							DatabaseManager.getInstance().delete("friends", "", null);
+							cursor.close();
+						}
+
+						JSONArray contactList = jsonObject.getJSONArray("ShowFriends");
+						ArrayList<String> names = new ArrayList<String>();
+						ArrayList<Integer> ids = new ArrayList<>();
+
+						for (int i = 0; i < contactList.length(); i++) {
+							JSONObject contact = contactList.getJSONObject(i);
+
+							int id = contact.getInt("id");
+							String username = contact.getString("username");
+							String nickname = contact.getString("nickname");
+							int sex = contact.getString("sex").equals("woman") ? 1 : 0;
+							String picture = contact.getString("picture");
+							String region = contact.getString("region");
+							String sign = contact.getString("sign");
+							String email = contact.getString("email");
+							String background = contact.getString("mybackground");
+
+							// Todo 存入数据库实现 但目前状况下并没有很好的数据更新逻辑 需要考虑
+							ContentValues values = new ContentValues();
+							values.put("id", id);
+							values.put("username", username);
+							values.put("nickname", nickname);
+							values.put("sex", sex);
+							values.put("picture", picture);
+							values.put("region", region);
+							values.put("sign", sign);
+							values.put("email", email);
+							values.put("background", background);
+
+							DatabaseManager.getInstance().insert("friends", null, values);
+
+							// 刷新列表
+							names.add(nickname);
+							ids.add(id);
+						}
+						mAdapter.refreshList(names, ids);
+						mProgressLayout.setVisibility(GONE);
 					}
-
-					JSONArray contactList = jsonObject.getJSONArray("ShowFriends");
-					ArrayList<String> names= new ArrayList<String>();
-					ArrayList<Integer> ids = new ArrayList<>();
-
-					for(int i=0;i<contactList.length();i++){
-						JSONObject contact = contactList.getJSONObject(i);
-
-						int id = contact.getInt("id");
-						String username = contact.getString("username");
-						String nickname = contact.getString("nickname");
-						int sex = contact.getString("sex").equals("woman")?1:0;
-						String picture = contact.getString("picture");
-						String region = contact.getString("region");
-						String sign = contact.getString("sign");
-						String email = contact.getString("email");
-						String background = contact.getString("mybackground");
-
-						// Todo 存入数据库实现 但目前状况下并没有很好的数据更新逻辑 需要考虑
-						ContentValues values = new ContentValues();
-						values.put("id",id);
-						values.put("username",username);
-						values.put("nickname",nickname);
-						values.put("sex",sex);
-						values.put("picture",picture);
-						values.put("region",region);
-						values.put("sign",sign);
-						values.put("email",email);
-						values.put("background",background);
-
-						DatabaseManager.getInstance().insert("friends", null, values);
-
-						// 刷新列表
-						names.add(nickname);
-						ids.add(id);
-					}
-					mAdapter.refreshList(names, ids);
-					mProgressLayout.setVisibility(GONE);
 
 //					dialog.dismiss();
 				}else{
