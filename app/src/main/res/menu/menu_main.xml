@@ -5,7 +5,7 @@
 	<item android:id="@+id/action_user"
 	      android:title="用户按钮"
 	      android:orderInCategory="100"
-	      android:icon="@drawable/test_avatar"
+	      android:icon="@drawable/default_avatar"
 	      app:showAsAction="ifRoom"/>
 	<item android:id="@+id/action_settings"
 	      android:title="@string/action_settings"

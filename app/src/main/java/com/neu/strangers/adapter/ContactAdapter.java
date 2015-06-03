@@ -106,15 +106,15 @@ public class ContactAdapter extends BaseAdapter implements SectionIndexer, AbsLi
 		viewHolderItem.contactName.setText(item.getUserName());
 		viewHolderItem.contactAvatar.setTag(item.getTag());
 
-        viewHolderItem.contactName.setOnClickListener(new View.OnClickListener() {
-	        @Override
-	        public void onClick(View view) {
-		        Intent intent = new Intent(mContext, ChatActivity.class);
-		        intent.putExtra("username", String.valueOf(item.getId()));
-
-		        mContext.startActivity(intent);
-	        }
-        });
+//        viewHolderItem.contactName.setOnClickListener(new View.OnClickListener() {
+//	        @Override
+//	        public void onClick(View view) {
+//		        Intent intent = new Intent(mContext, ChatActivity.class);
+//		        intent.putExtra("username", String.valueOf(item.getId()));
+//
+//		        mContext.startActivity(intent);
+//	        }
+//        });
 
 		return view;
 	}

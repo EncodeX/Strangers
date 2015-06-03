@@ -8,7 +8,7 @@
 		android:id="@+id/user_info_background"
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
-		android:src="@drawable/test_info_background"
+		android:src="@drawable/default_background"
 		android:scaleType="centerCrop"/>
 
 	<ScrollView
@@ -212,23 +212,21 @@
 							android:textSize="18sp"/>
 					</RelativeLayout>
 				</com.balysv.materialripple.MaterialRippleLayout>
-				<com.balysv.materialripple.MaterialRippleLayout
-					android:id="@+id/user_email_ripple_1"
+				<com.material.widget.PaperButton
+					android:id="@+id/user_delete_friend"
 					android:layout_width="match_parent"
-					android:layout_height="wrap_content"
+					android:layout_height="56dp"
 					android:layout_below="@id/user_email_ripple"
-					app:mrl_rippleOverlay="false"
-					app:mrl_rippleColor="#666"
-					app:mrl_rippleDelayClick="true"
-					app:mrl_rippleDuration="250"
-					app:mrl_rippleHover="true">
-					<RelativeLayout
-						android:id="@+id/user_email_label_1"
-						android:layout_width="match_parent"
-						android:layout_height="480dp"
-						android:padding="8dp"
-						android:background="@drawable/ripple_background_selector_light"/>
-				</com.balysv.materialripple.MaterialRippleLayout>
+					app:paper_color="#F44336"
+					app:paper_text="删除好友"
+					app:paper_text_color="#fff"
+					app:paper_is_light_ripple="true"/>
+				<RelativeLayout
+					android:layout_width="match_parent"
+					android:layout_height="480dp"
+					android:layout_below="@id/user_delete_friend"
+					android:padding="8dp"
+					android:background="@drawable/ripple_background_selector_light"/>
 			</RelativeLayout>
 			<de.hdodenhof.circleimageview.CircleImageView
 				android:id="@+id/user_avatar"
@@ -237,7 +235,7 @@
 				android:layout_alignBottom="@id/background_blank"
 				android:layout_marginLeft="24dp"
 				android:layout_marginBottom="-24dp"
-				android:src="@drawable/test_avatar"/>
+				android:src="@drawable/default_avatar"/>
 		</RelativeLayout>
 	</ScrollView>
 

@@ -23,7 +23,7 @@
 			android:layout_marginBottom="8dp"
 			android:layout_marginLeft="32dp"
 			android:layout_alignParentLeft="true"
-			android:src="@drawable/test_avatar"
+			android:src="@drawable/default_avatar"
 			app:border_color="@color/app_color_primary"/>
 
 		<RelativeLayout

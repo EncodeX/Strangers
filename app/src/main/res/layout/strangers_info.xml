@@ -27,7 +27,7 @@
 	        android:layout_width="64dp"
 	        android:layout_height="64dp"
 	        android:layout_marginLeft="8dp"
-	        android:src="@drawable/test_avatar"
+	        android:src="@drawable/default_avatar"
 	        app:border_color="@color/app_color_primary"
 	        android:layout_centerVertical="true"
 	        android:layout_alignParentLeft="true"

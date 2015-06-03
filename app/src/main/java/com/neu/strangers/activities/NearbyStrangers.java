@@ -285,6 +285,10 @@ public class NearbyStrangers extends AppCompatActivity {
 				cardXPos[1] = mCards[1].getLeft();
 				cardXPos[2] = mCards[2].getLeft();
 				cardSpace = cardXPos[1];
+			}else{
+				ViewHelper.setX(mCards[0],cardXPos[0]);
+				ViewHelper.setX(mCards[1],cardXPos[1]);
+				ViewHelper.setX(mCards[2], cardXPos[2]);
 			}
 
 			counter = 1;
@@ -520,7 +524,7 @@ public class NearbyStrangers extends AppCompatActivity {
                 String sex = strangerInfo.optString("sex");
                 String distance = strangerInfo.optString("distance");
                 String id = strangerInfo.optString("id");
-                mStrangers[i] = new StrangerInfo("nickname", sex, Double.valueOf(latitude), Double.valueOf(longitude), getResources().getDrawable(R.drawable.test_avatar), String.format("%.2f",Double.valueOf(distance)),id);
+                mStrangers[i] = new StrangerInfo("nickname", sex, Double.valueOf(latitude), Double.valueOf(longitude), getResources().getDrawable(R.drawable.default_avatar), String.format("%.2f",Double.valueOf(distance)),id);
 
               }
 

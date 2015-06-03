@@ -16,7 +16,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.format.DateFormat;
 import android.util.Log;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewTreeObserver;
@@ -116,6 +115,8 @@ public class ProfileActivity extends AppCompatActivity implements OnUserInfoChan
 	TextView mUserEmail;
 	@InjectView(R.id.user_avatar)
 	CircleImageView mUserAvatar;
+	@InjectView(R.id.user_delete_friend)
+	PaperButton mUserDeleteFriend;
 
     //用户的信息，方便写入数据库
     private String username;
@@ -245,28 +246,6 @@ public class ProfileActivity extends AppCompatActivity implements OnUserInfoChan
 		}
 	}
 
-	@Override
-	public boolean dispatchKeyEvent(KeyEvent event) {
-		switch (event.getKeyCode()){
-			case KeyEvent.KEYCODE_BACK:
-				if(isAvatarChanged){
-					ApplicationManager.getInstance().clearOtherActivities(ProfileActivity.this);
-					Intent intent = new Intent();
-					intent.setClass(ProfileActivity.this, MainActivity.class);
-					startActivity(intent);
-					finish();
-					overridePendingTransition(R.anim.fade_out_in, R.anim.fade_out_out);
-					return true;
-				}else{
-					finish();
-					overridePendingTransition(R.anim.fade_out_in, R.anim.fade_out_out);
-					return true;
-				}
-		}
-
-		return super.dispatchKeyEvent(event);
-	}
-
 	public void setToolbarAlpha(double alpha){
 		mToolbar.setBackgroundColor((int) (0xFF * alpha) * 0x1000000 + 0x9C27B0);
 	}
@@ -280,17 +259,7 @@ public class ProfileActivity extends AppCompatActivity implements OnUserInfoChan
 		mToolbar.setNavigationOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View view) {
-				if(isAvatarChanged){
-					ApplicationManager.getInstance().clearOtherActivities(ProfileActivity.this);
-					Intent intent = new Intent();
-					intent.setClass(ProfileActivity.this, MainActivity.class);
-					startActivity(intent);
-					finish();
-					overridePendingTransition(R.anim.fade_out_in, R.anim.fade_out_out);
-				}else{
-					finish();
-					overridePendingTransition(R.anim.fade_out_in, R.anim.fade_out_out);
-				}
+				onBackPressed();
 			}
 		});
 
@@ -386,8 +355,9 @@ public class ProfileActivity extends AppCompatActivity implements OnUserInfoChan
 
 		mAddAsFriendButton.setVisibility(View.GONE);
 		mStartChattingButton.setVisibility(View.GONE);
+		mUserDeleteFriend.setVisibility(View.GONE);
 
-		// todo 下面添加资料修改等功能
+		// 资料修改等功能
 		mDialog = new MaterialDialog(this);
 
 		mUserNameLabel.setOnClickListener(new OnClickListener(CHANGE_NICKNAME));
@@ -446,25 +416,43 @@ public class ProfileActivity extends AppCompatActivity implements OnUserInfoChan
                 //INVISIBLE控件仍然占据原来的空间
 				mAddAsFriendButton.setVisibility(View.INVISIBLE);
 				mStartChattingButton.setVisibility(View.VISIBLE);
+				mUserDeleteFriend.setVisibility(View.VISIBLE);
 
 				// Todo 在此处调整删除好友按钮的显隐性
+				mUserDeleteFriend.setOnClickListener(new View.OnClickListener() {
+					@Override
+					public void onClick(View view) {
+						new DeleteFriend().execute();
+					}
+				});
+				mStartChattingButton.setOnClickListener(new View.OnClickListener() {
+					@Override
+					public void onClick(View view) {
+						Intent intent = new Intent(ProfileActivity.this, ChatActivity.class);
+						intent.putExtra("username", String.valueOf(mProfileId));
+						ProfileActivity.this.finish();
+						ProfileActivity.this.startActivity(intent);
+					}
+				});
+
+				new GetFriendAvatar().execute();
 			}else{
 				// 非好友
 				new GetUserInfo().execute(mProfileId);
 
 				mAddAsFriendButton.setVisibility(View.VISIBLE);
                 mAddAsFriendButton.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        new AddAsFrined().execute();
+	                @Override
+	                public void onClick(View view) {
+		                new AddAsFrined().execute();
 
-                    }
+	                }
                 });
 				mStartChattingButton.setVisibility(View.GONE);
+				mUserDeleteFriend.setVisibility(View.GONE);
+
 			}
 		}
-
-		new GetOtherAvatar().execute();
 	}
 
 	private File getFileDir(Context context, String dirName) {
@@ -648,6 +636,8 @@ public class ProfileActivity extends AppCompatActivity implements OnUserInfoChan
 					mUserRegion.setText(region);
 					mUserSign.setText(sign);
 					mUserEmail.setText(email);
+
+					mImageCache.loadImage(picture,picture);
 
 					dialog.dismiss();
 				}else{
@@ -849,7 +839,7 @@ public class ProfileActivity extends AppCompatActivity implements OnUserInfoChan
 		}
 	}
 
-	private class GetOtherAvatar extends AsyncTask<String,Void,Integer>{
+	private class GetFriendAvatar extends AsyncTask<String,Void,Integer>{
 		@Override
 		protected Integer doInBackground(String... strings) {
 			String[] args = {Integer.toString(mProfileId)};
@@ -973,6 +963,58 @@ public class ProfileActivity extends AppCompatActivity implements OnUserInfoChan
 								break;
 						}
 						mOnUserInfoChangedListener.onUserInfoChanged(mode,string);
+					}
+				}
+			} catch (JSONException e) {
+				e.printStackTrace();
+			}
+		}
+	}
+
+	private class DeleteFriend extends AsyncTask<String,Void,JSONObject>{
+		@Override
+		protected JSONObject doInBackground(String... strings) {
+			try {
+				int userId = ProfileActivity.this.getSharedPreferences(Constants.Application.PREFERENCE_NAME,0)
+						.getInt(Constants.Application.LOGGED_IN_USER_ID, -1);
+
+				StringBuilder stringBuilder = new StringBuilder(
+						"http://www.shiguangtravel.com:8080/CN-Soft/servlet/DeleteAction");
+				stringBuilder.append("?");
+				stringBuilder.append("id=" + URLEncoder.encode(Integer.toString(userId), "UTF-8") + "&");
+				stringBuilder.append("fid=" + URLEncoder.encode(Integer.toString(mProfileId), "UTF-8"));
+
+				URL url = new URL(stringBuilder.toString());
+				HttpURLConnection conn = (HttpURLConnection)url.openConnection();
+				conn.setRequestMethod("GET");
+
+				InputStreamReader inputStreamReader = new InputStreamReader(conn.getInputStream());
+				BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
+				StringBuilder strBuffer = new StringBuilder();
+				String line;
+
+				if(conn.getResponseCode()==200){
+					while ((line = bufferedReader.readLine()) != null) {
+						strBuffer.append(line);
+					}
+					return new JSONObject(strBuffer.toString());
+				}
+			} catch (IOException | JSONException e) {
+				e.printStackTrace();
+			}
+
+			return null;
+		}
+
+		@Override
+		protected void onPostExecute(JSONObject jsonObject) {
+			try {
+				if (jsonObject != null) {
+					if (jsonObject.getString("DeleteFriend").equals("success")) {
+						String[] args = {Integer.toString(mProfileId)};
+						DatabaseManager.getInstance().delete("friends","id = ?",args);
+						Toast.makeText(ProfileActivity.this, "删除好友成功", Toast.LENGTH_SHORT).show();
+						ProfileActivity.this.finish();
 					}
 				}
 			} catch (JSONException e) {

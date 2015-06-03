@@ -125,7 +125,8 @@ public class ChatActivity extends ActionBarActivity implements View.OnClickListe
                     message.setBody(reply);
 
                     try {
-                        chat.sendMessage(message);
+	                    if(chat!=null)
+                            chat.sendMessage(message);
                        // chat.sendMessage(reply);
 
                     } catch (XMPPException e) {

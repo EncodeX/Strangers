@@ -1,9 +1,7 @@
 package com.neu.strangers.activities;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.hardware.Sensor;
@@ -14,10 +12,8 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 
 import com.astuetz.PagerSlidingTabStrip;
 import com.neu.strangers.R;
@@ -25,9 +21,7 @@ import com.neu.strangers.tools.ApplicationManager;
 import com.neu.strangers.tools.Constants;
 import com.neu.strangers.tools.DatabaseManager;
 import com.neu.strangers.tools.ImageCache;
-import com.neu.strangers.tools.DatabaseManager;
 import com.neu.strangers.tools.RoundImage;
-import com.neu.strangers.tools.XmppTool;
 import com.neu.strangers.view.MainViewPager;
 import com.readystatesoftware.systembartint.SystemBarTintManager;
 
@@ -139,6 +133,8 @@ public class MainActivity extends AppCompatActivity{
 
     @Override
     protected void onResume() {
+	    new UpdateUserAvatar().execute();
+	    mainViewPager.refreshContacts(this);
         super.onResume();
     }
 
@@ -158,7 +154,7 @@ public class MainActivity extends AppCompatActivity{
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
         //Test round image for user avatar
-        Bitmap bm = BitmapFactory.decodeResource(getResources(), R.drawable.test_avatar);
+        Bitmap bm = BitmapFactory.decodeResource(getResources(), R.drawable.default_avatar);
         RoundImage roundImage = new RoundImage(bm);
 
         mUserItem = mMenu.findItem(R.id.action_user);
@@ -193,20 +189,27 @@ public class MainActivity extends AppCompatActivity{
         return super.onOptionsItemSelected(item);
     }
 
-    private class UpdateUserAvatar extends AsyncTask<String,Void,Integer>{
+    private class UpdateUserAvatar extends AsyncTask<String,Void,String>{
         @Override
-        protected Integer doInBackground(String... strings) {
+        protected String doInBackground(String... strings) {
 	        // todo 今后需要优化 profile activity需要给出信号 不需要每次都刷新
 	        Cursor cursor = DatabaseManager.getInstance().query("user", null, null, null, null, null, null);
+            String result = null;
             if (cursor != null) {
                 cursor.moveToNext();
 
-                String picture = cursor.getString(cursor.getColumnIndex("picture"));
-				mImageCache.loadImage(picture,"menu_icon");
+                result = cursor.getString(cursor.getColumnIndex("picture"));
 
                 cursor.close();
             }
-            return null;
+            return result;
+        }
+
+        @Override
+        protected void onPostExecute(String s) {
+            if(s!=null){
+                mImageCache.loadImage(s, "menu_icon");
+            }
         }
     }
 }

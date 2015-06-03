@@ -3,6 +3,7 @@ package com.neu.strangers.view;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
@@ -13,14 +14,19 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.FrameLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.astuetz.PagerSlidingTabStrip;
 import com.balysv.materialripple.MaterialRippleLayout;
 import com.neu.strangers.R;
+import com.neu.strangers.activities.ChatActivity;
+import com.neu.strangers.activities.ProfileActivity;
 import com.neu.strangers.adapter.ContactAdapter;
+import com.neu.strangers.adapter.ContactAdapterItem;
 import com.neu.strangers.adapter.SimpleItemAdapter;
 import com.neu.strangers.tools.Constants;
 import com.neu.strangers.tools.DatabaseManager;
@@ -59,13 +65,13 @@ public class MainViewPager extends ViewPager {
 
 	IndexableListView mContactsList;
 	ContactAdapter mAdapter;
-	FrameLayout mProgressLayout;
+	RelativeLayout mProgressLayout;
 
 	public MainViewPager(Context context, AttributeSet attrs) {
 		super(context, attrs);
 	}
 
-	public void initView(Context context){
+	public void initView(final Context context){
 		mViewList = new ArrayList<>();
 
 		// Initialize recent chat view.
@@ -82,11 +88,22 @@ public class MainViewPager extends ViewPager {
 
 		// Initialize contacts list
 		mContactsList = (IndexableListView)contactsView.findViewById(R.id.contacts_list);
-		mProgressLayout = (FrameLayout)contactsView.findViewById(R.id.progress_layout);
+		mProgressLayout = (RelativeLayout)contactsView.findViewById(R.id.progress_layout);
 
 		mAdapter = new ContactAdapter(context,mContactsList);
 		mContactsList.setAdapter(mAdapter);
 		mContactsList.setFastScrollEnabled(true);
+		mContactsList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+			@Override
+			public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+				if (mAdapter.getItem(i) instanceof ContactAdapterItem) {
+					Intent intent = new Intent(context, ProfileActivity.class);
+					intent.putExtra(Constants.Application.PROFILE_USER_ID,
+							((ContactAdapterItem) mAdapter.getItem(i)).getId());
+					context.startActivity(intent);
+				}
+			}
+		});
 
 		mViewList.add(recentChatView);
 		mViewList.add(contactsView);
@@ -94,6 +111,11 @@ public class MainViewPager extends ViewPager {
 		TabPagerAdapter pagerAdapter = new TabPagerAdapter(context);
 		this.setAdapter(pagerAdapter);
 
+		refreshContacts(context);
+	}
+
+	public void refreshContacts(Context context){
+		mProgressLayout.setVisibility(VISIBLE);
 		new GetContacts().execute(context.getSharedPreferences(Constants.Application.PREFERENCE_NAME,0)
 				.getInt(Constants.Application.LOGGED_IN_USER_ID,-1));
 	}
