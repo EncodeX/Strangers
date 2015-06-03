@@ -3,7 +3,7 @@
                 xmlns:app="http://schemas.android.com/apk/res-auto"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
-    <com.neu.strangers.view.MyRippleLayout
+    <com.balysv.materialripple.MaterialRippleLayout
         android:id="@+id/take_photo_ripple"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -22,8 +22,8 @@
             android:text="拍照"
             android:textColor="@android:color/black"
             android:textSize="18sp"/>
-    </com.neu.strangers.view.MyRippleLayout>
-    <com.neu.strangers.view.MyRippleLayout
+    </com.balysv.materialripple.MaterialRippleLayout>
+    <com.balysv.materialripple.MaterialRippleLayout
         android:id="@+id/select_from_library_ripple"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -43,5 +43,5 @@
             android:text="从相册选择"
             android:textColor="@android:color/black"
             android:textSize="18sp"/>
-    </com.neu.strangers.view.MyRippleLayout>
+    </com.balysv.materialripple.MaterialRippleLayout>
 </RelativeLayout>

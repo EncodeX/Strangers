@@ -4,7 +4,7 @@
 	xmlns:app="http://schemas.android.com/apk/res-auto"
 	android:layout_width="match_parent"
 	android:layout_height="96dp">
-	<com.neu.strangers.view.MyRippleLayout
+	<com.balysv.materialripple.MaterialRippleLayout
 		android:layout_width="match_parent"
 		android:layout_height="match_parent"
 		app:mrl_rippleOverlay="false"
@@ -17,7 +17,7 @@
 			android:layout_width="match_parent"
 			android:layout_height="match_parent"
 			android:background="@drawable/ripple_background_selector_light"/>
-	</com.neu.strangers.view.MyRippleLayout>
+	</com.balysv.materialripple.MaterialRippleLayout>
 	<de.hdodenhof.circleimageview.CircleImageView
 		android:id="@+id/contact_avatar"
 		android:layout_width="64dp"

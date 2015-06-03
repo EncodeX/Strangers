@@ -28,7 +28,7 @@
 				android:layout_below="@id/background_blank"
 				android:padding="16dp"
 				android:background="@color/background_material_light">
-				<com.neu.strangers.view.MyRippleLayout
+				<com.balysv.materialripple.MaterialRippleLayout
 					android:id="@+id/user_name_ripple"
 					android:layout_width="match_parent"
 					android:layout_height="wrap_content"
@@ -63,8 +63,8 @@
 							android:textColor="#666666"
 							android:textSize="18sp"/>
 					</RelativeLayout>
-				</com.neu.strangers.view.MyRippleLayout>
-				<com.neu.strangers.view.MyRippleLayout
+				</com.balysv.materialripple.MaterialRippleLayout>
+				<com.balysv.materialripple.MaterialRippleLayout
 					android:id="@+id/user_sex_ripple"
 					android:layout_width="wrap_content"
 					android:layout_height="wrap_content"
@@ -87,8 +87,8 @@
 							android:src="@drawable/ic_male"
 							android:layout_centerInParent="true"/>
 					</RelativeLayout>
-				</com.neu.strangers.view.MyRippleLayout>
-				<com.neu.strangers.view.MyRippleLayout
+				</com.balysv.materialripple.MaterialRippleLayout>
+				<com.balysv.materialripple.MaterialRippleLayout
 					android:id="@+id/user_region_ripple"
 					android:layout_width="match_parent"
 					android:layout_height="wrap_content"
@@ -113,7 +113,7 @@
 							android:textColor="#666666"
 							android:textSize="18sp"/>
 					</RelativeLayout>
-				</com.neu.strangers.view.MyRippleLayout>
+				</com.balysv.materialripple.MaterialRippleLayout>
 
 				<!--仅在非本人资料中显示-->
 				<com.material.widget.PaperButton
@@ -141,7 +141,7 @@
 					app:paper_text="聊天"
 					app:paper_is_light_ripple="true"/>
 
-				<com.neu.strangers.view.MyRippleLayout
+				<com.balysv.materialripple.MaterialRippleLayout
 					android:id="@+id/user_explain_ripple"
 					android:layout_width="match_parent"
 					android:layout_height="wrap_content"
@@ -175,9 +175,9 @@
 							android:textColor="#666666"
 							android:textSize="18sp"/>
 					</RelativeLayout>
-				</com.neu.strangers.view.MyRippleLayout>
+				</com.balysv.materialripple.MaterialRippleLayout>
 
-				<com.neu.strangers.view.MyRippleLayout
+				<com.balysv.materialripple.MaterialRippleLayout
 					android:id="@+id/user_email_ripple"
 					android:layout_width="match_parent"
 					android:layout_height="wrap_content"
@@ -211,8 +211,8 @@
 							android:textColor="#666666"
 							android:textSize="18sp"/>
 					</RelativeLayout>
-				</com.neu.strangers.view.MyRippleLayout>
-				<com.neu.strangers.view.MyRippleLayout
+				</com.balysv.materialripple.MaterialRippleLayout>
+				<com.balysv.materialripple.MaterialRippleLayout
 					android:id="@+id/user_email_ripple_1"
 					android:layout_width="match_parent"
 					android:layout_height="wrap_content"
@@ -228,7 +228,7 @@
 						android:layout_height="480dp"
 						android:padding="8dp"
 						android:background="@drawable/ripple_background_selector_light"/>
-				</com.neu.strangers.view.MyRippleLayout>
+				</com.balysv.materialripple.MaterialRippleLayout>
 			</RelativeLayout>
 			<de.hdodenhof.circleimageview.CircleImageView
 				android:id="@+id/user_avatar"

@@ -18,6 +18,7 @@ import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import com.astuetz.PagerSlidingTabStrip;
+import com.balysv.materialripple.MaterialRippleLayout;
 import com.neu.strangers.R;
 import com.neu.strangers.adapter.ContactAdapter;
 import com.neu.strangers.adapter.SimpleItemAdapter;
@@ -107,8 +108,8 @@ public class MainViewPager extends ViewPager {
 
 		@Override
 		public View getCustomTabView(ViewGroup viewGroup, int i) {
-			MyRippleLayout rippleView =
-					(MyRippleLayout) LayoutInflater.from(mContext)
+			MaterialRippleLayout rippleView =
+					(MaterialRippleLayout) LayoutInflater.from(mContext)
 							.inflate(R.layout.main_tab, viewGroup, false);
 			((TextView)rippleView.findViewById(R.id.psts_tab_title)).setText(TITLES[i]);
 			return rippleView;
