@@ -26,15 +26,6 @@ public class UploadUtils {
 	private static final int TIME_OUT = 1000 * 1000; // 超时时间
 	private static final String CHARSET = "utf-8"; // 设置编码
 
-	/**
-	 * android上传文件到服务器
-	 *
-	 * @param file
-	 *            需要上传的文件
-	 * @param RequestURL
-	 *            请求的rul
-	 * @return 返回响应的内容
-	 */
 	public static String uploadFile(File file, String RequestURL) {
 		String result = null;
 		String BOUNDARY = UUID.randomUUID().toString(); // 边界标识 随机生成
@@ -56,19 +47,12 @@ public class UploadUtils {
 					+ BOUNDARY);
 
 			if (file != null) {
-				/**
-				 * 当文件不为空，把文件包装并且上传
-				 */
 				DataOutputStream dos = new DataOutputStream(
 						conn.getOutputStream());
 				StringBuffer sb = new StringBuffer();
 				sb.append(PREFIX);
 				sb.append(BOUNDARY);
 				sb.append(LINE_END);
-				/**
-				 * 这里重点注意： name里面的值为服务器端需要key 只有这个key 才可以得到对应的文件
-				 * filename是文件的名字，包含后缀名的 比如:abc.png
-				 */
 
 				sb.append("Content-Disposition: form-data; name=\"upload\"; filename=\""
 						+ file.getName() + "\"" + LINE_END);
@@ -88,21 +72,6 @@ public class UploadUtils {
 						.getBytes();
 				dos.write(end_data);
 				dos.flush();
-				/**
-				 * 获取响应码 200=成功 当响应成功，获取响应的流
-				 */
-//				int res = conn.getResponseCode();
-				// if(res==200)
-				// {
-
-//				InputStream input = conn.getInputStream();
-//				StringBuffer sb1 = new StringBuffer();
-//				int ss;
-//				while ((ss = input.read()) != -1) {
-//					sb1.append((char) ss);
-//				}
-//				result = sb1.toString();
-//				System.out.println(result);
 
 				InputStreamReader inputStreamReader = new InputStreamReader(conn.getInputStream());
 				BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
@@ -115,13 +84,6 @@ public class UploadUtils {
 					}
 					return strBuffer.toString();
 				}
-				// if(res==200)
-				// {
-
-				// }
-				// else{
-				// Log.e(TAG, "request error");
-				// }
 			}else{
 				Log.v("Upload","文件为空");
 			}
