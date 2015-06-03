@@ -204,6 +204,7 @@ public class MainViewPager extends ViewPager {
 				if(jsonObject!=null){
 					if(jsonObject.getString("ShowFriends").equals("none")){
 						mProgressLayout.setVisibility(GONE);
+						mAdapter.refreshList(new ArrayList<String>(),new ArrayList<Integer>());
 						Toast.makeText(getContext(), "还没有好友 摇一摇手机？", Toast.LENGTH_SHORT).show();
 					}else {
 
