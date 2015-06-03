@@ -24,8 +24,7 @@
 		android:textCursorDrawable="@null"
 		android:textColor="?attr/colorPrimary"
 		android:textSize="20sp"
-		android:singleLine="true"
-		android:hint="123456"/>
+		android:singleLine="true"/>
 	<com.material.widget.PaperButton
 		android:id="@+id/confirm_button"
 		android:layout_width="96dp"
@@ -35,6 +34,17 @@
 		app:paper_color="#fff"
 		app:paper_text_color="#000"
 		app:paper_text="确定"
+		app:paper_is_light_ripple="false"
+		app:paper_shadow_color="#00000000"/>
+	<com.material.widget.PaperButton
+		android:id="@+id/cancel_button"
+		android:layout_width="96dp"
+		android:layout_height="48dp"
+		android:layout_below="@id/edit_text"
+		android:layout_toLeftOf="@id/confirm_button"
+		app:paper_color="#fff"
+		app:paper_text_color="#000"
+		app:paper_text="取消"
 		app:paper_is_light_ripple="false"
 		app:paper_shadow_color="#00000000"/>
 </RelativeLayout>

@@ -11,7 +11,7 @@
 		android:src="@drawable/test_info_background"
 		android:scaleType="centerCrop"/>
 
-	<com.neu.strangers.view.AdvancedScrollView
+	<ScrollView
 		android:id="@+id/info_scroll_view"
 		android:layout_width="match_parent"
 		android:layout_height="match_parent">
@@ -239,7 +239,7 @@
 				android:layout_marginBottom="-24dp"
 				android:src="@drawable/test_avatar"/>
 		</RelativeLayout>
-	</com.neu.strangers.view.AdvancedScrollView>
+	</ScrollView>
 
 	<FrameLayout
 		android:id="@+id/tool_bar_shadow"

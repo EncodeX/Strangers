@@ -23,9 +23,11 @@ import android.view.ViewTreeObserver;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.material.widget.FloatingEditText;
 import com.material.widget.PaperButton;
 import com.neu.strangers.R;
 import com.neu.strangers.tools.ApplicationManager;
@@ -33,7 +35,6 @@ import com.neu.strangers.tools.Constants;
 import com.neu.strangers.tools.DatabaseManager;
 import com.neu.strangers.tools.ImageCache;
 import com.neu.strangers.tools.UploadUtils;
-import com.neu.strangers.view.AdvancedScrollView;
 import com.neu.strangers.view.RectImageView;
 import com.nineoldandroids.view.ViewHelper;
 import com.readystatesoftware.systembartint.SystemBarTintManager;
@@ -59,11 +60,12 @@ import butterknife.InjectView;
 import de.hdodenhof.circleimageview.CircleImageView;
 import me.drakeet.materialdialog.MaterialDialog;
 
-public class ProfileActivity extends AppCompatActivity {
-	private final static int CHANGE_NAME = 1;
+public class ProfileActivity extends AppCompatActivity implements OnUserInfoChangedListener {
+	private final static int CHANGE_NICKNAME = 1;
 	private final static int CHANGE_REGION = 2;
 	private final static int CHANGE_SIGN = 3;
 	private final static int CHANGE_EMAIL = 4;
+	private final static int CHANGE_SEX = 5;
 
 	private SystemBarTintManager mSystemBarTintManager;
 	private int mBackgroundHeight;
@@ -73,6 +75,7 @@ public class ProfileActivity extends AppCompatActivity {
 	private MaterialDialog mDialog;
 	private String mPhotoFullPath;
 	private ImageCache mImageCache;
+	private OnUserInfoChangedListener mOnUserInfoChangedListener;
 
 	private boolean isInitialized = false;
 	private boolean isAvatarChanged = false;
@@ -80,7 +83,7 @@ public class ProfileActivity extends AppCompatActivity {
 	@InjectView(R.id.tool_bar)
 	Toolbar mToolbar;
 	@InjectView(R.id.info_scroll_view)
-	AdvancedScrollView mInfoScrollView;
+	ScrollView mInfoScrollView;
 	@InjectView(R.id.user_info_background)
 	RectImageView mUserInfoBackground;
 	@InjectView(R.id.tool_bar_shadow)
@@ -387,7 +390,7 @@ public class ProfileActivity extends AppCompatActivity {
 		// todo 下面添加资料修改等功能
 		mDialog = new MaterialDialog(this);
 
-		mUserNameLabel.setOnClickListener(new OnClickListener(CHANGE_NAME));
+		mUserNameLabel.setOnClickListener(new OnClickListener(CHANGE_NICKNAME));
 
 		mUserSexLabel.setOnClickListener(new View.OnClickListener() {
 			@Override
@@ -395,9 +398,11 @@ public class ProfileActivity extends AppCompatActivity {
 				if (sex == 0) {
 					mUserSex.setImageResource(R.drawable.ic_female);
 					sex = 1;
+					new ChangeInformation(CHANGE_SEX,"woman").execute();
 				} else if (sex == 1) {
 					mUserSex.setImageResource(R.drawable.ic_male);
 					sex = 0;
+					new ChangeInformation(CHANGE_SEX,"man").execute();
 				}
 			}
 		});
@@ -411,6 +416,8 @@ public class ProfileActivity extends AppCompatActivity {
 		mUserAvatar.setOnClickListener(new ShowChangeMethod());
 
 		new GetSelfAvatar().execute();
+
+		this.setOnUserInfoChangedListener(this);
 	}
 
 	private void initOthersProfile(){
@@ -475,7 +482,25 @@ public class ProfileActivity extends AppCompatActivity {
 		return new File(cachePath + File.separator + dirName);
 	}
 
-    private class AddAsFrined extends AsyncTask<Void,Integer,JSONObject>{
+	@Override
+	public void onUserInfoChanged(int mode, String string) {
+		switch (mode){
+			case CHANGE_NICKNAME:
+				mUserNickname.setText(string);
+				break;
+			case CHANGE_REGION:
+				mUserRegion.setText(string);
+				break;
+			case CHANGE_EMAIL:
+				mUserEmail.setText(string);
+				break;
+			case CHANGE_SIGN:
+				mUserSign.setText(string);
+				break;
+		}
+	}
+
+	private class AddAsFrined extends AsyncTask<Void,Integer,JSONObject>{
         private MaterialDialog dialog;
         private String selfId;
 
@@ -668,21 +693,44 @@ public class ProfileActivity extends AppCompatActivity {
 		public void onClick(View view) {
 			LayoutInflater inflate = ProfileActivity.this.getLayoutInflater();
 			View dialogContent = inflate.inflate(R.layout.dialog_edittext, null);
+			TextView title = (TextView)dialogContent.findViewById(R.id.title);
+			final FloatingEditText editText = (FloatingEditText)dialogContent.findViewById(R.id.edit_text);
+			PaperButton confirmButton = (PaperButton)dialogContent.findViewById(R.id.confirm_button);
+			PaperButton cancelButton = (PaperButton)dialogContent.findViewById(R.id.cancel_button);
+
+			switch(mode){
+				case CHANGE_NICKNAME:
+					title.setText("修改昵称");
+					break;
+				case CHANGE_REGION:
+					title.setText("修改地区");
+					break;
+				case CHANGE_SIGN:
+					title.setText("修改签名");
+					break;
+				case CHANGE_EMAIL:
+					title.setText("修改邮箱地址");
+					break;
+			}
+
+			confirmButton.setOnClickListener(new View.OnClickListener() {
+				@Override
+				public void onClick(View view) {
+					new ChangeInformation(mode,editText.getText().toString()).execute();
+				}
+			});
+
+			cancelButton.setOnClickListener(new View.OnClickListener() {
+				@Override
+				public void onClick(View view) {
+					mDialog.dismiss();
+				}
+			});
 
 			mDialog = new MaterialDialog(ProfileActivity.this);
 
 			mDialog.setContentView(dialogContent);
 			mDialog.show();
-			switch(mode){
-				case CHANGE_NAME:
-					break;
-				case CHANGE_REGION:
-					break;
-				case CHANGE_SIGN:
-					break;
-				case CHANGE_EMAIL:
-					break;
-			}
 		}
 	}
 
@@ -818,4 +866,126 @@ public class ProfileActivity extends AppCompatActivity {
 			return null;
 		}
 	}
+
+	private class ChangeInformation extends AsyncTask<String,Void,JSONObject>{
+		private String string;
+		private int mode;
+
+		public ChangeInformation(int mode, String string) {
+			this.mode = mode;
+			this.string = string;
+		}
+
+		@Override
+		protected JSONObject doInBackground(String... strings) {
+			try {
+
+				StringBuilder stringBuilder = new StringBuilder(
+						"http://www.shiguangtravel.com:8080/CN-Soft/servlet/AlterAction");
+				stringBuilder.append("?");
+				stringBuilder.append("id=" + URLEncoder.encode(Integer.toString(mProfileId), "UTF-8") + "&");
+
+				switch (mode){
+					case CHANGE_NICKNAME:
+						mDialog.dismiss();
+						stringBuilder.append("nickname=" + URLEncoder.encode(string, "UTF-8"));
+						break;
+					case CHANGE_REGION:
+						mDialog.dismiss();
+						stringBuilder.append("region=" + URLEncoder.encode(string, "UTF-8"));
+						break;
+					case CHANGE_SIGN:
+						mDialog.dismiss();
+						stringBuilder.append("sign=" + URLEncoder.encode(string, "UTF-8"));
+						break;
+					case CHANGE_EMAIL:
+						mDialog.dismiss();
+						stringBuilder.append("email=" + URLEncoder.encode(string, "UTF-8"));
+						break;
+					case CHANGE_SEX:
+						stringBuilder.append("sex=" + URLEncoder.encode(string, "UTF-8"));
+						break;
+				}
+
+				URL url = new URL(stringBuilder.toString());
+				HttpURLConnection conn = (HttpURLConnection)url.openConnection();
+				conn.setRequestMethod("GET");
+
+				InputStreamReader inputStreamReader = new InputStreamReader(conn.getInputStream());
+				BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
+				StringBuilder strBuffer = new StringBuilder();
+				String line;
+
+				if(conn.getResponseCode()==200){
+					while ((line = bufferedReader.readLine()) != null) {
+						strBuffer.append(line);
+					}
+					return new JSONObject(strBuffer.toString());
+				}
+
+				return null;
+			} catch (JSONException | IOException e) {
+				e.printStackTrace();
+			}
+			return null;
+		}
+
+		@Override
+		protected void onPostExecute(JSONObject jsonObject) {
+			try {
+				if(jsonObject!=null){
+					String result = jsonObject.getString("Alter");
+					if(!result.equals("sucess")){
+						// 修改失败
+						Toast.makeText(ProfileActivity.this, "修改失败", Toast.LENGTH_SHORT).show();
+					}else{
+						// 修改成功
+						switch (mode){
+							case CHANGE_NICKNAME:
+								DatabaseManager.getInstance().execSQL(
+										"UPDATE user SET nickname='"+string+"' WHERE Id="+mProfileId+";");
+								Toast.makeText(ProfileActivity.this, "昵称修改成功", Toast.LENGTH_SHORT).show();
+								break;
+							case CHANGE_REGION:
+								DatabaseManager.getInstance().execSQL(
+										"UPDATE user SET region='"+string+"' WHERE Id="+mProfileId+";");
+								Toast.makeText(ProfileActivity.this, "地区修改成功", Toast.LENGTH_SHORT).show();
+								break;
+							case CHANGE_SIGN:
+								DatabaseManager.getInstance().execSQL(
+										"UPDATE user SET sign='" + string+"' WHERE Id="+mProfileId+";");
+								Toast.makeText(ProfileActivity.this, "签名修改成功", Toast.LENGTH_SHORT).show();
+								break;
+							case CHANGE_EMAIL:
+								DatabaseManager.getInstance().execSQL(
+										"UPDATE user SET email='" +string+"' WHERE Id="+mProfileId+";");
+								Toast.makeText(ProfileActivity.this, "邮箱地址修改成功", Toast.LENGTH_SHORT).show();
+								break;
+							case CHANGE_SEX:
+								if(string.equals("woman")){
+									DatabaseManager.getInstance().execSQL(
+											"UPDATE user SET sex=1 WHERE Id=" + mProfileId + ";");
+								}else{
+									DatabaseManager.getInstance().execSQL(
+											"UPDATE user SET sex=0 WHERE Id=" + mProfileId + ";");
+								}
+								Toast.makeText(ProfileActivity.this, "性别修改成功", Toast.LENGTH_SHORT).show();
+								break;
+						}
+						mOnUserInfoChangedListener.onUserInfoChanged(mode,string);
+					}
+				}
+			} catch (JSONException e) {
+				e.printStackTrace();
+			}
+		}
+	}
+
+	public void setOnUserInfoChangedListener(OnUserInfoChangedListener onUserInfoChangedListener) {
+		this.mOnUserInfoChangedListener = onUserInfoChangedListener;
+	}
+}
+
+interface OnUserInfoChangedListener{
+	void onUserInfoChanged(int mode, String string);
 }

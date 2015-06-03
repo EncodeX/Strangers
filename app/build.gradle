@@ -19,12 +19,6 @@ android {
 	}
 }
 
-repositories {
-	maven {
-		url "https://jitpack.io"
-	}
-}
-
 dependencies {
 	compile project(':MaterialWidget')
 	compile fileTree(dir: 'libs', include: ['*.jar'])
@@ -38,9 +32,7 @@ dependencies {
 	compile 'com.jakewharton:disklrucache:2.0.2'
 	compile 'de.hdodenhof:circleimageview:1.2.2'
 	compile 'com.nineoldandroids:library:2.4.0'
-	compile 'com.melnykov:floatingactionbutton:1.3.0'
 	compile 'me.drakeet.materialdialog:library:1.2.2'
 	compile 'com.pnikosis:materialish-progress:1.5'
-	compile 'com.github.rey5137:material:1.1.1'
 	compile 'com.balysv:material-ripple:1.0.1'
 }
